@@ -423,7 +423,7 @@ void CMFCOpenGL01View::OnDrawClear()
 
 void CMFCOpenGL01View::OnFileSave()
 {
-    Invalidate(FALSE);
+    Invalidate(FALSE); 
     CClientDC dc(this);
     CRect rect;
     BOOL  showMsgTag;                  //是否要弹出”图像保存成功对话框" 
