@@ -178,9 +178,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="DialogCircleOval.h" />
     <ClInclude Include="DialogCirclePerfect.h" />
@@ -227,6 +224,22 @@
     <ResourceCompile Include="MFCOpenGL01.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\show\01.png" />
+    <Image Include="..\show\02.png" />
+    <Image Include="..\show\03.png" />
+    <Image Include="..\show\04.png" />
+    <Image Include="..\show\05.png" />
+    <Image Include="..\show\06.png" />
+    <Image Include="..\show\07.png" />
+    <Image Include="..\show\08.png" />
+    <Image Include="..\show\09.png" />
+    <Image Include="..\show\10.png" />
+    <Image Include="..\show\11.png" />
+    <Image Include="..\show\12.png" />
+    <Image Include="..\show\13.png" />
+    <Image Include="..\show\14.png" />
+    <Image Include="..\show\15.png" />
+    <Image Include="..\show\16.png" />
     <Image Include="res\classview.bmp" />
     <Image Include="res\classview_hc.bmp" />
     <Image Include="res\class_view.ico" />
@@ -254,8 +267,12 @@
     <Image Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\README.md" />
     <None Include="packages.config" />
     <None Include="res\MFCOpenGL01.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
