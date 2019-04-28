@@ -7,6 +7,7 @@
 
 #include "MainFrm.h"
 #include "MFCOpenGL01Doc.h"
+//#include "MFCOpenGL01View.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -128,7 +129,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct){
 
 void CMainFrame::OnToolBarToolsMouse() {
     //CDocument * pCurrentDoc = (CFrameWnd *)m_pMainWnd->GetActiveDocument();
-
+    
 }
 
 void CMainFrame::OnToolBarToolsSelect() {

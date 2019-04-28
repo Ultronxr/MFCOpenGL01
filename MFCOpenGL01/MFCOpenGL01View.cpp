@@ -149,9 +149,7 @@ CMFCOpenGL01Doc* CMFCOpenGL01View::GetDocument() const // 非调试版本是内联的
 
 // CMFCOpenGL01View 消息处理程序
 
-/***************************************************************************************************/
 /****************************************OpenGL相关核心代码 开始************************************/
-/***************************************************************************************************/
 
 //int CMFCOpenGL01View::OnCreate(LPCREATESTRUCT lpCreateStruct){
 //    if (CView::OnCreate(lpCreateStruct) == -1)
@@ -284,10 +282,7 @@ void CMFCOpenGL01View::OnDraw(CDC* pDC){
 //}
 
 
-/***************************************************************************************************/
 /****************************************OpenGL相关核心代码 结束************************************/
-/***************************************************************************************************/
-
 
 
 
@@ -305,17 +300,14 @@ int point_size_global, point_type_global;
 COLORREF point_color_global;
 
 //画线
-std::vector<CPoint> line_points_global;
 int line_size_global, line_type_global;
 COLORREF line_color_global;
 
 //画正圆
-std::vector<CPoint> circle_perfect_points_global; //下标0记录圆心的点，下标1记录圆上的点
 int circle_perfect_size_global, circle_perfect_type_global;
 COLORREF circle_perfect_color_global;
 
 //画椭圆
-std::vector<CPoint> circle_oval_points_global; //下标0记录圆心的点，下标1记录长轴的点，下标2记录短轴的点
 int circle_oval_size_global, circle_oval_type_global;
 COLORREF circle_oval_color_global;
 
@@ -323,6 +315,7 @@ COLORREF circle_oval_color_global;
 CMFCOpenGL01View::polygon polygon_global;
 COLORREF polygon_color_global;
 int polygon_size_global;
+BOOL is_drawing_polygon_gloabl = FALSE;
 
 //填充
 COLORREF fill_color_global;
@@ -542,9 +535,21 @@ void CMFCOpenGL01View::ShowBitmap(CDC *pDC, CString BmpName)
 }
 
 
+BOOL CMFCOpenGL01View::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+{
 
+    if (pWnd == this && m_RectTracker.SetCursor(this, nHitTest)) {
+        return TRUE;
+    }
+    if (pWnd == this && view_flag_global != 0) {
+        HCURSOR hCur = LoadCursor(NULL, IDC_CROSS);
+        ::SetCursor(hCur);
+        return TRUE;
+    }
+    return CView::OnSetCursor(pWnd, nHitTest, message);
+}
 
-
+CPoint oldPoint, newPoint;
 //备份目标区域的内容，选择框再次移到别的地方去需要填回去
 CRect rect_parent, rect_old, rect_new;
 CDC dc_backup;
@@ -552,9 +557,33 @@ int clk_inside = 0;
 
 void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
 {
-    //SetCapture(); ReleaseCapture GetCapture
-    //ClipCursor(NULL); //限制鼠标移动区域
-    if (view_flag_global == 20) {
+    if (view_flag_global == 2) {
+        oldPoint = point;
+        newPoint = point;
+    }
+    else if (view_flag_global == 3) {
+        oldPoint = point;
+        newPoint = point;
+    }
+    else if (view_flag_global == 3) {
+        oldPoint = point;
+        newPoint = point;
+    }
+    else if (view_flag_global == 4) {
+        oldPoint = point;
+        newPoint = point;
+    }
+    else if (view_flag_global == 5) {
+        if (!is_drawing_polygon_gloabl) {
+            oldPoint = point;
+            newPoint = point;
+            is_drawing_polygon_gloabl = TRUE;
+        }
+        else {
+            newPoint = point;
+        }
+    }
+    else if (view_flag_global == 20) {
         
         m_RectTracker.TrackRubberBand(this, point, TRUE);
         m_RectTracker.m_rect.NormalizeRect();
@@ -611,8 +640,13 @@ void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
     CView::OnLButtonDown(nFlags, point);
 }
 
+CDC *dc2;
+
 void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
 {
+    dc2 = GetDC();
+    dc2->SetROP2(R2_NOT);
+
     if (view_flag_global == 1) {
         if (point_type_global == 0)
             point_circle(GetDC(), point_color_global, point.x, point.y, point_size_global);
@@ -626,53 +660,51 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
         view_flag_global = 0;
     }
     else if (view_flag_global == 2) {
-        line_points_global.push_back(point);
-        if (line_points_global.size() == 1)
-            point_circle(GetDC(), line_color_global, point.x, point.y, line_size_global);
+        //抹去最后一次的作图提示线
+        dc2->MoveTo(oldPoint);
+        dc2->LineTo(newPoint);
 
-        else if (line_points_global.size() == 2) {
-            if (line_type_global == 0) line_dda_cpen(GetDC(), line_color_global, line_points_global[0].x, line_points_global[0].y, line_points_global[1].x, line_points_global[1].y, line_size_global);
-            else if (line_type_global == 1) line_midpoint_cpen(GetDC(), line_color_global, line_points_global[0].x, line_points_global[0].y, line_points_global[1].x, line_points_global[1].y, line_size_global);
-            else if (line_type_global == 2) line_bresenham_cpen(GetDC(), line_color_global, line_points_global[0].x, line_points_global[0].y, line_points_global[1].x, line_points_global[1].y, line_size_global);
+        if (line_type_global == 0) line_dda_cpen(GetDC(), line_color_global, oldPoint.x, oldPoint.y, point.x, point.y, line_size_global);
+        else if (line_type_global == 1) line_midpoint_cpen(GetDC(), line_color_global, oldPoint.x, oldPoint.y, point.x, point.y, line_size_global);
+        else if (line_type_global == 2) line_bresenham_cpen(GetDC(), line_color_global, oldPoint.x, oldPoint.y, point.x, point.y, line_size_global);
 
-            line_points_global.clear();
-            view_flag_global = 0;
-        }
+        view_flag_global = 0;
     }
     else if (view_flag_global == 3) {
-        circle_perfect_points_global.push_back(point);
-        if (circle_perfect_points_global.size() == 1)
-            point_circle(GetDC(), circle_perfect_color_global, point.x, point.y, circle_perfect_size_global+1);
+        int radius = std::sqrt((newPoint.x - oldPoint.x)*(newPoint.x - oldPoint.x) + ((newPoint.y - oldPoint.y)*(newPoint.y - oldPoint.y)));
+        
+        //抹去最后一次的作图提示线
+        dc2->Arc(CRect(oldPoint.x - radius, oldPoint.y - radius, oldPoint.x + radius, oldPoint.y + radius), CPoint(0, 0), CPoint(0, 0));
+        
+        if (circle_perfect_type_global == 0) circle_perfect_bresenham_cpen(GetDC(), circle_perfect_color_global, oldPoint.x, oldPoint.y, radius, circle_perfect_size_global);
+        else if (circle_perfect_type_global == 1) circle_perfect_midpoint_cpen(GetDC(), circle_perfect_color_global, oldPoint.x, oldPoint.y, radius, circle_perfect_size_global);
+        else if (circle_perfect_type_global == 2) circle_perfect_midpoint_cpen(GetDC(), circle_perfect_color_global, oldPoint.x, oldPoint.y, radius, circle_perfect_size_global);
 
-        else if(circle_perfect_points_global.size() == 2) {
-            int radius = std::sqrt((circle_perfect_points_global[1].x - circle_perfect_points_global[0].x)*(circle_perfect_points_global[1].x - circle_perfect_points_global[0].x) + (circle_perfect_points_global[1].y - circle_perfect_points_global[0].y)*(circle_perfect_points_global[1].y - circle_perfect_points_global[0].y));
-            if (circle_perfect_type_global == 0) circle_perfect_bresenham_cpen(GetDC(), circle_perfect_color_global, circle_perfect_points_global[0].x, circle_perfect_points_global[0].y, radius, circle_perfect_size_global);
-            else if (circle_perfect_type_global == 1) circle_perfect_midpoint_cpen(GetDC(), circle_perfect_color_global, circle_perfect_points_global[0].x, circle_perfect_points_global[0].y, radius, circle_perfect_size_global);
-            else if (circle_perfect_type_global == 2) circle_perfect_midpoint_cpen(GetDC(), circle_perfect_color_global, circle_perfect_points_global[0].x, circle_perfect_points_global[0].y, radius, circle_perfect_size_global);
-
-            circle_perfect_points_global.clear();
-            view_flag_global = 0;
-        }
+        view_flag_global = 0;
     }
     else if (view_flag_global == 4) {
-        circle_oval_points_global.push_back(point);
-        if (circle_oval_points_global.size() == 1 || circle_oval_points_global.size() == 2)
-            point_circle(GetDC(), circle_oval_color_global, point.x, point.y, circle_oval_size_global+1);
+        //抹去最后一次的作图提示线
+        dc2->Arc(CRect(oldPoint.x, oldPoint.y, newPoint.x, newPoint.y), CPoint(0, 0), CPoint(0, 0));
 
-        else if (circle_oval_points_global.size() == 3) {
-            int a = std::sqrt((circle_oval_points_global[1].x- circle_oval_points_global[0].x)*(circle_oval_points_global[1].x - circle_oval_points_global[0].x) + (circle_oval_points_global[1].y - circle_oval_points_global[0].y)*(circle_oval_points_global[1].y - circle_oval_points_global[0].y));
-            int b = std::sqrt((circle_oval_points_global[2].x - circle_oval_points_global[0].x)*(circle_oval_points_global[2].x - circle_oval_points_global[0].x) + (circle_oval_points_global[2].y - circle_oval_points_global[0].y)*(circle_oval_points_global[2].y - circle_oval_points_global[0].y));
-            if (circle_oval_type_global == 0) circle_oval_bresenham_cpen(GetDC(), circle_oval_color_global, circle_oval_points_global[0].x, circle_oval_points_global[0].y, a, b, circle_oval_size_global);
-            else if(circle_oval_type_global == 1) circle_oval_midpoint_cpen(GetDC(), circle_oval_color_global, circle_oval_points_global[0].x, circle_oval_points_global[0].y, a, b, circle_oval_size_global);
-            else if(circle_oval_type_global == 2) circle_oval_midpoint_cpen(GetDC(), circle_oval_color_global, circle_oval_points_global[0].x, circle_oval_points_global[0].y, a, b, circle_oval_size_global);
+        int x0 = (oldPoint.x + newPoint.x) / 2, y0 = (oldPoint.y + newPoint.y) / 2;
+        int a = std::abs(x0 - oldPoint.x), b = std::abs(y0 - oldPoint.y);
+        if (circle_oval_type_global == 0) circle_oval_bresenham_cpen(GetDC(), circle_oval_color_global, x0, y0, a, b, circle_oval_size_global);
+        else if (circle_oval_type_global == 1) circle_oval_midpoint_cpen(GetDC(), circle_oval_color_global, x0, y0, a, b, circle_oval_size_global);
+        else if (circle_oval_type_global == 2) circle_oval_midpoint_cpen(GetDC(), circle_oval_color_global, x0, y0, a, b, circle_oval_size_global);
 
-            circle_oval_points_global.clear();
-            view_flag_global = 0;
-        }
+        view_flag_global = 0;
     }
     else if (view_flag_global == 5) {
+        //抹去最后一次的作图提示线
+        dc2->MoveTo(oldPoint);
+        dc2->LineTo(newPoint);
+
         polygon_global.vertexes.push_back(vertex(point.x, point.y));
         polygon_global.vertex_num++;
+
+        oldPoint.x = polygon_global.vertexes[(polygon_global.vertex_num) - 1].x;
+        oldPoint.y = polygon_global.vertexes[(polygon_global.vertex_num) - 1].y;
+
         if (polygon_global.vertex_num == 1) {
             point_circle(GetDC(), polygon_color_global, point.x, point.y, polygon_size_global);
         }
@@ -705,6 +737,7 @@ void CMFCOpenGL01View::OnLButtonDblClk(UINT nFlags, CPoint point)
         polygon_global.vertexes.clear();
         polygon_global.vertex_num = 0;
         view_flag_global = 0;
+        is_drawing_polygon_gloabl = FALSE;
     }
     else if (view_flag_global == 20) {
         view_flag_global = 0;
@@ -712,53 +745,45 @@ void CMFCOpenGL01View::OnLButtonDblClk(UINT nFlags, CPoint point)
     CView::OnLButtonDblClk(nFlags, point);
 }
 
-BOOL CMFCOpenGL01View::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
-{
-    if (pWnd == this && m_RectTracker.SetCursor(this, nHitTest)) {
-        return TRUE;
-    }
-    return CView::OnSetCursor(pWnd, nHitTest, message);
-}
 
-CPoint oldPoint, newPoint;
 CRect rect_eraser;
+CDC *dc1;
 
 void CMFCOpenGL01View::OnMouseMove(UINT nFlags, CPoint point)
 {
-    CClientDC dc(this);
-    dc.SetROP2(R2_NOT);
+    dc1 = GetDC();
+    dc1->SetROP2(R2_NOT);
 
+    if (nFlags == MK_LBUTTON && view_flag_global == 2) {
+        dc1->MoveTo(oldPoint);
+        dc1->LineTo(newPoint);
 
-    if (nFlags == MK_LBUTTON) {
-        /*CPen cpen;
-        cpen.CreatePen(PS_SOLID, 10, RGB(255,0,0));
-        CPen* pOldPen = (CPen*)GetDC()->SelectObject(&cpen);
-
-        oldPoint = point;
         newPoint = point;
-
-        CDC *pDC = GetDC();
-        pDC->MoveTo(0, 0);
-        pDC->LineTo(newPoint);
-
-        pDC->SetROP2(R2_NOT);
-        pDC->MoveTo(0, 0);
-        pDC->LineTo(oldPoint);
-
-        
-
-        pDC->SelectObject(pOldPen);
-        cpen.DeleteObject();*/
-
-        dc.MoveTo(oldPoint);
-        dc.LineTo(newPoint);
-
-        newPoint.x = point.x;
-        newPoint.y = point.y;
-        dc.MoveTo(oldPoint);
-        dc.LineTo(newPoint);
+        dc1->MoveTo(oldPoint);
+        dc1->LineTo(newPoint);
     }
+    if (nFlags == MK_LBUTTON && view_flag_global == 3) {
+        int radius = std::sqrt((newPoint.x - oldPoint.x)*(newPoint.x - oldPoint.x) + ((newPoint.y - oldPoint.y)*(newPoint.y - oldPoint.y)));
+        dc1->Arc(CRect(oldPoint.x - radius, oldPoint.y - radius, oldPoint.x + radius, oldPoint.y + radius), CPoint(0, 0), CPoint(0, 0));
+        
+        newPoint = point;
+        radius = std::sqrt((newPoint.x - oldPoint.x)*(newPoint.x - oldPoint.x) + ((newPoint.y - oldPoint.y)*(newPoint.y - oldPoint.y)));
+        dc1->Arc(CRect(oldPoint.x - radius, oldPoint.y - radius, oldPoint.x + radius, oldPoint.y + radius), CPoint(0, 0), CPoint(0, 0));
+    }
+    if (nFlags == MK_LBUTTON && view_flag_global == 4) {
+        dc1->Arc(CRect(oldPoint.x, oldPoint.y, newPoint.x, newPoint.y), CPoint(0, 0), CPoint(0, 0));
 
+        newPoint = point;
+        dc1->Arc(CRect(oldPoint.x, oldPoint.y, newPoint.x, newPoint.y), CPoint(0, 0), CPoint(0, 0));
+    }
+    if (view_flag_global == 5 && is_drawing_polygon_gloabl) {
+        dc1->MoveTo(oldPoint);
+        dc1->LineTo(newPoint);
+
+        newPoint = point;
+        dc1->MoveTo(oldPoint);
+        dc1->LineTo(newPoint);
+    }
     if (nFlags == MK_LBUTTON && view_flag_global == 30) {
         rect_eraser.SetRect(CPoint(point.x - 25, point.y - 25), CPoint(point.x + 25, point.y + 25));
         //GetDC()->FillSolidRect(&rect_eraser, RGB(255, 255, 255));
