@@ -48,12 +48,6 @@
     <ClInclude Include="ViewTree.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="OutputWnd.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PropertiesWnd.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="DialogLine.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -96,12 +90,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ViewTree.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputWnd.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PropertiesWnd.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DialogLine.cpp">
@@ -251,6 +239,21 @@
     </Image>
     <Image Include="..\show\16.png">
       <Filter>show</Filter>
+    </Image>
+    <Image Include="res\toolbar1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bmp00001.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\toolbar2.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bmp00002.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bmp00003.bmp">
+      <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

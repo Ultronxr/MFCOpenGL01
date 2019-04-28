@@ -5,8 +5,6 @@
 #pragma once
 #include "FileView.h"
 #include "ClassView.h"
-#include "OutputWnd.h"
-#include "PropertiesWnd.h"
 
 class CMainFrame : public CFrameWndEx
 {
@@ -35,14 +33,14 @@ public:
 #endif
 
 protected:  // 控件条嵌入成员
-	CMFCMenuBar       m_wndMenuBar; //！！！菜单栏
-	//CMFCToolBar       m_wndToolBar; //！！！工具栏
-	//CMFCStatusBar     m_wndStatusBar; //！！！状态栏
-    //CMFCToolBarImages m_UserImages; //！！！用户定义的工具栏图像
-	CFileView         m_wndFileView; //！！！“文件视图”窗口
-	CClassView        m_wndClassView; //！！！“类视图”窗口
-    COutputWnd        m_wndOutput; //！！！输出窗口
-	//CPropertiesWnd    m_wndProperties; //！！！“属性”窗口
+	CMFCMenuBar       m_wndMenuBar;
+	CMFCToolBar       m_wndToolBar;
+    
+    CMFCToolBar       m_drawToolBar;
+    CMFCToolBar       m_toolsToolBar;
+    CMFCToolBar       m_linesizeToolBar;
+    CMFCToolBar       m_colorrefToolBar;
+    
 
 // 生成的消息映射函数
 protected:
@@ -54,8 +52,15 @@ protected:
 	afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
 	DECLARE_MESSAGE_MAP()
 
-	BOOL CreateDockingWindows();
-	void SetDockingWindowIcons(BOOL bHiColorIcons);
+
+    afx_msg void OnToolBarToolsMouse();
+    afx_msg void OnToolBarToolsSelect();
+    afx_msg void OnToolBarToolsFill();
+    afx_msg void OnToolBarToolsErase();
+    afx_msg void OnToolBarDrawLine();
+    afx_msg void OnToolBarDrawCirclePerfect();
+    afx_msg void OnToolBarDrawCircleOval();
+    afx_msg void OnToolBarDrawPolygon();
 };
 
 

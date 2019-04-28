@@ -36,6 +36,9 @@ public:
 #endif
 
 protected:
+    int g_operation;
+    COLORREF g_color;
+    int g_size;
 
 // 生成的消息映射函数
 protected:

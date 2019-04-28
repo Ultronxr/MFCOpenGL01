@@ -90,6 +90,12 @@
 #define IDD_DIALOG_CIRCLE_OVAL          325
 #define IDD_DIALOG_POLYGON              334
 #define IDD_DIALOG_FILL                 337
+#define IDR_TOOLBAR_DRAW                340
+#define IDR_TOOLBAR_COLOR               344
+#define IDR_TOOLBAR_FILL                346
+#define IDR_TOOLBAR_TOOLS               346
+#define IDR_TOOLBAR_COLORREF            348
+#define IDR_TOOLBAR_LINESIZE            352
 #define IDC_RICHEDIT21                  1004
 #define IDC_RICHEDIT22                  1005
 #define IDC_RICHEDIT23                  1006
@@ -144,14 +150,35 @@
 #define ID_32793                        32793
 #define ID_32794                        32794
 #define ID_32795                        32795
-#define ID_BUTTON32796                  32796
+#define TOOLBAR_DRAW_LINE               32800
+#define ID_BUTTON32801                  32801
+#define ID_BUTTON32802                  32802
+#define ID_BUTTON32804                  32804
+#define ID_BUTTON32806                  32806
+#define TOOLBAR_TOOLS_FILL              32806
+#define ID_BUTTON32813                  32813
+#define ID_BUTTON32814                  32814
+#define ID_BUTTON32815                  32815
+#define ID_BUTTON32816                  32816
+#define ID_BUTTON32817                  32817
+#define ID_BUTTON32818                  32818
+#define ID_BUTTON32819                  32819
+#define ID_BUTTON32820                  32820
+#define TOOLBAR_TOOLS_ERASE             32822
+#define TOOLBAR_TOOLS_SELECT            32823
+#define ID_BUTTON32826                  32826
+#define TOOLBAR_DRAW_CIRCLE_PERFECT     32829
+#define TOOLBAR_DRAW_CIRCLE_OVAL        32830
+#define TOOLBAR_DRAW_POLYGON            32831
+#define ID_BUTTON32833                  32833
+#define TOOLBAR_TOOLS_MOUSE             32833
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        340
-#define _APS_NEXT_COMMAND_VALUE         32800
+#define _APS_NEXT_RESOURCE_VALUE        354
+#define _APS_NEXT_COMMAND_VALUE         32834
 #define _APS_NEXT_CONTROL_VALUE         1040
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

@@ -190,8 +190,6 @@
     <ClInclude Include="MFCOpenGL01.h" />
     <ClInclude Include="MFCOpenGL01Doc.h" />
     <ClInclude Include="MFCOpenGL01View.h" />
-    <ClInclude Include="OutputWnd.h" />
-    <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -210,8 +208,6 @@
     <ClCompile Include="MFCOpenGL01.cpp" />
     <ClCompile Include="MFCOpenGL01Doc.cpp" />
     <ClCompile Include="MFCOpenGL01View.cpp" />
-    <ClCompile Include="OutputWnd.cpp" />
-    <ClCompile Include="PropertiesWnd.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -240,6 +236,9 @@
     <Image Include="..\show\14.png" />
     <Image Include="..\show\15.png" />
     <Image Include="..\show\16.png" />
+    <Image Include="res\bmp00001.bmp" />
+    <Image Include="res\bmp00002.bmp" />
+    <Image Include="res\bmp00003.bmp" />
     <Image Include="res\classview.bmp" />
     <Image Include="res\classview_hc.bmp" />
     <Image Include="res\class_view.ico" />
@@ -263,6 +262,8 @@
     <Image Include="res\sort.bmp" />
     <Image Include="res\sort_hc.bmp" />
     <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\toolbar1.bmp" />
+    <Image Include="res\toolbar2.bmp" />
     <Image Include="res\Toolbar256.bmp" />
     <Image Include="UserImages.bmp" />
   </ItemGroup>

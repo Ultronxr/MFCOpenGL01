@@ -126,6 +126,16 @@ IDR_PROPERTIES          BITMAP                  "res\\properties.bmp"
 
 IDB_PROPERTIES_HC       BITMAP                  "res\\properties_hc.bmp"
 
+IDR_TOOLBAR_DRAW        BITMAP                  "res\\toolbar1.bmp"
+
+IDR_TOOLBAR_COLOR       BITMAP                  "res\\bmp00001.bmp"
+
+IDR_TOOLBAR_TOOLS       BITMAP                  "res\\toolbar2.bmp"
+
+IDR_TOOLBAR_COLORREF    BITMAP                  "res\\bmp00002.bmp"
+
+IDR_TOOLBAR_LINESIZE    BITMAP                  "res\\bmp00003.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -185,6 +195,39 @@ BEGIN
     BUTTON      ID_PROPERTIES2
 END
 
+IDR_TOOLBAR_DRAW TOOLBAR 16, 15
+BEGIN
+    BUTTON      TOOLBAR_DRAW_LINE
+    BUTTON      TOOLBAR_DRAW_CIRCLE_PERFECT
+    BUTTON      TOOLBAR_DRAW_CIRCLE_OVAL
+    BUTTON      TOOLBAR_DRAW_POLYGON
+END
+
+IDR_TOOLBAR_TOOLS TOOLBAR 16, 15
+BEGIN
+    BUTTON      TOOLBAR_TOOLS_MOUSE
+    BUTTON      TOOLBAR_TOOLS_SELECT
+    BUTTON      TOOLBAR_TOOLS_FILL
+    BUTTON      TOOLBAR_TOOLS_ERASE
+END
+
+IDR_TOOLBAR_COLORREF TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_BUTTON32813
+    BUTTON      ID_BUTTON32814
+    BUTTON      ID_BUTTON32815
+    BUTTON      ID_BUTTON32816
+    BUTTON      ID_BUTTON32817
+    BUTTON      ID_BUTTON32818
+    BUTTON      ID_BUTTON32819
+    BUTTON      ID_BUTTON32820
+END
+
+IDR_TOOLBAR_LINESIZE TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_BUTTON32826
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -193,7 +236,7 @@ END
 
 IDR_MAINFRAME MENU
 BEGIN
-    POPUP "文件(&F)"
+    POPUP "文件"
     BEGIN
         MENUITEM "新建(&N)\tCtrl+N",              ID_FILE_NEW
         MENUITEM "打开(&O)...\tCtrl+O",           ID_FILE_OPEN
@@ -208,7 +251,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "退出(&X)",                      ID_APP_EXIT
     END
-    POPUP "编辑(&E)"
+    POPUP "编辑"
     BEGIN
         MENUITEM "撤消(&U)\tCtrl+Z",              ID_EDIT_UNDO
         MENUITEM SEPARATOR
@@ -216,33 +259,9 @@ BEGIN
         MENUITEM "复制(&C)\tCtrl+C",              ID_EDIT_COPY
         MENUITEM "粘贴(&P)\tCtrl+V",              ID_EDIT_PASTE
     END
-    POPUP "视图(&V)"
+    POPUP "帮助"
     BEGIN
-        POPUP "工具栏和停靠窗口(&T)"
-        BEGIN
-            MENUITEM "<占位符>",                       ID_VIEW_TOOLBAR
-        END
-        MENUITEM "状态栏(&S)",                     ID_VIEW_STATUS_BAR
-        POPUP "应用程序外观(&A)"
-        BEGIN
-            MENUITEM "Windows 2000(&2)",            ID_VIEW_APPLOOK_WIN_2000
-            MENUITEM "Office XP(&X)",               ID_VIEW_APPLOOK_OFF_XP
-            MENUITEM "Windows XP(&W)",              ID_VIEW_APPLOOK_WIN_XP
-            MENUITEM "Office 2003(&3)",             ID_VIEW_APPLOOK_OFF_2003
-            MENUITEM "Visual Studio 200&5",         ID_VIEW_APPLOOK_VS_2005
-            MENUITEM "Visual Studio 200&8",         ID_VIEW_APPLOOK_VS_2008
-            POPUP "Office 2007(&7)"
-            BEGIN
-                MENUITEM "蓝色样式(&B)",                    ID_VIEW_APPLOOK_OFF_2007_BLUE
-                MENUITEM "黑色样式(&L)",                    ID_VIEW_APPLOOK_OFF_2007_BLACK
-                MENUITEM "银色样式(&S)",                    ID_VIEW_APPLOOK_OFF_2007_SILVER
-                MENUITEM "水绿色样式(&A)",                   ID_VIEW_APPLOOK_OFF_2007_AQUA
-            END
-        END
-    END
-    POPUP "帮助(&H)"
-    BEGIN
-        MENUITEM "关于 MFCOpenGL01(&A)...",       ID_APP_ABOUT
+        MENUITEM "关于",                          ID_APP_ABOUT
     END
     POPUP "度量"
     BEGIN
@@ -365,7 +384,7 @@ CAPTION "关于 MFCOpenGL01"
 FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
-    LTEXT           "Ultronxr制作",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "计科162方材 制作",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2019",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "确定",IDOK,113,41,50,14,WS_GROUP
 END
@@ -871,6 +890,29 @@ BEGIN
     IDS_BUILD_TAB           "生成"
     IDS_DEBUG_TAB           "调试"
     IDS_FIND_TAB            "查找"
+END
+
+STRINGTABLE
+BEGIN
+    TOOLBAR_TOOLS_ERASE     "橡皮擦工具\n擦除"
+    TOOLBAR_TOOLS_SELECT    "矩形框选择工具\n选择"
+    TOOLBAR_DRAW_CIRCLE_PERFECT "正圆绘制工具\n正圆"
+    TOOLBAR_DRAW_CIRCLE_OVAL "椭圆绘制工具\n椭圆"
+    TOOLBAR_DRAW_POLYGON    "多边形绘制工具\n多边形"
+END
+
+STRINGTABLE
+BEGIN
+    TOOLBAR_DRAW_LINE       "直线绘制工具\n直线"
+    ID_BUTTON32801          "正圆绘制工具\n正圆"
+    ID_BUTTON32802          "椭圆绘制工具\n椭圆"
+    ID_BUTTON32804          "多边形绘制工具\n多边形"
+    TOOLBAR_TOOLS_FILL      "油漆桶填充工具\n填充"
+END
+
+STRINGTABLE
+BEGIN
+    TOOLBAR_TOOLS_MOUSE     "恢复成普通光标模式\n鼠标"
 END
 
 #endif    // 中文(简体，中国) resources

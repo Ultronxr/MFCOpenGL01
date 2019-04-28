@@ -485,83 +485,6 @@ void CMFCOpenGL01View::OnFileSave()
 
 void CMFCOpenGL01View::OnFileOpen()
 {
-    //// TODO: 在此添加命令处理程序代码
-    //LPCTSTR lpszFilter = _T("位图文件(*.bmp)|*.bmp|其他格式(*.*)|*.*||");
-    //CFileDialog dlg(TRUE, lpszFilter, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, lpszFilter, NULL);
-    //CString filepath;
-    //CFile file;
-
-    ////打开文件对话框
-    //if (dlg.DoModal() == IDOK){
-    //    filepath = dlg.GetPathName();
-    //    if (file.Open(filepath, CFile::modeRead | CFile::shareDenyNone, NULL) == 0){
-    //        //读取文件失败
-    //        AfxMessageBox(_T("无法打开文件！"), MB_OK, 0);
-    //        return;
-    //    }
-    //    //读取文件头
-    //    file.Read(&bf, sizeof(bf));
-    //    //判断是否是BMP文件
-    //    if (bf.bfType != 0x4d42)//'BM'
-    //    {
-    //        AfxMessageBox(_T("非BMP文件！"), MB_OK, 0);
-    //        return;
-    //    }
-    //    //判断文件是否损坏
-    //    if (file.GetLength() != bf.bfSize){
-    //        AfxMessageBox(_T("文件已损坏，请检查！"), MB_OK, 0);
-    //        return;
-    //    }
-
-    //    //读文件信息头
-    //    file.Read(&bi, sizeof(bi));
-
-    //    //计算调色板数目
-    //    numquad = 0;
-    //    if (bi.biBitCount<24){
-    //        numquad = 1 << bi.biBitCount;
-    //    }
-
-    //    //为图像信息pbi申请空间
-    //    pbi = (BITMAPINFO*)HeapAlloc(GetProcessHeap(), 0, sizeof(BITMAPINFOHEADER) + numquad * sizeof(RGBQUAD));
-    //    memcpy(pbi, &bi, sizeof(bi));
-    //    quad = (RGBQUAD*)((BYTE*)pbi + sizeof(BITMAPINFOHEADER));
-
-    //    //读取调色板
-    //    if (numquad != 0){
-    //        file.Read(quad, sizeof(RGBQUAD)*numquad);
-    //    }
-
-    //    //为图像数据申请空间
-    //    bi.biSizeImage = bf.bfSize - bf.bfOffBits;
-    //    lpbuf = (BYTE*)HeapAlloc(GetProcessHeap(), 0, bi.biSizeImage);
-    //    //读取图像数据
-    //    file.Read(lpbuf, bi.biSizeImage);
-
-    //    //图像读取完毕，关闭文件，设置标志
-    //    file.Close();
-    //    flagOpen = 1;
-    //}
-
-    //CPaintDC dc(this);
-    ////是否已打开某个BMP文件
-    //if (flagOpen == 1){
-    //    //这个函数显示DIB
-    //    SetDIBitsToDevice(dc.m_hDC,          //DIB将输出的设备描述表
-    //        0,               //设备描述表中位图输出起始逻辑x地址
-    //        0,               //设备描述表中位图输出起始逻辑x地址
-    //        bi.biWidth,  //DIB的宽度
-    //        bi.biHeight, //DIB的高度
-    //        0,                 //DIB开始读取输出的像素数据的x位置
-    //        0,                 //DIB开始读取输出的像素数据的y位置
-    //        0,                 //DIB中像素的水平行号,它对应lpBits内存缓冲区第一行数据
-    //        bi.biHeight, //DIB的行数，对应包含在由lpBits所指内存缓冲区中的数据
-    //        lpbuf,       //包含像素数据的内存缓冲区的指针
-    //        pbi,        //指向初始化了的BITMAPINFO数据结构的指针，描述了位图的大小和色彩数据
-    //        DIB_RGB_COLORS);   //指定是显示的颜色                     
-    //}
-    //Invalidate(FALSE);
-
     CString filter;
     filter = "位图文件(*.bmp)|*.bmp|其他格式(*.*)|*.*||";
     CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY, filter, NULL);
@@ -582,18 +505,6 @@ void CMFCOpenGL01View::ShowBitmap(CDC *pDC, CString BmpName)
     //定义bitmap指针 调用函数LoadImage装载位图
     HBITMAP m_hBitmap;
     m_hBitmap = (HBITMAP)LoadImage(NULL, BmpName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_CREATEDIBSECTION);
-
-    /*************************************************************************/
-    /* 1.要装载OEM图像，则设此参数值为0  OBM_ OEM位图 OIC_OEM图标 OCR_OEM光标
-    /* 2.BmpName要装载图片的文件名
-    /* 3.装载图像类型:
-    /*   IMAGE_BITMAP-装载位图 IMAGE_CURSOR-装载光标 IMAGE_ICON-装载图标
-    /* 4.指定图标或光标的像素宽度和长度 以像素为单位
-    /* 5.加载选项:
-    /*   IR_LOADFROMFILE-指明由lpszName指定文件中加载图像
-    /*   IR_DEFAULTSIZE-指明使用图像默认大小
-    /*   LR_CREATEDIBSECTION-当uType参数为IMAGE_BITMAP时,创建一个DIB项
-    /**************************************************************************/
 
     if (m_bitmap.m_hObject)
     {
@@ -641,6 +552,8 @@ int clk_inside = 0;
 
 void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
 {
+    //SetCapture(); ReleaseCapture GetCapture
+    //ClipCursor(NULL); //限制鼠标移动区域
     if (view_flag_global == 20) {
         
         m_RectTracker.TrackRubberBand(this, point, TRUE);
@@ -812,7 +725,10 @@ CRect rect_eraser;
 
 void CMFCOpenGL01View::OnMouseMove(UINT nFlags, CPoint point)
 {
-    
+    CClientDC dc(this);
+    dc.SetROP2(R2_NOT);
+
+
     if (nFlags == MK_LBUTTON) {
         /*CPen cpen;
         cpen.CreatePen(PS_SOLID, 10, RGB(255,0,0));
@@ -833,6 +749,14 @@ void CMFCOpenGL01View::OnMouseMove(UINT nFlags, CPoint point)
 
         pDC->SelectObject(pOldPen);
         cpen.DeleteObject();*/
+
+        dc.MoveTo(oldPoint);
+        dc.LineTo(newPoint);
+
+        newPoint.x = point.x;
+        newPoint.y = point.y;
+        dc.MoveTo(oldPoint);
+        dc.LineTo(newPoint);
     }
 
     if (nFlags == MK_LBUTTON && view_flag_global == 30) {
