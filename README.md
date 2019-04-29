@@ -49,5 +49,5 @@
 
 ![橡皮擦和清空](./show/08_erase_and_clear.gif)
 
-![持久化存储](./show/10_bmp_storage.png)
+![持久化存储](./show/10_storage.png)
 

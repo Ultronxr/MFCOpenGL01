@@ -237,6 +237,9 @@
     <Image Include="..\show\CMFCColorButton_pixel_lost_bug_02.png">
       <Filter>show</Filter>
     </Image>
+    <Image Include="..\show\10_storage.gif">
+      <Filter>show</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\MFCOpenGL01.rc2">

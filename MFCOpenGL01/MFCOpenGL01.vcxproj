@@ -228,6 +228,7 @@
     <Image Include="..\show\06_fill.gif" />
     <Image Include="..\show\07_cut.gif" />
     <Image Include="..\show\08_erase_and_clear.gif" />
+    <Image Include="..\show\10_storage.gif" />
     <Image Include="..\show\CMFCColorButton_pixel_lost_bug_01.png" />
     <Image Include="..\show\CMFCColorButton_pixel_lost_bug_02.png" />
     <Image Include="res\bmp00001.bmp" />
