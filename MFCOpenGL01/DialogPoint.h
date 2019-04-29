@@ -1,6 +1,8 @@
 #pragma once
 #include "afxcolorbutton.h"
-
+#include "MainFrm.h"
+#include "MFCOpenGL01Doc.h"
+#include "MFCOpenGL01View.h"
 
 // DialogPoint 对话框
 
@@ -21,6 +23,11 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+
+protected:
+    CMFCOpenGL01Doc* m_pDoc = NULL;
+    
+
 public:
     afx_msg void OnBnClickedOk();
     CMFCColorButton point_color;

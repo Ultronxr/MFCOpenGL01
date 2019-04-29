@@ -6,12 +6,6 @@
 #include "DialogPolygon.h"
 #include "afxdialogex.h"
 
-#include "MFCOpenGL01View.h"
-
-extern int view_flag_global;
-extern int polygon_size_global;
-extern COLORREF polygon_color_global;
-
 // DialogPolygon ¶Ô»°¿ò
 
 IMPLEMENT_DYNAMIC(DialogPolygon, CDialogEx)
@@ -19,11 +13,12 @@ IMPLEMENT_DYNAMIC(DialogPolygon, CDialogEx)
 DialogPolygon::DialogPolygon(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DIALOG_POLYGON, pParent)
 {
-
+    m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)((CMainFrame*)AfxGetApp()->GetMainWnd())->GetActiveView())->GetDocument();
 }
 
 DialogPolygon::~DialogPolygon()
 {
+    m_pDoc = NULL;
 }
 
 void DialogPolygon::DoDataExchange(CDataExchange* pDX)
@@ -44,14 +39,14 @@ END_MESSAGE_MAP()
 
 void DialogPolygon::OnBnClickedOk()
 {
-    polygon_size_global = GetDlgItemInt(IDC_EDIT1);
-    view_flag_global = 5;
-
+    m_pDoc->m_operation = 5;
+    m_pDoc->m_size = GetDlgItemInt(IDC_EDIT1);
+    
     EndDialog(0);
 }
 
 
 void DialogPolygon::OnBnClickedMfccolorbutton1()
 {
-    polygon_color_global = polygon_color.GetColor();
+    m_pDoc->m_color = polygon_color.GetColor();
 }

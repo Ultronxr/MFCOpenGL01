@@ -6,13 +6,6 @@
 #include "DialogPoint.h"
 #include "afxdialogex.h"
 
-#include "MainFrm.h"
-#include "MFCOpenGL01View.h"
-
-extern int view_flag_global;
-extern int point_size_global, point_type_global;
-extern COLORREF point_color_global;
-
 // DialogPoint ¶Ô»°¿ò
 
 IMPLEMENT_DYNAMIC(DialogPoint, CDialogEx)
@@ -21,11 +14,12 @@ DialogPoint::DialogPoint(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DIALOG_POINT, pParent)
     , point_radio_group(0)
 {
-
+    m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)((CMainFrame*)AfxGetApp()->GetMainWnd())->GetActiveView())->GetDocument();
 }
 
 DialogPoint::~DialogPoint()
 {
+    m_pDoc = NULL;
 }
 
 void DialogPoint::DoDataExchange(CDataExchange* pDX)
@@ -50,9 +44,9 @@ END_MESSAGE_MAP()
 
 void DialogPoint::OnBnClickedOk()
 {
-    view_flag_global = 1;
-    point_size_global = GetDlgItemInt(IDC_EDIT3);
-    point_type_global = point_radio_group;
+    m_pDoc->m_operation = 1;
+    m_pDoc->m_size = GetDlgItemInt(IDC_EDIT3);
+    m_pDoc->point_type = point_radio_group;
 
     EndDialog(0);
 }
@@ -60,7 +54,7 @@ void DialogPoint::OnBnClickedOk()
 
 void DialogPoint::OnBnClickedMfccolorbutton1()
 {
-    point_color_global = point_color.GetColor();
+    m_pDoc->m_color = point_color.GetColor();
 }
 
 

@@ -96,6 +96,7 @@
 #define IDR_TOOLBAR_TOOLS               346
 #define IDR_TOOLBAR_COLORREF            348
 #define IDR_TOOLBAR_LINESIZE            352
+#define IDR_MENU_LINESIZE               354
 #define IDC_RICHEDIT21                  1004
 #define IDC_RICHEDIT22                  1005
 #define IDC_RICHEDIT23                  1006
@@ -172,13 +173,23 @@
 #define TOOLBAR_DRAW_POLYGON            32831
 #define ID_BUTTON32833                  32833
 #define TOOLBAR_TOOLS_MOUSE             32833
+#define ID_32834                        32834
+#define ID_32835                        32835
+#define ID_32836                        32836
+#define ID_32837                        32837
+#define ID_32838                        32838
+#define ID_32839                        32839
+#define ID_32840                        32840
+#define TOOLBAR_DRAW_POINT              32842
+#define ID_BUTTON32843                  32843
+#define TOOLBAR_TOOLS_CLEAR             32843
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        354
-#define _APS_NEXT_COMMAND_VALUE         32834
+#define _APS_NEXT_RESOURCE_VALUE        355
+#define _APS_NEXT_COMMAND_VALUE         32844
 #define _APS_NEXT_CONTROL_VALUE         1040
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

@@ -197,6 +197,7 @@ END
 
 IDR_TOOLBAR_DRAW TOOLBAR 16, 15
 BEGIN
+    BUTTON      TOOLBAR_DRAW_POINT
     BUTTON      TOOLBAR_DRAW_LINE
     BUTTON      TOOLBAR_DRAW_CIRCLE_PERFECT
     BUTTON      TOOLBAR_DRAW_CIRCLE_OVAL
@@ -209,6 +210,7 @@ BEGIN
     BUTTON      TOOLBAR_TOOLS_SELECT
     BUTTON      TOOLBAR_TOOLS_FILL
     BUTTON      TOOLBAR_TOOLS_ERASE
+    BUTTON      TOOLBAR_TOOLS_CLEAR
 END
 
 IDR_TOOLBAR_COLORREF TOOLBAR 16, 15
@@ -268,21 +270,6 @@ BEGIN
         MENUITEM "添加简单标尺",                      ID_DRAW_RULER
         MENUITEM "添加笛卡尔坐标系",                    ID_DRAW_ORTHO
     END
-    POPUP "绘制"
-    BEGIN
-        MENUITEM "点",                           ID_32783
-        MENUITEM "直线",                          ID_32784
-        MENUITEM "正圆",                          ID_32785
-        MENUITEM "椭圆",                          ID_32786
-        MENUITEM "多边形",                         ID_32788
-    END
-    MENUITEM "填充",                          ID_32789
-    POPUP "擦除"
-    BEGIN
-        MENUITEM "橡皮擦",                         ID_32793
-        MENUITEM "清屏",                          ID_32794
-    END
-    MENUITEM "裁剪",                          ID_32792
 END
 
 IDR_POPUP_EDIT MENU
@@ -346,6 +333,20 @@ BEGIN
     MENUITEM "Office 2007 (银色样式)(&S)",      ID_VIEW_APPLOOK_OFF_2007_SILVER
     MENUITEM "Office 2007 (水绿色样式)(&A)",     ID_VIEW_APPLOOK_OFF_2007_AQUA
     MENUITEM "Windows 7(&D)",               ID_VIEW_APPLOOK_WINDOWS_7
+END
+
+IDR_MENU_LINESIZE MENU
+BEGIN
+    POPUP "线宽"
+    BEGIN
+        MENUITEM "1px",                         ID_32834
+        MENUITEM "3px",                         ID_32835
+        MENUITEM "5px",                         ID_32836
+        MENUITEM "10px",                        ID_32837
+        MENUITEM "20px",                        ID_32838
+        MENUITEM "50px",                        ID_32839
+        MENUITEM "输入线宽",                        ID_32840
+    END
 END
 
 
@@ -911,6 +912,8 @@ END
 STRINGTABLE
 BEGIN
     TOOLBAR_TOOLS_MOUSE     "恢复成普通光标模式\n鼠标"
+    TOOLBAR_DRAW_POINT      "点绘制工具\n点"
+    TOOLBAR_TOOLS_CLEAR     "清空画布\n清空"
 END
 
 #endif    // 中文(简体，中国) resources

@@ -5,11 +5,6 @@
 #include "MFCOpenGL01.h"
 #include "DialogLine.h"
 #include "afxdialogex.h"
-#include "MFCOpenGL01View.h"
-
-extern int view_flag_global;
-extern int line_size_global, line_type_global;
-extern COLORREF line_color_global;
 
 // DialogLine ¶Ô»°¿ò
 
@@ -18,11 +13,12 @@ IMPLEMENT_DYNAMIC(DialogLine, CDialogEx)
 DialogLine::DialogLine(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DIALOG_LINE, pParent)
 {
-
+    m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)((CMainFrame*)AfxGetApp()->GetMainWnd())->GetActiveView())->GetDocument();
 }
 
 DialogLine::~DialogLine()
 {
+    m_pDoc = NULL;
 }
 
 void DialogLine::DoDataExchange(CDataExchange* pDX)
@@ -45,14 +41,14 @@ END_MESSAGE_MAP()
 
 void DialogLine::OnBnClickedMfccolorbutton1()
 {
-    line_color_global = line_color.GetColor();
+    m_pDoc->m_color = line_color.GetColor();
 }
 
 void DialogLine::OnBnClickedLineDda()
 {
-    view_flag_global = 2;
-    line_size_global = GetDlgItemInt(IDC_EDIT5);
-    line_type_global = 0;
+    m_pDoc->m_operation = 2;
+    m_pDoc->m_size = GetDlgItemInt(IDC_EDIT5);
+    m_pDoc->line_type = 0;
 
     EndDialog(0);
 }
@@ -60,9 +56,9 @@ void DialogLine::OnBnClickedLineDda()
 
 void DialogLine::OnBnClickedLineMidpoint()
 {
-    view_flag_global = 2;
-    line_size_global = GetDlgItemInt(IDC_EDIT5);
-    line_type_global = 1;
+    m_pDoc->m_operation = 2;
+    m_pDoc->m_size = GetDlgItemInt(IDC_EDIT5);
+    m_pDoc->line_type = 1;
 
     EndDialog(0);
 }
@@ -70,9 +66,9 @@ void DialogLine::OnBnClickedLineMidpoint()
 
 void DialogLine::OnBnClickedLineBresenham()
 {
-    view_flag_global = 2;
-    line_size_global = GetDlgItemInt(IDC_EDIT5);
-    line_type_global = 2;
+    m_pDoc->m_operation = 2;
+    m_pDoc->m_size = GetDlgItemInt(IDC_EDIT5);
+    m_pDoc->line_type = 2;
 
     EndDialog(0);
 }

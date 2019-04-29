@@ -6,24 +6,19 @@
 #include "DialogCircleOval.h"
 #include "afxdialogex.h"
 
-#include "MFCOpenGL01View.h"
-
-extern int view_flag_global;
-extern int circle_oval_size_global, circle_oval_type_global;
-extern COLORREF circle_oval_color_global;
-
 // DialogCircleOval ¶Ô»°¿ò
 
 IMPLEMENT_DYNAMIC(DialogCircleOval, CDialogEx)
 
 DialogCircleOval::DialogCircleOval(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_DIALOG_CIRCLE_OVAL, pParent)
+    : CDialogEx(IDD_DIALOG_CIRCLE_OVAL, pParent)
 {
-
+    m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)((CMainFrame*)AfxGetApp()->GetMainWnd())->GetActiveView())->GetDocument();
 }
 
 DialogCircleOval::~DialogCircleOval()
 {
+    m_pDoc = NULL;
 }
 
 void DialogCircleOval::DoDataExchange(CDataExchange* pDX)
@@ -46,23 +41,23 @@ END_MESSAGE_MAP()
 
 void DialogCircleOval::OnBnClickedMfccolorbutton1()
 {
-    circle_oval_color_global = circle_oval_color.GetColor();
+    m_pDoc->m_color = circle_oval_color.GetColor();
 }
 
 void DialogCircleOval::OnBnClickedButtonCircleOvalBresenham()
 {
-    view_flag_global = 4;
-    circle_oval_type_global = 0;
-    circle_oval_size_global = GetDlgItemInt(IDC_EDIT5);
+    m_pDoc->m_operation = 4;
+    m_pDoc->m_size = GetDlgItemInt(IDC_EDIT5);
+    m_pDoc->circle_oval_type = 0;
 
     EndDialog(0);
 }
 
 void DialogCircleOval::OnBnClickedButtonCircleOvalMidpoint()
 {
-    view_flag_global = 4;
-    circle_oval_type_global = 1;
-    circle_oval_size_global = GetDlgItemInt(IDC_EDIT5);
+    m_pDoc->m_operation = 4;
+    m_pDoc->m_size = GetDlgItemInt(IDC_EDIT5);
+    m_pDoc->circle_oval_type = 1;
 
     EndDialog(0);
 }
@@ -70,9 +65,9 @@ void DialogCircleOval::OnBnClickedButtonCircleOvalMidpoint()
 
 void DialogCircleOval::OnBnClickedButtonCircleOvalXxx()
 {
-    view_flag_global = 4;
-    circle_oval_type_global = 2;
-    circle_oval_size_global = GetDlgItemInt(IDC_EDIT5);
+    m_pDoc->m_operation = 4;
+    m_pDoc->m_size = GetDlgItemInt(IDC_EDIT5);
+    m_pDoc->circle_oval_type = 2;
 
     EndDialog(0);
 }

@@ -6,11 +6,6 @@
 #include "DialogFill.h"
 #include "afxdialogex.h"
 
-#include "MFCOpenGL01View.h"
-
-extern int view_flag_global;
-extern COLORREF fill_color_global;
-
 // DialogFill ¶Ô»°¿ò
 
 IMPLEMENT_DYNAMIC(DialogFill, CDialogEx)
@@ -18,11 +13,12 @@ IMPLEMENT_DYNAMIC(DialogFill, CDialogEx)
 DialogFill::DialogFill(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DIALOG_FILL, pParent)
 {
-
+    m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)((CMainFrame*)AfxGetApp()->GetMainWnd())->GetActiveView())->GetDocument();
 }
 
 DialogFill::~DialogFill()
 {
+    m_pDoc = NULL;
 }
 
 void DialogFill::DoDataExchange(CDataExchange* pDX)
@@ -43,13 +39,13 @@ END_MESSAGE_MAP()
 
 void DialogFill::OnBnClickedMfccolorbutton1()
 {
-    fill_color_global = fill_color.GetColor();
+    m_pDoc->m_color = fill_color.GetColor();
 }
 
 
 void DialogFill::OnBnClickedOk()
 {
-    view_flag_global = 10;
+    m_pDoc->m_operation = 10;
 
     EndDialog(0);
 }

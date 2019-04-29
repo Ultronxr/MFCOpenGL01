@@ -5,6 +5,15 @@
 #pragma once
 #include "FileView.h"
 #include "ClassView.h"
+#include "MFCOpenGL01Doc.h"
+#include "MFCOpenGL01View.h"
+#include "DialogPoint.h"
+#include "DialogLine.h"
+#include "DialogCirclePerfect.h"
+#include "DialogCircleOval.h"
+#include "DialogPolygon.h"
+#include "DialogFill.h"
+
 
 class CMainFrame : public CFrameWndEx
 {
@@ -32,10 +41,11 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-protected:  // 控件条嵌入成员
+protected:
+    CMFCOpenGL01Doc* m_pDoc = NULL;
+
 	CMFCMenuBar       m_wndMenuBar;
 	CMFCToolBar       m_wndToolBar;
-    
     CMFCToolBar       m_drawToolBar;
     CMFCToolBar       m_toolsToolBar;
     CMFCToolBar       m_linesizeToolBar;
@@ -52,15 +62,20 @@ protected:
 	afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
 	DECLARE_MESSAGE_MAP()
 
+    afx_msg void OnToolbarDropDown();
 
-    afx_msg void OnToolBarToolsMouse();
-    afx_msg void OnToolBarToolsSelect();
-    afx_msg void OnToolBarToolsFill();
-    afx_msg void OnToolBarToolsErase();
+    afx_msg void OnToolBarDrawPoint();
     afx_msg void OnToolBarDrawLine();
     afx_msg void OnToolBarDrawCirclePerfect();
     afx_msg void OnToolBarDrawCircleOval();
     afx_msg void OnToolBarDrawPolygon();
+    afx_msg void OnToolBarToolsMouse();
+    afx_msg void OnToolBarToolsSelect();
+    afx_msg void OnToolBarToolsFill();
+    afx_msg void OnToolBarToolsErase();
+    afx_msg void OnToolBarToolsClear();
+    
+
 };
 
 

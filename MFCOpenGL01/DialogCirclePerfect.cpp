@@ -6,12 +6,6 @@
 #include "DialogCirclePerfect.h"
 #include "afxdialogex.h"
 
-#include "MFCOpenGL01View.h"
-
-extern int view_flag_global;
-extern int circle_perfect_size_global, circle_perfect_type_global;
-extern COLORREF circle_perfect_color_global;
-
 // DialogCirclePerfect ¶Ô»°¿ò
 
 IMPLEMENT_DYNAMIC(DialogCirclePerfect, CDialogEx)
@@ -19,11 +13,12 @@ IMPLEMENT_DYNAMIC(DialogCirclePerfect, CDialogEx)
 DialogCirclePerfect::DialogCirclePerfect(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DIALOG_CIRCLE_PERFECT, pParent)
 {
-
+    m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)((CMainFrame*)AfxGetApp()->GetMainWnd())->GetActiveView())->GetDocument();
 }
 
 DialogCirclePerfect::~DialogCirclePerfect()
 {
+    m_pDoc = NULL;
 }
 
 void DialogCirclePerfect::DoDataExchange(CDataExchange* pDX)
@@ -45,15 +40,15 @@ END_MESSAGE_MAP()
 
 void DialogCirclePerfect::OnBnClickedMfccolorbutton1()
 {
-    circle_perfect_color_global = circle_perfect_color.GetColor();
+    m_pDoc->m_color = circle_perfect_color.GetColor();
 }
 
 
 void DialogCirclePerfect::OnBnClickedCirclePerfectBresenham()
 {
-    view_flag_global = 3;
-    circle_perfect_size_global = GetDlgItemInt(IDC_EDIT4);
-    circle_perfect_type_global = 0;
+    m_pDoc->m_operation = 3;
+    m_pDoc->m_size = GetDlgItemInt(IDC_EDIT4);
+    m_pDoc->circle_perfect_type = 0;
 
     EndDialog(0);
 }
@@ -61,9 +56,9 @@ void DialogCirclePerfect::OnBnClickedCirclePerfectBresenham()
 
 void DialogCirclePerfect::OnBnClickedCirclePerfectMidpoint()
 {
-    view_flag_global = 3;
-    circle_perfect_size_global = GetDlgItemInt(IDC_EDIT4);
-    circle_perfect_type_global = 1;
+    m_pDoc->m_operation = 3;
+    m_pDoc->m_size = GetDlgItemInt(IDC_EDIT4);
+    m_pDoc->circle_perfect_type = 1;
 
     EndDialog(0);
 }
@@ -71,9 +66,9 @@ void DialogCirclePerfect::OnBnClickedCirclePerfectMidpoint()
 
 void DialogCirclePerfect::OnBnClickedButtonCirclePerfectXxx()
 {
-    view_flag_global = 3;
-    circle_perfect_size_global = GetDlgItemInt(IDC_EDIT4);
-    circle_perfect_type_global = 2;
+    m_pDoc->m_operation = 3;
+    m_pDoc->m_size = GetDlgItemInt(IDC_EDIT4);
+    m_pDoc->circle_perfect_type = 2;
 
     EndDialog(0);
 }
