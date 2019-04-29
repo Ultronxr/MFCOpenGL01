@@ -220,22 +220,16 @@
     <ResourceCompile Include="MFCOpenGL01.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\show\01.png" />
-    <Image Include="..\show\02.png" />
-    <Image Include="..\show\03.png" />
-    <Image Include="..\show\04.png" />
-    <Image Include="..\show\05.png" />
-    <Image Include="..\show\06.png" />
-    <Image Include="..\show\07.png" />
-    <Image Include="..\show\08.png" />
-    <Image Include="..\show\09.png" />
-    <Image Include="..\show\10.png" />
-    <Image Include="..\show\11.png" />
-    <Image Include="..\show\12.png" />
-    <Image Include="..\show\13.png" />
-    <Image Include="..\show\14.png" />
-    <Image Include="..\show\15.png" />
-    <Image Include="..\show\16.png" />
+    <Image Include="..\show\01_draw_point.gif" />
+    <Image Include="..\show\02_draw_line.gif" />
+    <Image Include="..\show\03_draw_circle_perfect.gif" />
+    <Image Include="..\show\04_draw_circle_oval.gif" />
+    <Image Include="..\show\05_draw_polygon.gif" />
+    <Image Include="..\show\06_fill.gif" />
+    <Image Include="..\show\07_cut.gif" />
+    <Image Include="..\show\08_erase_and_clear.gif" />
+    <Image Include="..\show\CMFCColorButton_pixel_lost_bug_01.png" />
+    <Image Include="..\show\CMFCColorButton_pixel_lost_bug_02.png" />
     <Image Include="res\bmp00001.bmp" />
     <Image Include="res\bmp00002.bmp" />
     <Image Include="res\bmp00003.bmp" />

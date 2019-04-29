@@ -192,54 +192,6 @@
     <Image Include="res\Toolbar256.bmp">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="..\show\01.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\02.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\03.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\04.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\05.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\06.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\07.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\08.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\09.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\10.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\11.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\12.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\13.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\14.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\15.png">
-      <Filter>show</Filter>
-    </Image>
-    <Image Include="..\show\16.png">
-      <Filter>show</Filter>
-    </Image>
     <Image Include="res\toolbar1.bmp">
       <Filter>资源文件</Filter>
     </Image>
@@ -254,6 +206,36 @@
     </Image>
     <Image Include="res\bmp00003.bmp">
       <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="..\show\01_draw_point.gif">
+      <Filter>show</Filter>
+    </Image>
+    <Image Include="..\show\02_draw_line.gif">
+      <Filter>show</Filter>
+    </Image>
+    <Image Include="..\show\03_draw_circle_perfect.gif">
+      <Filter>show</Filter>
+    </Image>
+    <Image Include="..\show\04_draw_circle_oval.gif">
+      <Filter>show</Filter>
+    </Image>
+    <Image Include="..\show\05_draw_polygon.gif">
+      <Filter>show</Filter>
+    </Image>
+    <Image Include="..\show\06_fill.gif">
+      <Filter>show</Filter>
+    </Image>
+    <Image Include="..\show\07_cut.gif">
+      <Filter>show</Filter>
+    </Image>
+    <Image Include="..\show\08_erase_and_clear.gif">
+      <Filter>show</Filter>
+    </Image>
+    <Image Include="..\show\CMFCColorButton_pixel_lost_bug_01.png">
+      <Filter>show</Filter>
+    </Image>
+    <Image Include="..\show\CMFCColorButton_pixel_lost_bug_02.png">
+      <Filter>show</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
