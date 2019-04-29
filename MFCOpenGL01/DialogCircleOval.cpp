@@ -48,6 +48,7 @@ void DialogCircleOval::OnBnClickedButtonCircleOvalBresenham()
 {
     m_pDoc->m_operation = 4;
     m_pDoc->m_size = GetDlgItemInt(IDC_EDIT5);
+    if (m_pDoc->m_size <= 0) m_pDoc->m_size = 1;
     m_pDoc->circle_oval_type = 0;
 
     EndDialog(0);
@@ -57,6 +58,7 @@ void DialogCircleOval::OnBnClickedButtonCircleOvalMidpoint()
 {
     m_pDoc->m_operation = 4;
     m_pDoc->m_size = GetDlgItemInt(IDC_EDIT5);
+    if (m_pDoc->m_size <= 0) m_pDoc->m_size = 1;
     m_pDoc->circle_oval_type = 1;
 
     EndDialog(0);
@@ -67,6 +69,7 @@ void DialogCircleOval::OnBnClickedButtonCircleOvalXxx()
 {
     m_pDoc->m_operation = 4;
     m_pDoc->m_size = GetDlgItemInt(IDC_EDIT5);
+    if (m_pDoc->m_size <= 0) m_pDoc->m_size = 1;
     m_pDoc->circle_oval_type = 2;
 
     EndDialog(0);

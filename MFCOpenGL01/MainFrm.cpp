@@ -131,7 +131,6 @@ void CMainFrame::OnToolBarDrawPoint() {
     //if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)((CMainFrame*)AfxGetApp()->GetMainWnd())->GetActiveView())->GetDocument();
     if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
     
-    //m_pDoc->m_operation = 1;
     m_pDoc->m_color = RGB(0, 0, 0);
     DialogPoint dlg;
     dlg.DoModal();
@@ -140,7 +139,6 @@ void CMainFrame::OnToolBarDrawPoint() {
 void CMainFrame::OnToolBarDrawLine() {
     if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
 
-    //m_pDoc->m_operation = 2;
     m_pDoc->m_color = RGB(0, 0, 0);
     DialogLine dlg;
     dlg.DoModal();
@@ -149,7 +147,6 @@ void CMainFrame::OnToolBarDrawLine() {
 void CMainFrame::OnToolBarDrawCirclePerfect() {
     if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
 
-    //m_pDoc->m_operation = 3;
     m_pDoc->m_color = RGB(0, 0, 0);
     DialogCirclePerfect dlg;
     dlg.DoModal();
@@ -158,7 +155,6 @@ void CMainFrame::OnToolBarDrawCirclePerfect() {
 void CMainFrame::OnToolBarDrawCircleOval() {
     if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
 
-    //m_pDoc->m_operation = 4;
     m_pDoc->m_color = RGB(0, 0, 0);
     DialogCircleOval dlg;
     dlg.DoModal();
@@ -167,7 +163,6 @@ void CMainFrame::OnToolBarDrawCircleOval() {
 void CMainFrame::OnToolBarDrawPolygon() {
     if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
 
-    //m_pDoc->m_operation = 5;
     m_pDoc->m_color = RGB(0, 0, 0);
     DialogPolygon dlg;
     dlg.DoModal();
@@ -190,7 +185,6 @@ void CMainFrame::OnToolBarToolsSelect() {
 void CMainFrame::OnToolBarToolsFill() {
     if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
 
-    //m_pDoc->m_operation = 10;
     m_pDoc->m_color = RGB(0, 0, 0);
     DialogFill dlg;
     dlg.DoModal();

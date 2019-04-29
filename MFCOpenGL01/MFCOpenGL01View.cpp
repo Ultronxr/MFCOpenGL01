@@ -324,7 +324,7 @@ BOOL CMFCOpenGL01View::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
     return CView::OnSetCursor(pWnd, nHitTest, message);
 }
 
-CPoint oldPoint, newPoint;
+CPoint parentPoint, oldPoint, newPoint;
 //备份目标区域的内容，选择框再次移到别的地方去需要填回去
 CRect rect_parent, rect_old, rect_new;
 CDC dc_backup;
@@ -350,6 +350,7 @@ void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
     }
     else if (m_pDoc->m_operation == 5) {
         if (!m_pDoc->is_drawing_polygon) {
+            parentPoint = point;
             oldPoint = point;
             newPoint = point;
             m_pDoc->is_drawing_polygon = TRUE;
@@ -382,7 +383,7 @@ void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
             }
             
             clk_inside = 0;
-            //m_pDoc->m_operation = 0;
+            m_pDoc->m_operation = 0;
         }
         else { //把选择框内的像素全部复制到目标区域
             clk_inside++;
@@ -431,8 +432,6 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
 
         if (m_pDoc->point_type == 2)
             m_pDoc->point_rhombus(GetDC(), m_pDoc->m_color, point.x, point.y, m_pDoc->m_size);
-
-        ////m_pDoc->m_operation = 0;
     }
     else if (m_pDoc->m_operation == 2) {
         //抹去最后一次的作图提示线
@@ -442,8 +441,6 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
         if (m_pDoc->line_type == 0) m_pDoc->line_dda_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, point.x, point.y, m_pDoc->m_size);
         else if (m_pDoc->line_type == 1) m_pDoc->line_midpoint_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, point.x, point.y, m_pDoc->m_size);
         else if (m_pDoc->line_type == 2) m_pDoc->line_bresenham_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, point.x, point.y, m_pDoc->m_size);
-
-        ////m_pDoc->m_operation = 0;
     }
     else if (m_pDoc->m_operation == 3) {
         int radius = std::sqrt((newPoint.x - oldPoint.x)*(newPoint.x - oldPoint.x) + ((newPoint.y - oldPoint.y)*(newPoint.y - oldPoint.y)));
@@ -454,8 +451,6 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
         if (m_pDoc->circle_perfect_type == 0) m_pDoc->circle_perfect_bresenham_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, radius, m_pDoc->m_size);
         else if (m_pDoc->circle_perfect_type == 1) m_pDoc->circle_perfect_midpoint_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, radius, m_pDoc->m_size);
         else if (m_pDoc->circle_perfect_type == 2) m_pDoc->circle_perfect_midpoint_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, radius, m_pDoc->m_size);
-
-        //m_pDoc->m_operation = 0;
     }
     else if (m_pDoc->m_operation == 4) {
         //抹去最后一次的作图提示线
@@ -466,32 +461,19 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
         if (m_pDoc->circle_oval_type == 0) m_pDoc->circle_oval_bresenham_cpen(GetDC(), m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);
         else if (m_pDoc->circle_oval_type == 1) m_pDoc->circle_oval_midpoint_cpen(GetDC(), m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);
         else if (m_pDoc->circle_oval_type == 2) m_pDoc->circle_oval_midpoint_cpen(GetDC(), m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);
-
-        //m_pDoc->m_operation = 0;
     }
     else if (m_pDoc->m_operation == 5) {
         //抹去最后一次的作图提示线
         dc2->MoveTo(oldPoint);
         dc2->LineTo(newPoint);
 
-        m_pDoc->m_polygon.vertexes.push_back(CMFCOpenGL01Doc::vertex(point.x, point.y));
-        m_pDoc->m_polygon.vertex_num++;
+        m_pDoc->point_circle(GetDC(), m_pDoc->m_color, newPoint.x, newPoint.y, m_pDoc->m_size);
+        m_pDoc->line_midpoint_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, newPoint.x, newPoint.y, m_pDoc->m_size);
 
-        oldPoint.x = m_pDoc->m_polygon.vertexes[(m_pDoc->m_polygon.vertex_num) - 1].x;
-        oldPoint.y = m_pDoc->m_polygon.vertexes[(m_pDoc->m_polygon.vertex_num) - 1].y;
-
-        if (m_pDoc->m_polygon.vertex_num == 1) {
-            m_pDoc->point_circle(GetDC(), m_pDoc->m_color, point.x, point.y, m_pDoc->m_size);
-        }
-        else {
-            m_pDoc->line_midpoint_cpen(GetDC(), m_pDoc->m_color, m_pDoc->m_polygon.vertexes[(m_pDoc->m_polygon.vertex_num) - 1].x, m_pDoc->m_polygon.vertexes[(m_pDoc->m_polygon.vertex_num) - 1].y, m_pDoc->m_polygon.vertexes[(m_pDoc->m_polygon.vertex_num) - 2].x, m_pDoc->m_polygon.vertexes[(m_pDoc->m_polygon.vertex_num) - 2].y, m_pDoc->m_size);
-        }
+        oldPoint = newPoint;
     }
     else if (m_pDoc->m_operation == 10) {
-        CDC* dc = GetDC();
-        m_pDoc->flood_fill_cbrush(dc, m_pDoc->m_color, GetDC()->GetPixel(point.x, point.y), point);
-
-        //m_pDoc->m_operation = 0;
+        m_pDoc->flood_fill_cbrush(GetDC(), m_pDoc->m_color, GetDC()->GetPixel(point.x, point.y), point);
     }
     
     CView::OnLButtonUp(nFlags, point);
@@ -501,23 +483,10 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
 void CMFCOpenGL01View::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
     if (m_pDoc->m_operation == 5) {
-        m_pDoc->m_polygon.vertexes.push_back(CMFCOpenGL01Doc::vertex(point.x, point.y));
-        m_pDoc->m_polygon.vertex_num++;
-        if (m_pDoc->m_polygon.vertex_num == 1) {
-            m_pDoc->point_circle(GetDC(), m_pDoc->m_color, point.x, point.y, m_pDoc->m_size);
-        }
-        else {
-            m_pDoc->line_midpoint_cpen(GetDC(), m_pDoc->m_color, m_pDoc->m_polygon.vertexes[(m_pDoc->m_polygon.vertex_num) - 1].x, m_pDoc->m_polygon.vertexes[(m_pDoc->m_polygon.vertex_num) - 1].y, m_pDoc->m_polygon.vertexes[(m_pDoc->m_polygon.vertex_num) - 2].x, m_pDoc->m_polygon.vertexes[(m_pDoc->m_polygon.vertex_num) - 2].y, m_pDoc->m_size);
-            m_pDoc->line_midpoint_cpen(GetDC(), m_pDoc->m_color, m_pDoc->m_polygon.vertexes[(m_pDoc->m_polygon.vertex_num) - 1].x, m_pDoc->m_polygon.vertexes[(m_pDoc->m_polygon.vertex_num) - 1].y, m_pDoc->m_polygon.vertexes[0].x, m_pDoc->m_polygon.vertexes[0].y, m_pDoc->m_size);
-        }
-        m_pDoc->m_polygon.vertexes.clear();
-        m_pDoc->m_polygon.vertex_num = 0;
-        //m_pDoc->m_operation = 0;
+        m_pDoc->line_midpoint_cpen(GetDC(), m_pDoc->m_color, newPoint.x, newPoint.y, parentPoint.x, parentPoint.y, m_pDoc->m_size);
         m_pDoc->is_drawing_polygon = FALSE;
     }
-    else if (m_pDoc->m_operation == 20) {
-        //m_pDoc->m_operation = 0;
-    }
+    
     CView::OnLButtonDblClk(nFlags, point);
 }
 

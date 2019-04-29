@@ -48,6 +48,7 @@ void DialogCirclePerfect::OnBnClickedCirclePerfectBresenham()
 {
     m_pDoc->m_operation = 3;
     m_pDoc->m_size = GetDlgItemInt(IDC_EDIT4);
+    if (m_pDoc->m_size <= 0) m_pDoc->m_size = 1;
     m_pDoc->circle_perfect_type = 0;
 
     EndDialog(0);
@@ -58,6 +59,7 @@ void DialogCirclePerfect::OnBnClickedCirclePerfectMidpoint()
 {
     m_pDoc->m_operation = 3;
     m_pDoc->m_size = GetDlgItemInt(IDC_EDIT4);
+    if (m_pDoc->m_size <= 0) m_pDoc->m_size = 1;
     m_pDoc->circle_perfect_type = 1;
 
     EndDialog(0);
@@ -68,6 +70,7 @@ void DialogCirclePerfect::OnBnClickedButtonCirclePerfectXxx()
 {
     m_pDoc->m_operation = 3;
     m_pDoc->m_size = GetDlgItemInt(IDC_EDIT4);
+    if (m_pDoc->m_size <= 0) m_pDoc->m_size = 1;
     m_pDoc->circle_perfect_type = 2;
 
     EndDialog(0);

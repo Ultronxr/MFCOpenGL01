@@ -41,7 +41,8 @@ void DialogPolygon::OnBnClickedOk()
 {
     m_pDoc->m_operation = 5;
     m_pDoc->m_size = GetDlgItemInt(IDC_EDIT1);
-    
+    if (m_pDoc->m_size <= 0) m_pDoc->m_size = 1;
+
     EndDialog(0);
 }
 

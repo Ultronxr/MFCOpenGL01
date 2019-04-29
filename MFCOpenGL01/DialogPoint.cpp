@@ -46,6 +46,7 @@ void DialogPoint::OnBnClickedOk()
 {
     m_pDoc->m_operation = 1;
     m_pDoc->m_size = GetDlgItemInt(IDC_EDIT3);
+    if (m_pDoc->m_size <= 0) m_pDoc->m_size = 1;
     m_pDoc->point_type = point_radio_group;
 
     EndDialog(0);

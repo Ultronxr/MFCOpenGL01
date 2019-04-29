@@ -48,6 +48,7 @@ void DialogLine::OnBnClickedLineDda()
 {
     m_pDoc->m_operation = 2;
     m_pDoc->m_size = GetDlgItemInt(IDC_EDIT5);
+    if (m_pDoc->m_size <= 0) m_pDoc->m_size = 1;
     m_pDoc->line_type = 0;
 
     EndDialog(0);
@@ -58,6 +59,7 @@ void DialogLine::OnBnClickedLineMidpoint()
 {
     m_pDoc->m_operation = 2;
     m_pDoc->m_size = GetDlgItemInt(IDC_EDIT5);
+    if (m_pDoc->m_size <= 0) m_pDoc->m_size = 1;
     m_pDoc->line_type = 1;
 
     EndDialog(0);
@@ -68,6 +70,7 @@ void DialogLine::OnBnClickedLineBresenham()
 {
     m_pDoc->m_operation = 2;
     m_pDoc->m_size = GetDlgItemInt(IDC_EDIT5);
+    if (m_pDoc->m_size <= 0) m_pDoc->m_size = 1;
     m_pDoc->line_type = 2;
 
     EndDialog(0);
