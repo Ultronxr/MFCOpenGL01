@@ -111,7 +111,7 @@ public:
 
     typedef struct draw_point {
         CPoint p;
-        int type; //指点的类型
+        int type; //指 点的类型
         int size;
         COLORREF color;
 
@@ -125,7 +125,7 @@ public:
 
     typedef struct draw_line {
         CPoint p1, p2;
-        int type; //指线的算法
+        int type; //指 线的算法
         int size;
         COLORREF color;
 
@@ -157,14 +157,16 @@ public:
     typedef struct draw_oval_circle {
         CPoint p0;
         int a, b;
+        int angle; //顺时针旋转角度
         int type;
         int size;
         COLORREF color;
 
-        draw_oval_circle(CPoint p0, int a, int b, int type, int size, COLORREF color) {
+        draw_oval_circle(CPoint p0, int a, int b, int angle, int type, int size, COLORREF color) {
             this->p0 = p0;
             this->a = a;
             this->b = b;
+            this->angle = angle;
             this->type = type;
             this->size = size;
             this->color = color;
@@ -208,7 +210,7 @@ public:
     std::vector<d_fill> v_fill;
 
 
-
+    double pi = acos(-1.0);
 
     //当前操作、当前颜色、当前线宽
     int m_operation; //0无，1点，2线，3正圆，4椭圆，5多边形，10填充，20/21裁剪，30橡皮擦
@@ -320,7 +322,8 @@ public:
     void circle_oval_midpoint_cpen(CDC *pDC, COLORREF color, int x0, int y0, int a, int b, int size);
     void set_points_on_oval_cpen(CDC *pDC, COLORREF color, int x0, int y0, int x, int y, int size);
 
-
+    //带有旋转角度的椭圆，顺时针旋转  参数：pDC，颜色，圆心x，圆心y，长轴a，短轴b，旋转角度（角度制），线宽
+    void circle_oval_angle_cpen(CDC *pDC, COLORREF color, float x0, float y0, float a, float b, double angle, int size);
 
 
 

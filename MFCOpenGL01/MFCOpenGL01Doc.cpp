@@ -1,10 +1,10 @@
-
-// MFCOpenGL01Doc.cpp : CMFCOpenGL01Doc ÀàµÄÊµÏÖ
+ï»¿
+// MFCOpenGL01Doc.cpp : CMFCOpenGL01Doc ç±»çš„å®ç°
 //
 
 #include "stdafx.h"
-// SHARED_HANDLERS ¿ÉÒÔÔÚÊµÏÖÔ¤ÀÀ¡¢ËõÂÔÍ¼ºÍËÑË÷É¸Ñ¡Æ÷¾ä±úµÄ
-// ATL ÏîÄ¿ÖĞ½øĞĞ¶¨Òå£¬²¢ÔÊĞíÓë¸ÃÏîÄ¿¹²ÏíÎÄµµ´úÂë¡£
+// SHARED_HANDLERS å¯ä»¥åœ¨å®ç°é¢„è§ˆã€ç¼©ç•¥å›¾å’Œæœç´¢ç­›é€‰å™¨å¥æŸ„çš„
+// ATL é¡¹ç›®ä¸­è¿›è¡Œå®šä¹‰ï¼Œå¹¶å…è®¸ä¸è¯¥é¡¹ç›®å…±äº«æ–‡æ¡£ä»£ç ã€‚
 #ifndef SHARED_HANDLERS
 #include "MFCOpenGL01.h"
 #endif
@@ -25,11 +25,11 @@ BEGIN_MESSAGE_MAP(CMFCOpenGL01Doc, CDocument)
 END_MESSAGE_MAP()
 
 
-// CMFCOpenGL01Doc ¹¹Ôì/Îö¹¹
+// CMFCOpenGL01Doc æ„é€ /ææ„
 
 CMFCOpenGL01Doc::CMFCOpenGL01Doc()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÒ»´ÎĞÔ¹¹Ôì´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸€æ¬¡æ€§æ„é€ ä»£ç 
     m_operation = 0;
     m_color = RGB(0, 0, 0);
     m_size = 1;
@@ -44,8 +44,8 @@ BOOL CMFCOpenGL01Doc::OnNewDocument()
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 
-	// TODO: ÔÚ´ËÌí¼ÓÖØĞÂ³õÊ¼»¯´úÂë
-	// (SDI ÎÄµµ½«ÖØÓÃ¸ÃÎÄµµ)
+	// TODO: åœ¨æ­¤æ·»åŠ é‡æ–°åˆå§‹åŒ–ä»£ç 
+	// (SDI æ–‡æ¡£å°†é‡ç”¨è¯¥æ–‡æ¡£)
 
 	return TRUE;
 }
@@ -53,26 +53,26 @@ BOOL CMFCOpenGL01Doc::OnNewDocument()
 
 
 
-// CMFCOpenGL01Doc ĞòÁĞ»¯
+// CMFCOpenGL01Doc åºåˆ—åŒ–
 
 void CMFCOpenGL01Doc::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
 	{
-		// TODO: ÔÚ´ËÌí¼Ó´æ´¢´úÂë
+		// TODO: åœ¨æ­¤æ·»åŠ å­˜å‚¨ä»£ç 
 	}
 	else
 	{
-		// TODO: ÔÚ´ËÌí¼Ó¼ÓÔØ´úÂë
+		// TODO: åœ¨æ­¤æ·»åŠ åŠ è½½ä»£ç 
 	}
 }
 
 #ifdef SHARED_HANDLERS
 
-// ËõÂÔÍ¼µÄÖ§³Ö
+// ç¼©ç•¥å›¾çš„æ”¯æŒ
 void CMFCOpenGL01Doc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 {
-	// ĞŞ¸Ä´Ë´úÂëÒÔ»æÖÆÎÄµµÊı¾İ
+	// ä¿®æ”¹æ­¤ä»£ç ä»¥ç»˜åˆ¶æ–‡æ¡£æ•°æ®
 	dc.FillSolidRect(lprcBounds, RGB(255, 255, 255));
 
 	CString strText = _T("TODO: implement thumbnail drawing here");
@@ -91,14 +91,14 @@ void CMFCOpenGL01Doc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 
 }
 
-// ËÑË÷´¦Àí³ÌĞòµÄÖ§³Ö
+// æœç´¢å¤„ç†ç¨‹åºçš„æ”¯æŒ
 void CMFCOpenGL01Doc::InitializeSearchContent()
 {
 	CString strSearchContent;
-	// ´ÓÎÄµµÊı¾İÉèÖÃËÑË÷ÄÚÈİ¡£
-	// ÄÚÈİ²¿·ÖÓ¦ÓÉ¡°;¡±·Ö¸ô
+	// ä»æ–‡æ¡£æ•°æ®è®¾ç½®æœç´¢å†…å®¹ã€‚
+	// å†…å®¹éƒ¨åˆ†åº”ç”±â€œ;â€åˆ†éš”
 
-	// ÀıÈç:     strSearchContent = _T("point;rectangle;circle;ole object;")£»
+	// ä¾‹å¦‚:     strSearchContent = _T("point;rectangle;circle;ole object;")ï¼›
 	SetSearchContent(strSearchContent);
 
     
@@ -124,7 +124,7 @@ void CMFCOpenGL01Doc::SetSearchContent(const CString& value)
 
 #endif // SHARED_HANDLERS
 
-// CMFCOpenGL01Doc Õï¶Ï
+// CMFCOpenGL01Doc è¯Šæ–­
 
 #ifdef _DEBUG
 void CMFCOpenGL01Doc::AssertValid() const
@@ -139,14 +139,14 @@ void CMFCOpenGL01Doc::Dump(CDumpContext& dc) const
 #endif //_DEBUG
 
 
-// CMFCOpenGL01Doc ÃüÁî
+// CMFCOpenGL01Doc å‘½ä»¤
 
 
 
 
 
 
-///Ë¢ĞÂËùÓĞ»æÖÆµÄÍ¼Ïñ
+///åˆ·æ–°æ‰€æœ‰ç»˜åˆ¶çš„å›¾åƒ
 void CMFCOpenGL01Doc::flush_all_drawing(CDC * pDC){
     
     for (int i = 0; i < v_point.size(); i++) {
@@ -168,9 +168,10 @@ void CMFCOpenGL01Doc::flush_all_drawing(CDC * pDC){
     }
 
     for (int i = 0; i < v_oval_circle.size(); i++) {
-        if (v_oval_circle[i].type == 0) circle_oval_bresenham_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].size);
-        else if (v_oval_circle[i].type == 1) circle_oval_midpoint_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].size);
-        else if (v_oval_circle[i].type == 2) circle_oval_midpoint_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].size);
+        circle_oval_angle_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].angle, v_oval_circle[i].size);
+        //if (v_oval_circle[i].type == 0) circle_oval_bresenham_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].size);
+        //else if (v_oval_circle[i].type == 1) circle_oval_midpoint_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].size);
+        //else if (v_oval_circle[i].type == 2) circle_oval_midpoint_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].size);
     }
 
     for (int i = 0; i < v_polygon.size(); i++) {
@@ -200,9 +201,9 @@ void CMFCOpenGL01Doc::draw_polygon_cpen(CDC * pDC, d_polygon p){
 
 
 
-///»­µã ¿ªÊ¼
+///ç”»ç‚¹ å¼€å§‹
 
-//»æÖÆÔ²ĞÎµÄµã
+//ç»˜åˆ¶åœ†å½¢çš„ç‚¹
 void CMFCOpenGL01Doc::point_circle(CDC *pDC, COLORREF color, int x, int y, int size) {
     CPen cpen;
     cpen.CreatePen(PS_SOLID, size, color);
@@ -214,7 +215,7 @@ void CMFCOpenGL01Doc::point_circle(CDC *pDC, COLORREF color, int x, int y, int s
     return;
 }
 
-//»æÖÆÊ®×ÖµÄµã
+//ç»˜åˆ¶åå­—çš„ç‚¹
 void CMFCOpenGL01Doc::point_cross(CDC *pDC, COLORREF color, int x, int y, int size) {
 
     if (size == 1) {
@@ -240,7 +241,7 @@ void CMFCOpenGL01Doc::point_cross(CDC *pDC, COLORREF color, int x, int y, int si
     return;
 }
 
-//»æÖÆÁâĞÎµÄµã
+//ç»˜åˆ¶è±å½¢çš„ç‚¹
 void CMFCOpenGL01Doc::point_rhombus(CDC *pDC, COLORREF color, int x, int y, int size) {
 
     int t = size + size / 5;
@@ -253,9 +254,9 @@ void CMFCOpenGL01Doc::point_rhombus(CDC *pDC, COLORREF color, int x, int y, int 
     cbrush.CreateSolidBrush(color);
     CBrush* pOldBrush = (CBrush*)pDC->SelectObject(&cbrush);
 
-    pDC->FloodFill(x, y, color); //´ÓÆğµã¿ªÊ¼£¬ÓÃbrushµÄÑÕÉ«Ìî³ä¡°×îĞ¡¡±µÄÄÇ¿é·â±ÕÇøÓò£¬Ïàµ±ÓÚÓÍÆáÍ°
+    pDC->FloodFill(x, y, color); //ä»èµ·ç‚¹å¼€å§‹ï¼Œç”¨brushçš„é¢œè‰²å¡«å……â€œæœ€å°â€çš„é‚£å—å°é—­åŒºåŸŸï¼Œç›¸å½“äºæ²¹æ¼†æ¡¶
                                  //COLORREF color_banned = pDC->GetPixel(CPoint(x, y));
-                                 //pDC->ExtFloodFill(x, y, color_banned, FLOODFILLSURFACE); //´ÓÆğµã¿ªÊ¼£¬ÓÃbrushµÄÑÕÉ«ÏòÍâÌî³ä£¬Ö±µ½Óöµ½Ä³ÖÖÑÕÉ«ÎªÖ¹
+                                 //pDC->ExtFloodFill(x, y, color_banned, FLOODFILLSURFACE); //ä»èµ·ç‚¹å¼€å§‹ï¼Œç”¨brushçš„é¢œè‰²å‘å¤–å¡«å……ï¼Œç›´åˆ°é‡åˆ°æŸç§é¢œè‰²ä¸ºæ­¢
 
     pDC->SelectObject(pOldBrush);
     cbrush.DeleteObject();
@@ -272,9 +273,9 @@ void CMFCOpenGL01Doc::point_rhombus(CDC *pDC, COLORREF color, int x, int y, int 
 
 
 
-///»­ÏßËã·¨ ¿ªÊ¼
+///ç”»çº¿ç®—æ³• å¼€å§‹
 
-//DDAÊıÖµÎ¢·Ö·¨·¨»­Ïß£¬Ğ±ÂÊÈÎÒâ£»    ²ÎÊı£ºpDC£¬ÑÕÉ«£¬Æğµãx×ø±ê£¬Æğµãy×ø±ê£¬ÖÕµãx×ø±ê£¬ÖÕµãy×ø±ê
+//DDAæ•°å€¼å¾®åˆ†æ³•æ³•ç”»çº¿ï¼Œæ–œç‡ä»»æ„ï¼›    å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œèµ·ç‚¹xåæ ‡ï¼Œèµ·ç‚¹yåæ ‡ï¼Œç»ˆç‚¹xåæ ‡ï¼Œç»ˆç‚¹yåæ ‡
 void CMFCOpenGL01Doc::line_dda(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1) {
 
     double delta_x = 0.0, delta_y = 0.0, x = 0.0, y = 0.0;
@@ -296,7 +297,7 @@ void CMFCOpenGL01Doc::line_dda(CDC *pDC, COLORREF color, int x0, int y0, int x1,
     return;
 }
 
-//ÖĞµã·¨»­Ïß£¬Ğ±ÂÊÈÎÒâ£»    ²ÎÊı£ºpDC£¬ÑÕÉ«£¬Æğµãx×ø±ê£¬Æğµãy×ø±ê£¬ÖÕµãx×ø±ê£¬ÖÕµãy×ø±ê
+//ä¸­ç‚¹æ³•ç”»çº¿ï¼Œæ–œç‡ä»»æ„ï¼›    å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œèµ·ç‚¹xåæ ‡ï¼Œèµ·ç‚¹yåæ ‡ï¼Œç»ˆç‚¹xåæ ‡ï¼Œç»ˆç‚¹yåæ ‡
 void CMFCOpenGL01Doc::line_midpoint(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1) {
 
     int x = x0, y = y0;
@@ -305,7 +306,7 @@ void CMFCOpenGL01Doc::line_midpoint(CDC *pDC, COLORREF color, int x0, int y0, in
     int cx = (b >= 0 ? 1 : (b = -b, -1));
     int cy = (a <= 0 ? 1 : (a = -a, -1));
     int d, d1, d2;
-    if (-a <= b) { // Ğ±ÂÊ¾ø¶ÔÖµ <= 1
+    if (-a <= b) { // æ–œç‡ç»å¯¹å€¼ <= 1
         d = a + a + b;
         d1 = a + a;
         d2 = a + a + b + b;
@@ -321,7 +322,7 @@ void CMFCOpenGL01Doc::line_midpoint(CDC *pDC, COLORREF color, int x0, int y0, in
             pDC->SetPixel(x, y, color);
         }
     }
-    else { // Ğ±ÂÊ¾ø¶ÔÖµ > 1
+    else { // æ–œç‡ç»å¯¹å€¼ > 1
         d = a + b + b;
         d1 = b + b;
         d2 = a + a + b + b;
@@ -340,7 +341,7 @@ void CMFCOpenGL01Doc::line_midpoint(CDC *pDC, COLORREF color, int x0, int y0, in
     return;
 }
 
-//ÖĞµã·¨»­Ïß£¬Ğ±ÂÊ¾ø¶ÔÖµ[0,1]£¬Ö¸¶¨Ïß¿í£¬´¹Ö±ÏßË¢×Ó£»    ²ÎÊı£ºpDC£¬ÑÕÉ«£¬Æğµãx×ø±ê£¬Æğµãy×ø±ê£¬ÖÕµãx×ø±ê£¬ÖÕµãy×ø±ê£¬Ïß¿í
+//ä¸­ç‚¹æ³•ç”»çº¿ï¼Œæ–œç‡ç»å¯¹å€¼[0,1]ï¼ŒæŒ‡å®šçº¿å®½ï¼Œå‚ç›´çº¿åˆ·å­ï¼›    å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œèµ·ç‚¹xåæ ‡ï¼Œèµ·ç‚¹yåæ ‡ï¼Œç»ˆç‚¹xåæ ‡ï¼Œç»ˆç‚¹yåæ ‡ï¼Œçº¿å®½
 void CMFCOpenGL01Doc::line_midpoint_vertical_linebrush(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1, int width) {
 
     int x = x0, y = y0;
@@ -349,7 +350,7 @@ void CMFCOpenGL01Doc::line_midpoint_vertical_linebrush(CDC *pDC, COLORREF color,
     int cx = (b >= 0 ? 1 : (b = -b, -1));
     int cy = (a <= 0 ? 1 : (a = -a, -1));
     int d, d1, d2;
-    if (-a <= b) { // Ğ±ÂÊ¾ø¶ÔÖµ <= 1
+    if (-a <= b) { // æ–œç‡ç»å¯¹å€¼ <= 1
         d = a + a + b;
         d1 = a + a;
         d2 = a + a + b + b;
@@ -366,7 +367,7 @@ void CMFCOpenGL01Doc::line_midpoint_vertical_linebrush(CDC *pDC, COLORREF color,
                 pDC->SetPixel(x, y + i, color);
         }
     }
-    else { // Ğ±ÂÊ¾ø¶ÔÖµ > 1
+    else { // æ–œç‡ç»å¯¹å€¼ > 1
         d = a + b + b;
         d1 = b + b;
         d2 = a + a + b + b;
@@ -386,7 +387,7 @@ void CMFCOpenGL01Doc::line_midpoint_vertical_linebrush(CDC *pDC, COLORREF color,
     return;
 }
 
-//ÖĞµã·¨»­Ïß£¬Ğ±ÂÊ¾ø¶ÔÖµ(1,+oo)£¬Ö¸¶¨Ïß¿í£¬Ë®Æ½ÏßË¢×Ó£»    ²ÎÊı£ºpDC£¬ÑÕÉ«£¬Æğµãx×ø±ê£¬Æğµãy×ø±ê£¬ÖÕµãx×ø±ê£¬ÖÕµãy×ø±ê£¬Ïß¿í
+//ä¸­ç‚¹æ³•ç”»çº¿ï¼Œæ–œç‡ç»å¯¹å€¼(1,+oo)ï¼ŒæŒ‡å®šçº¿å®½ï¼Œæ°´å¹³çº¿åˆ·å­ï¼›    å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œèµ·ç‚¹xåæ ‡ï¼Œèµ·ç‚¹yåæ ‡ï¼Œç»ˆç‚¹xåæ ‡ï¼Œç»ˆç‚¹yåæ ‡ï¼Œçº¿å®½
 void CMFCOpenGL01Doc::line_midpoint_horizontal_linebrush(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1, int width) {
 
     int x = x0, y = y0;
@@ -395,7 +396,7 @@ void CMFCOpenGL01Doc::line_midpoint_horizontal_linebrush(CDC *pDC, COLORREF colo
     int cx = (b >= 0 ? 1 : (b = -b, -1));
     int cy = (a <= 0 ? 1 : (a = -a, -1));
     int d, d1, d2;
-    if (-a <= b) { // Ğ±ÂÊ¾ø¶ÔÖµ <= 1
+    if (-a <= b) { // æ–œç‡ç»å¯¹å€¼ <= 1
         d = a + a + b;
         d1 = a + a;
         d2 = a + a + b + b;
@@ -412,7 +413,7 @@ void CMFCOpenGL01Doc::line_midpoint_horizontal_linebrush(CDC *pDC, COLORREF colo
                 pDC->SetPixel(x + i, y, color);
         }
     }
-    else { // Ğ±ÂÊ¾ø¶ÔÖµ > 1
+    else { // æ–œç‡ç»å¯¹å€¼ > 1
         d = a + b + b;
         d1 = b + b;
         d2 = a + a + b + b;
@@ -432,7 +433,7 @@ void CMFCOpenGL01Doc::line_midpoint_horizontal_linebrush(CDC *pDC, COLORREF colo
     return;
 }
 
-//ÖĞµã·¨»­Ïß£¬Ğ±ÂÊÈÎÒâ£¬Ö¸¶¨Ïß¿í£¬·½ĞÎÏßË¢×Ó£»    ²ÎÊı£ºpDC£¬ÑÕÉ«£¬Æğµãx×ø±ê£¬Æğµãy×ø±ê£¬ÖÕµãx×ø±ê£¬ÖÕµãy×ø±ê£¬Ïß¿í
+//ä¸­ç‚¹æ³•ç”»çº¿ï¼Œæ–œç‡ä»»æ„ï¼ŒæŒ‡å®šçº¿å®½ï¼Œæ–¹å½¢çº¿åˆ·å­ï¼›    å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œèµ·ç‚¹xåæ ‡ï¼Œèµ·ç‚¹yåæ ‡ï¼Œç»ˆç‚¹xåæ ‡ï¼Œç»ˆç‚¹yåæ ‡ï¼Œçº¿å®½
 void CMFCOpenGL01Doc::line_midpoint_square_linebrush(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1, int width) {
 
     int x = x0, y = y0;
@@ -441,7 +442,7 @@ void CMFCOpenGL01Doc::line_midpoint_square_linebrush(CDC *pDC, COLORREF color, i
     int cx = (b >= 0 ? 1 : (b = -b, -1));
     int cy = (a <= 0 ? 1 : (a = -a, -1));
     int d, d1, d2;
-    if (-a <= b) { // Ğ±ÂÊ¾ø¶ÔÖµ <= 1
+    if (-a <= b) { // æ–œç‡ç»å¯¹å€¼ <= 1
         d = a + a + b;
         d1 = a + a;
         d2 = a + a + b + b;
@@ -461,7 +462,7 @@ void CMFCOpenGL01Doc::line_midpoint_square_linebrush(CDC *pDC, COLORREF color, i
             }
         }
     }
-    else { // Ğ±ÂÊ¾ø¶ÔÖµ > 1
+    else { // æ–œç‡ç»å¯¹å€¼ > 1
         d = a + b + b;
         d1 = b + b;
         d2 = a + a + b + b;
@@ -484,7 +485,7 @@ void CMFCOpenGL01Doc::line_midpoint_square_linebrush(CDC *pDC, COLORREF color, i
     return;
 }
 
-//bresenham·¨»­Ïß£¬Ğ±ÂÊÈÎÒâ£»    ²ÎÊı£ºpDC£¬ÑÕÉ«£¬Æğµãx×ø±ê£¬Æğµãy×ø±ê£¬ÖÕµãx×ø±ê£¬ÖÕµãy×ø±ê
+//bresenhamæ³•ç”»çº¿ï¼Œæ–œç‡ä»»æ„ï¼›    å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œèµ·ç‚¹xåæ ‡ï¼Œèµ·ç‚¹yåæ ‡ï¼Œç»ˆç‚¹xåæ ‡ï¼Œç»ˆç‚¹yåæ ‡
 void CMFCOpenGL01Doc::line_bresenham(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1) {
 
     int dx = x1 - x0;
@@ -517,7 +518,7 @@ void CMFCOpenGL01Doc::line_bresenham(CDC *pDC, COLORREF color, int x0, int y0, i
 }
 
 
-//Cpenº¯Êı
+//Cpenå‡½æ•°
 
 void CMFCOpenGL01Doc::line_dda_cpen(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1, int size) {
     size++;
@@ -560,7 +561,7 @@ void CMFCOpenGL01Doc::line_midpoint_cpen(CDC *pDC, COLORREF color, int x0, int y
     int cx = (b >= 0 ? 1 : (b = -b, -1));
     int cy = (a <= 0 ? 1 : (a = -a, -1));
     int d, d1, d2;
-    if (-a <= b) { // Ğ±ÂÊ¾ø¶ÔÖµ <= 1
+    if (-a <= b) { // æ–œç‡ç»å¯¹å€¼ <= 1
         d = a + a + b;
         d1 = a + a;
         d2 = a + a + b + b;
@@ -577,7 +578,7 @@ void CMFCOpenGL01Doc::line_midpoint_cpen(CDC *pDC, COLORREF color, int x0, int y
             pDC->LineTo(x, y);
         }
     }
-    else { // Ğ±ÂÊ¾ø¶ÔÖµ > 1
+    else { // æ–œç‡ç»å¯¹å€¼ > 1
         d = a + b + b;
         d1 = b + b;
         d2 = a + a + b + b;
@@ -645,9 +646,9 @@ void CMFCOpenGL01Doc::line_bresenham_cpen(CDC *pDC, COLORREF color, int x0, int 
 
 
 
-///»­Ô²Ëã·¨ ¿ªÊ¼
+///ç”»åœ†ç®—æ³• å¼€å§‹
 
-//bresenham·¨»­ÕıÔ²£»    ²ÎÊı£ºpDC£¬ÑÕÉ«£¬Ô²ĞÄx×ø±ê£¬Ô²ĞÄy×ø±ê£¬°ë¾¶
+//bresenhamæ³•ç”»æ­£åœ†ï¼›    å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œåœ†å¿ƒxåæ ‡ï¼Œåœ†å¿ƒyåæ ‡ï¼ŒåŠå¾„
 void CMFCOpenGL01Doc::circle_perfect_bresenham(CDC *pDC, COLORREF color, int x0, int y0, int radius) {
 
     double x = 0.0, y = 0.0, d = 0.0;
@@ -665,7 +666,7 @@ void CMFCOpenGL01Doc::circle_perfect_bresenham(CDC *pDC, COLORREF color, int x0,
     return;
 }
 
-//bresenham·¨»­ÕıÔ²-gl°æ£»    ²ÎÊı£ºÕûĞÍÑÕÉ«R£¬ÕûĞÍÑÕÉ«G£¬ÕûĞÍÑÕÉ«B£¬Ô²ĞÄx×ø±ê£¬Ô²ĞÄy×ø±ê£¬°ë¾¶
+//bresenhamæ³•ç”»æ­£åœ†-glç‰ˆï¼›    å‚æ•°ï¼šæ•´å‹é¢œè‰²Rï¼Œæ•´å‹é¢œè‰²Gï¼Œæ•´å‹é¢œè‰²Bï¼Œåœ†å¿ƒxåæ ‡ï¼Œåœ†å¿ƒyåæ ‡ï¼ŒåŠå¾„
 void CMFCOpenGL01Doc::circle_perfect_bresenham_gl(int colord1, int colord2, int colord3, int x0, int y0, int radius) {
 
     glBegin(GL_POINTS);
@@ -692,7 +693,7 @@ void CMFCOpenGL01Doc::circle_perfect_bresenham_gl(int colord1, int colord2, int 
     return;
 }
 
-//ÖĞµã·¨»­ÕıÔ²£»    ²ÎÊı£ºpDC£¬ÑÕÉ«£¬Ô²ĞÄx×ø±ê£¬Ô²ĞÄy×ø±ê£¬°ë¾¶
+//ä¸­ç‚¹æ³•ç”»æ­£åœ†ï¼›    å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œåœ†å¿ƒxåæ ‡ï¼Œåœ†å¿ƒyåæ ‡ï¼ŒåŠå¾„
 void CMFCOpenGL01Doc::circle_perfect_midpoint(CDC *pDC, COLORREF color, int x0, int y0, int radius) {
 
     int x = 0, y = 0, h = 0;
@@ -712,7 +713,7 @@ void CMFCOpenGL01Doc::circle_perfect_midpoint(CDC *pDC, COLORREF color, int x0, 
     return;
 }
 
-//¶Ô³ÆµØ»­Ô²ÉÏµÄµã£»    ²ÎÊı£ºpDC£¬ÑÕÉ«£¬Ô²ĞÄx×ø±ê£¬Ô²ĞÄy×ø±ê£¬Ä¿±êµãµÄx×ø±ê£¬Ä¿±êµãµÄy×ø±ê
+//å¯¹ç§°åœ°ç”»åœ†ä¸Šçš„ç‚¹ï¼›    å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œåœ†å¿ƒxåæ ‡ï¼Œåœ†å¿ƒyåæ ‡ï¼Œç›®æ ‡ç‚¹çš„xåæ ‡ï¼Œç›®æ ‡ç‚¹çš„yåæ ‡
 void CMFCOpenGL01Doc::set_points_on_circle(CDC *pDC, COLORREF color, int x0, int y0, int x, int y) {
 
     pDC->SetPixel((x0 + x), (y0 + y), color);
@@ -729,7 +730,7 @@ void CMFCOpenGL01Doc::set_points_on_circle(CDC *pDC, COLORREF color, int x0, int
 }
 
 
-//bresenham·¨»­ÍÖÔ²£»    ²ÎÊı£ºpDC£¬ÑÕÉ«£¬Ô²ĞÄx×ø±ê£¬Ô²ĞÄy×ø±ê£¬³¤ÖáµÄ³¤¶È£¬¶ÌÖáµÄ³¤¶È
+//bresenhamæ³•ç”»æ¤­åœ†ï¼›    å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œåœ†å¿ƒxåæ ‡ï¼Œåœ†å¿ƒyåæ ‡ï¼Œé•¿è½´çš„é•¿åº¦ï¼ŒçŸ­è½´çš„é•¿åº¦
 void CMFCOpenGL01Doc::circle_oval_bresenham(CDC *pDC, COLORREF color, int x0, int y0, int a, int b) {
 
     int sqa = a * a, sqb = b * b;
@@ -763,7 +764,7 @@ void CMFCOpenGL01Doc::circle_oval_bresenham(CDC *pDC, COLORREF color, int x0, in
     return;
 }
 
-//ÖĞµã·¨»­ÍÖÔ²£»    ²ÎÊı£ºpDC£¬ÑÕÉ«£¬Ô²ĞÄx×ø±ê£¬Ô²ĞÄy×ø±ê£¬³¤ÖáµÄ³¤¶È£¬¶ÌÖáµÄ³¤¶È
+//ä¸­ç‚¹æ³•ç”»æ¤­åœ†ï¼›    å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œåœ†å¿ƒxåæ ‡ï¼Œåœ†å¿ƒyåæ ‡ï¼Œé•¿è½´çš„é•¿åº¦ï¼ŒçŸ­è½´çš„é•¿åº¦
 void CMFCOpenGL01Doc::circle_oval_midpoint(CDC *pDC, COLORREF color, int x0, int y0, int a, int b) {
 
     double sqa = a * a;
@@ -795,7 +796,7 @@ void CMFCOpenGL01Doc::circle_oval_midpoint(CDC *pDC, COLORREF color, int x0, int
     return;
 }
 
-//¶Ô³ÆµØ»­ÍÖÔ²ÉÏµÄµã£»    ²ÎÊı£ºpDC£¬ÑÕÉ«£¬Ô²ĞÄx×ø±ê£¬Ô²ĞÄy×ø±ê£¬Ä¿±êµãµÄx×ø±ê£¬Ä¿±êµãµÄy×ø±ê
+//å¯¹ç§°åœ°ç”»æ¤­åœ†ä¸Šçš„ç‚¹ï¼›    å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œåœ†å¿ƒxåæ ‡ï¼Œåœ†å¿ƒyåæ ‡ï¼Œç›®æ ‡ç‚¹çš„xåæ ‡ï¼Œç›®æ ‡ç‚¹çš„yåæ ‡
 void CMFCOpenGL01Doc::set_points_on_oval(CDC *pDC, COLORREF color, int x0, int y0, int x, int y) {
 
     pDC->SetPixel((x0 + x), (y0 + y), color);
@@ -808,7 +809,7 @@ void CMFCOpenGL01Doc::set_points_on_oval(CDC *pDC, COLORREF color, int x0, int y
 
 
 
-//CPenº¯Êı
+//CPenå‡½æ•°
 
 void CMFCOpenGL01Doc::circle_perfect_bresenham_cpen(CDC *pDC, COLORREF color, int x0, int y0, int radius, int size) {
     double x = 0.0, y = 0.0, d = 0.0;
@@ -958,14 +959,154 @@ void CMFCOpenGL01Doc::set_points_on_oval_cpen(CDC *pDC, COLORREF color, int x0, 
     return;
 }
 
+//å¸¦æœ‰æ—‹è½¬è§’åº¦çš„æ¤­åœ†ï¼Œé¡ºæ—¶é’ˆæ—‹è½¬  å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œåœ†å¿ƒxï¼Œåœ†å¿ƒyï¼Œé•¿è½´aï¼ŒçŸ­è½´bï¼Œæ—‹è½¬è§’åº¦ï¼ˆè§’åº¦åˆ¶ï¼‰ï¼Œçº¿å®½
+void CMFCOpenGL01Doc::circle_oval_angle_cpen(CDC *pDC, COLORREF color, float x0, float y0, float a, float b, double angle, int size){
+    CPen cpen;
+    cpen.CreatePen(PS_SOLID, size, color);
+    CPen* pOldPen = (CPen*)pDC->SelectObject(&cpen);
+    
+    int i;
+    float x, y;
+    double dx, dy, di, aa, bb, sinA, cosA;
+    double arc = pi / 180.0*angle; //è½¬å¼§åº¦åˆ¶
+    cosA = cos(arc);
+    sinA = sin(arc);
+    aa = a*a;
+    bb = b*b;
+    float flX[4], flY[4];
+    x = 0;
+    y = b;
+    dx = 0;
+    dy = 2 * aa*y;
+    di = bb - aa*b + aa / 4;
+    flX[0] = x0 + x*cosA - y*sinA;
+    flX[1] = x0 + x*cosA + y*sinA;
+    flX[2] = x0 - x*cosA - y*sinA;
+    flX[3] = x0 - x*cosA + y*sinA;
+    flY[0] = y0 + y*cosA + x*sinA;
+    flY[1] = y0 - y*cosA + x*sinA;
+    flY[2] = y0 + y*cosA - x*sinA;
+    flY[3] = y0 - y*cosA - x*sinA;
+    i = 0;
+    while (dx<dy)
+    {
+        i++;
+        if (i == 5)
+        {
+            pDC->MoveTo(flX[0], flY[0]);
+            pDC->LineTo(x0 + x*cosA - y*sinA, y0 + y*cosA + x*sinA);
+            pDC->MoveTo(flX[1], flY[1]);
+            pDC->LineTo(x0 + x*cosA + y*sinA, y0 - y*cosA + x*sinA);
+            pDC->MoveTo(flX[2], flY[2]);
+            pDC->LineTo(x0 - x*cosA - y*sinA, y0 + y*cosA - x*sinA);
+            pDC->MoveTo(flX[3], flY[3]);
+            pDC->LineTo(x0 - x*cosA + y*sinA, y0 - y*cosA - x*sinA);
+            flX[0] = x0 + x*cosA - y*sinA;
+            flX[1] = x0 + x*cosA + y*sinA;
+            flX[2] = x0 - x*cosA - y*sinA;
+            flX[3] = x0 - x*cosA + y*sinA;
+            flY[0] = y0 + y*cosA + x*sinA;
+            flY[1] = y0 - y*cosA + x*sinA;
+            flY[2] = y0 + y*cosA - x*sinA;
+            flY[3] = y0 - y*cosA - x*sinA;
+            i = 0;
+        }
+        x++;
+        dx += 2 * bb;
+        di += dx + bb;
+        if (di >= 0)
+        {
+            dy -= 2 * aa;
+            di -= dy;
+            y--;
+        }
+    }
+    pDC->MoveTo(flX[0], flY[0]);
+    pDC->LineTo(x0 + x*cosA - y*sinA, y0 + y*cosA + x*sinA);
+    pDC->MoveTo(flX[1], flY[1]);
+    pDC->LineTo(x0 + x*cosA + y*sinA, y0 - y*cosA + x*sinA);
+    pDC->MoveTo(flX[2], flY[2]);
+    pDC->LineTo(x0 - x*cosA - y*sinA, y0 + y*cosA - x*sinA);
+    pDC->MoveTo(flX[3], flY[3]);
+    pDC->LineTo(x0 - x*cosA + y*sinA, y0 - y*cosA - x*sinA);
+
+    di += int((3 * (aa - bb) - 2 * (dx - dy)) / 4 + 0.5);
+    flX[0] = x0 + x*cosA - y*sinA;
+    flX[1] = x0 + x*cosA + y*sinA;
+    flX[2] = x0 - x*cosA - y*sinA;
+    flX[3] = x0 - x*cosA + y*sinA;
+    flY[0] = y0 + y*cosA + x*sinA;
+    flY[1] = y0 - y*cosA + x*sinA;
+    flY[2] = y0 + y*cosA - x*sinA;
+    flY[3] = y0 - y*cosA - x*sinA;
+    i = 0;
+    while (y>=0)
+    {
+        i++;
+        if (i == 5)
+        {
+            pDC->MoveTo(flX[0], flY[0]);
+            pDC->LineTo(x0 + x*cosA - y*sinA, y0 + y*cosA + x*sinA);
+            pDC->MoveTo(flX[1], flY[1]);
+            pDC->LineTo(x0 + x*cosA + y*sinA, y0 - y*cosA + x*sinA);
+            pDC->MoveTo(flX[2], flY[2]);
+            pDC->LineTo(x0 - x*cosA - y*sinA, y0 + y*cosA - x*sinA);
+            pDC->MoveTo(flX[3], flY[3]);
+            pDC->LineTo(x0 - x*cosA + y*sinA, y0 - y*cosA - x*sinA);
+            flX[0] = x0 + x*cosA - y*sinA;
+            flX[1] = x0 + x*cosA + y*sinA;
+            flX[2] = x0 - x*cosA - y*sinA;
+            flX[3] = x0 - x*cosA + y*sinA;
+            flY[0] = y0 + y*cosA + x*sinA;
+            flY[1] = y0 - y*cosA + x*sinA;
+            flY[2] = y0 + y*cosA - x*sinA;
+            flY[3] = y0 - y*cosA - x*sinA;
+            i = 0;
+        }
+        y--;
+        dy -= 2 * aa;
+        di += aa - dy;
+        if (di<0)
+        {
+            dx += 2 * bb;
+            di += dx;
+            x++;
+        }
+    }
+    pDC->MoveTo(flX[0], flY[0]);
+    pDC->LineTo(x0 + x*cosA - y*sinA, y0 + y*cosA + x*sinA);
+    pDC->MoveTo(flX[1], flY[1]);
+    pDC->LineTo(x0 + x*cosA + y*sinA, y0 - y*cosA + x*sinA);
+    pDC->MoveTo(flX[2], flY[2]);
+    pDC->LineTo(x0 - x*cosA - y*sinA, y0 + y*cosA - x*sinA);
+    pDC->MoveTo(flX[3], flY[3]);
+    pDC->LineTo(x0 - x*cosA + y*sinA, y0 - y*cosA - x*sinA);
+
+
+    //float th = acos(-1.0) / 180;
+    //float x, y, tx, ty;
+    //for (float i = -180; i <= 180; i = i + 0.01) {
+    //    x = a*cos(i*th);
+    //    y = b*sin(i*th);
+    //    tx = x;
+    //    ty = y;
+    //    x = tx*cos(angle*th) - ty*sin(angle*th) + x0;
+    //    y = y0 - (ty*cos(angle*th) + tx*sin(angle*th));
+    //    /*pDC->MoveTo(x, y);
+    //    pDC->LineTo(x, y);*/
+    //    pDC->SetPixel(x, y, RGB(255, 0, 0));
+    //}
+
+    pDC->SelectObject(pOldPen);
+    cpen.DeleteObject();
+    return;
+}
 
 
 
 
 
-
-
-///ÇøÓòÌî³äËã·¨ ¿ªÊ¼
+///åŒºåŸŸå¡«å……ç®—æ³• å¼€å§‹
 
 void CMFCOpenGL01Doc::flood_fill_cbrush(CDC *pDC, COLORREF color, COLORREF color_banned, CPoint pt) {
 
@@ -986,10 +1127,10 @@ void CMFCOpenGL01Doc::flood_fill_cbrush(CDC *pDC, COLORREF color, COLORREF color
 
 
 
-///¶şÎ¬Í¼ĞÎ²Ã¼ôËã·¨ ¿ªÊ¼
+///äºŒç»´å›¾å½¢è£å‰ªç®—æ³• å¼€å§‹
 
 
-//Cohen-Sutherland+ÖĞµã·Ö¸î£¨ÇøÓò±àÂë+ÖĞµã·Ö¸î£©·¨Ïß¶Î²Ã¼ô    ²ÎÊı£ºpDC£¬ÑÕÉ«£¬²Ã¼ô´°¿Ú·¶Î§µÄ×óÉÏ·½µã×ø±ê£¬²Ã¼ô´°¿Ú·¶Î§µÄÓÒÏÂ·½µã×ø±ê£¬¼¸ÌõÏß£¬´ı²Ã¼ôµÄÖ±Ïß
+//Cohen-Sutherland+ä¸­ç‚¹åˆ†å‰²ï¼ˆåŒºåŸŸç¼–ç +ä¸­ç‚¹åˆ†å‰²ï¼‰æ³•çº¿æ®µè£å‰ª    å‚æ•°ï¼špDCï¼Œé¢œè‰²ï¼Œè£å‰ªçª—å£èŒƒå›´çš„å·¦ä¸Šæ–¹ç‚¹åæ ‡ï¼Œè£å‰ªçª—å£èŒƒå›´çš„å³ä¸‹æ–¹ç‚¹åæ ‡ï¼Œå‡ æ¡çº¿ï¼Œå¾…è£å‰ªçš„ç›´çº¿
 void CMFCOpenGL01Doc::line_cut_Sutherland_midpoint(CDC *pDC, COLORREF color, vertex window_vertex_left_top, vertex window_vertex_right_bottom, int num, line lines[]) {
 
     for (int i = 0; i < num; i++) {
@@ -1000,30 +1141,30 @@ void CMFCOpenGL01Doc::line_cut_Sutherland_midpoint(CDC *pDC, COLORREF color, ver
     for (int i = 0; i < num; i++) {
         vertex_coded vb = lines[i].vertex_coded_begin;
         vertex_coded ve = lines[i].vertex_coded_end;
-        if (vb.code == 0 && ve.code == 0) { //È«²¿ÔÚ²Ã¼ô·¶Î§ÄÚ£¬Ö±½ÓÕûÌõ»­³öÀ´
+        if (vb.code == 0 && ve.code == 0) { //å…¨éƒ¨åœ¨è£å‰ªèŒƒå›´å†…ï¼Œç›´æ¥æ•´æ¡ç”»å‡ºæ¥
             line_midpoint(pDC, color, vb.x, vb.y, ve.x, ve.y);
             continue;
         }
-        if ((vb.code & ve.code) != 0) { //È«²¿²»ÔÚ²Ã¼ô·¶Î§ÄÚ£¬Ö±½ÓÉ¾³ı
+        if ((vb.code & ve.code) != 0) { //å…¨éƒ¨ä¸åœ¨è£å‰ªèŒƒå›´å†…ï¼Œç›´æ¥åˆ é™¤
                                         //line_midpoint(pDC, RGB(0,255,0), vb.x, vb.y, ve.x, ve.y);
             continue;
         }
         if ((vb.code & ve.code) == 0) {
-            if ((vb.code == 0) || (ve.code == 0)) { //ÓĞÒ»µãÔÚÍâ£¬ÁíÒ»µãÔÚÄÚ
+            if ((vb.code == 0) || (ve.code == 0)) { //æœ‰ä¸€ç‚¹åœ¨å¤–ï¼Œå¦ä¸€ç‚¹åœ¨å†…
                 vertex_coded vd = line_cut_midpoint(window_vertex_left_top, window_vertex_right_bottom, lines[i]);
                 if (vb.code == 0)
                     line_midpoint(pDC, color, vb.x, vb.y, vd.x, vd.y);
                 else
                     line_midpoint(pDC, color, ve.x, ve.y, vd.x, vd.y);
             }
-            else { //Á½µãÈ«ÔÚÍâÃæ£¨Ïß¶Î¹á´©²Ã¼ô¿ò£©£¬ĞèÒª°ÑÏß¶Î·Ö¸î³ÉÁ½²¿·Ö·Ö±ğ´¦Àí
+            else { //ä¸¤ç‚¹å…¨åœ¨å¤–é¢ï¼ˆçº¿æ®µè´¯ç©¿è£å‰ªæ¡†ï¼‰ï¼Œéœ€è¦æŠŠçº¿æ®µåˆ†å‰²æˆä¸¤éƒ¨åˆ†åˆ†åˆ«å¤„ç†
                 vertex_coded vmid;
-                //×óÉÏ->ÓÒÏÂµÄ¶Ô½ÇÏßÓë´ı²Ã¼ôÏß¶Î´æÔÚ½»µã£¬ÓÃ´Ë½»µã½øĞĞ·Ö¸î³ÉÁ½²¿·Ö
+                //å·¦ä¸Š->å³ä¸‹çš„å¯¹è§’çº¿ä¸å¾…è£å‰ªçº¿æ®µå­˜åœ¨äº¤ç‚¹ï¼Œç”¨æ­¤äº¤ç‚¹è¿›è¡Œåˆ†å‰²æˆä¸¤éƒ¨åˆ†
                 if (judge_line_pos(window_vertex_left_top, window_vertex_right_bottom, lines[i].vertex_coded_begin, lines[i].vertex_coded_end)) {
                     vmid = get_mid_point(window_vertex_left_top, window_vertex_right_bottom, vb, ve);
                     set_vertex_code(window_vertex_left_top, window_vertex_right_bottom, &vmid);
                 }
-                else { //ÓÒÉÏ->×óÏÂµÄ¶Ô½ÇÏßÓë´ı²Ã¼ôÏß¶Î´æÔÚ½»µã£¬ÓÃ´Ë½»µã½øĞĞ·Ö¸î³ÉÁ½²¿·Ö
+                else { //å³ä¸Š->å·¦ä¸‹çš„å¯¹è§’çº¿ä¸å¾…è£å‰ªçº¿æ®µå­˜åœ¨äº¤ç‚¹ï¼Œç”¨æ­¤äº¤ç‚¹è¿›è¡Œåˆ†å‰²æˆä¸¤éƒ¨åˆ†
                     vmid = get_mid_point(vertex(window_vertex_right_bottom.x, window_vertex_left_top.y), vertex(window_vertex_left_top.x, window_vertex_right_bottom.y), vb, ve);
                     set_vertex_code(window_vertex_left_top, window_vertex_right_bottom, &vmid);
                 }
@@ -1039,7 +1180,7 @@ void CMFCOpenGL01Doc::line_cut_Sutherland_midpoint(CDC *pDC, COLORREF color, ver
     return;
 }
 
-//ÖĞµã·Ö¸î·¨µİ¹é¶ş·ÖÈ·¶¨Ïß¶ÎÓë²Ã¼ô±ß¿òÏà½»ÓÚÄÄÒ»µã    ²ÎÊı£º²Ã¼ô´°¿Ú·¶Î§µÄ×óÉÏ·½µã×ø±ê£¬²Ã¼ô´°¿Ú·¶Î§µÄÓÒÏÂ·½µã×ø±ê£¬´ı²Ã¼ôµÄÖ±Ïß
+//ä¸­ç‚¹åˆ†å‰²æ³•é€’å½’äºŒåˆ†ç¡®å®šçº¿æ®µä¸è£å‰ªè¾¹æ¡†ç›¸äº¤äºå“ªä¸€ç‚¹    å‚æ•°ï¼šè£å‰ªçª—å£èŒƒå›´çš„å·¦ä¸Šæ–¹ç‚¹åæ ‡ï¼Œè£å‰ªçª—å£èŒƒå›´çš„å³ä¸‹æ–¹ç‚¹åæ ‡ï¼Œå¾…è£å‰ªçš„ç›´çº¿
 CMFCOpenGL01Doc::vertex_coded CMFCOpenGL01Doc::line_cut_midpoint(vertex window_vertex_left_top, vertex window_vertex_right_bottom, line single_line) {
 
     vertex_coded vin = single_line.vertex_coded_begin.code == 0 ? single_line.vertex_coded_begin : single_line.vertex_coded_end;
@@ -1047,26 +1188,26 @@ CMFCOpenGL01Doc::vertex_coded CMFCOpenGL01Doc::line_cut_midpoint(vertex window_v
     vertex_coded vmid = vertex_coded((vin.x + vout.x) / 2, (vin.y + vout.y) / 2);
     set_vertex_code(window_vertex_left_top, window_vertex_right_bottom, &vmid);
 
-    if (abs(vmid.x - vin.x) <= 1 || abs(vmid.y - vin.y) <= 1) return vmid;     //È¡¼«ÏŞ
+    if (abs(vmid.x - vin.x) <= 1 || abs(vmid.y - vin.y) <= 1) return vmid;     //å–æé™
 
-    if (vmid.code == 0) vin = vmid; //ÖĞµãÔÚ²Ã¼ô¿òÄÚ£¬°ÑÄÚ²¿µÄ¶ËµãÒÆÏòÖĞµã
-    else vout = vmid; //ÖĞµãÔÚ²Ã¼ô¿òÍâ£¬°ÑÍâ²¿µÄµãÒÆÏòÖĞµã
+    if (vmid.code == 0) vin = vmid; //ä¸­ç‚¹åœ¨è£å‰ªæ¡†å†…ï¼ŒæŠŠå†…éƒ¨çš„ç«¯ç‚¹ç§»å‘ä¸­ç‚¹
+    else vout = vmid; //ä¸­ç‚¹åœ¨è£å‰ªæ¡†å¤–ï¼ŒæŠŠå¤–éƒ¨çš„ç‚¹ç§»å‘ä¸­ç‚¹
 
     return line_cut_midpoint(window_vertex_left_top, window_vertex_right_bottom, line(vin, vout));
 }
 
-//È·¶¨Ïß¶ÎµÄ¶ËµãÂäÔÚÄÇ¸öÇøÓò£¬»ñÈ¡Æä¶ÔÓ¦µÄ±àÂë    ²ÎÊı£º²Ã¼ô´°¿Ú·¶Î§µÄ×óÉÏ·½µã×ø±ê£¬²Ã¼ô´°¿Ú·¶Î§µÄÓÒÏÂ·½µã×ø±ê£¬¶ËµãÖ¸Õë
+//ç¡®å®šçº¿æ®µçš„ç«¯ç‚¹è½åœ¨é‚£ä¸ªåŒºåŸŸï¼Œè·å–å…¶å¯¹åº”çš„ç¼–ç     å‚æ•°ï¼šè£å‰ªçª—å£èŒƒå›´çš„å·¦ä¸Šæ–¹ç‚¹åæ ‡ï¼Œè£å‰ªçª—å£èŒƒå›´çš„å³ä¸‹æ–¹ç‚¹åæ ‡ï¼Œç«¯ç‚¹æŒ‡é’ˆ
 void CMFCOpenGL01Doc::set_vertex_code(vertex window_vertex_left_top, vertex window_vertex_right_bottom, vertex_coded *v) {
 
-    if (v->y >= window_vertex_left_top.y) v->code |= 8;    //1000 ÉÏ
-    if (v->y <= window_vertex_right_bottom.y) v->code |= 4; //0100 ÏÂ
-    if (v->x >= window_vertex_right_bottom.x) v->code |= 2;  //0010 ÓÒ
-    if (v->x <= window_vertex_left_top.x) v->code |= 1;   //0001 ×ó
+    if (v->y >= window_vertex_left_top.y) v->code |= 8;    //1000 ä¸Š
+    if (v->y <= window_vertex_right_bottom.y) v->code |= 4; //0100 ä¸‹
+    if (v->x >= window_vertex_right_bottom.x) v->code |= 2;  //0010 å³
+    if (v->x <= window_vertex_left_top.x) v->code |= 1;   //0001 å·¦
 
     return;
 }
 
-//ÅĞ¶Ï²Ã¼ô¿ò¶Ô½ÇÏßºÍ´ı²Ã¼ôÏß¶ÎµÄÎ»ÖÃ¹ØÏµ    ²ÎÊı£º²Ã¼ôÏß¿òµÄ¶Ô½ÇÏßµÄÆğµã£¬²Ã¼ôÏß¿ò¶Ô½ÇÏßµÄÖÕµã£¬´ı²Ã¼ôÏß¶ÎµÄÆğµã£¬´ı²Ã¼ôÏß¶ÎµÄÖÕµã
+//åˆ¤æ–­è£å‰ªæ¡†å¯¹è§’çº¿å’Œå¾…è£å‰ªçº¿æ®µçš„ä½ç½®å…³ç³»    å‚æ•°ï¼šè£å‰ªçº¿æ¡†çš„å¯¹è§’çº¿çš„èµ·ç‚¹ï¼Œè£å‰ªçº¿æ¡†å¯¹è§’çº¿çš„ç»ˆç‚¹ï¼Œå¾…è£å‰ªçº¿æ®µçš„èµ·ç‚¹ï¼Œå¾…è£å‰ªçº¿æ®µçš„ç»ˆç‚¹
 bool CMFCOpenGL01Doc::judge_line_pos(vertex window_vertex_a, vertex window_vertex_b, vertex_coded va, vertex_coded vb) {
     long long int d1, d2, d3, d4;
     d1 = (window_vertex_b.x - window_vertex_a.x)*(va.y - window_vertex_a.y) - (window_vertex_b.y - window_vertex_a.y)*(va.x - window_vertex_a.x);
@@ -1074,12 +1215,12 @@ bool CMFCOpenGL01Doc::judge_line_pos(vertex window_vertex_a, vertex window_verte
     d3 = (vb.x - va.x)*(window_vertex_a.y - va.y) - (vb.y - va.y)*(window_vertex_a.x - va.x);
     d4 = (vb.x - va.x)*(window_vertex_b.y - va.y) - (vb.y - va.y)*(window_vertex_b.x - va.x);
     if (d1*d2 <= 0 && d3*d4 <= 0)
-        return true; //Ïà½»¼°ÖØºÏ
+        return true; //ç›¸äº¤åŠé‡åˆ
     else
-        return false; //²»Ïà½»
+        return false; //ä¸ç›¸äº¤
 }
 
-//µÃµ½Ïß¶ÎÓë¶Ô½ÇÏßµÄ½»µã    ²ÎÊı£º²Ã¼ô¿ò¶Ô½ÇÏßµÄÆğµã£¬²Ã¼ô¿ò¶Ô½ÇÏßµÄÖÕµã£¬´ı²Ã¼ôÏßµÄÆğµã£¬´ı²Ã¼ôÏßµÄÖÕµã
+//å¾—åˆ°çº¿æ®µä¸å¯¹è§’çº¿çš„äº¤ç‚¹    å‚æ•°ï¼šè£å‰ªæ¡†å¯¹è§’çº¿çš„èµ·ç‚¹ï¼Œè£å‰ªæ¡†å¯¹è§’çº¿çš„ç»ˆç‚¹ï¼Œå¾…è£å‰ªçº¿çš„èµ·ç‚¹ï¼Œå¾…è£å‰ªçº¿çš„ç»ˆç‚¹
 CMFCOpenGL01Doc::vertex_coded CMFCOpenGL01Doc::get_mid_point(vertex diagonal_vertex_a, vertex diagonal_vertex_b, vertex_coded va, vertex_coded vb) {
     int a = vb.x - va.x;
     int b = diagonal_vertex_a.x - diagonal_vertex_b.x;
@@ -1099,30 +1240,30 @@ CMFCOpenGL01Doc::vertex_coded CMFCOpenGL01Doc::get_mid_point(vertex diagonal_ver
 
 
 
-//Sutherland-Hodgman£¨Öğ±ß²Ã¼ô£©·¨¶à±ßĞÎ²Ã¼ô£¨·µ»Ø²Ã¼ôÍê³ÉµÄĞÂ¶à±ßĞÎ£©    ²ÎÊı£º²Ã¼ô´°¿Ú·¶Î§µÄ×óÉÏ·½µã×ø±ê£¬²Ã¼ô´°¿Ú·¶Î§µÄÓÒÏÂ·½µã×ø±ê£¬´ı²Ã¼ôµÄ¶à±ßĞÎ
+//Sutherland-Hodgmanï¼ˆé€è¾¹è£å‰ªï¼‰æ³•å¤šè¾¹å½¢è£å‰ªï¼ˆè¿”å›è£å‰ªå®Œæˆçš„æ–°å¤šè¾¹å½¢ï¼‰    å‚æ•°ï¼šè£å‰ªçª—å£èŒƒå›´çš„å·¦ä¸Šæ–¹ç‚¹åæ ‡ï¼Œè£å‰ªçª—å£èŒƒå›´çš„å³ä¸‹æ–¹ç‚¹åæ ‡ï¼Œå¾…è£å‰ªçš„å¤šè¾¹å½¢
 CMFCOpenGL01Doc::polygon CMFCOpenGL01Doc::polygon_cut_Sutherland_Hodgman(vertex window_vertex_left_top, vertex window_vertex_right_bottom, polygon src_polygon) {
 
     polygon p1, p2, p3, p4;
     vertex vs, vp; //s->p
-                   //×ó±ß¿ò²Ã¼ô
+                   //å·¦è¾¹æ¡†è£å‰ª
     for (int i = 0; i < src_polygon.vertex_num; i++) {
         vs = src_polygon.vertexes[i];
         if (i == src_polygon.vertex_num - 1) vp = src_polygon.vertexes[0];
         else vp = src_polygon.vertexes[i + 1];
 
-        if (vs.x >= window_vertex_left_top.x && vp.x >= window_vertex_left_top.x) { //Çé¿öÒ»£ºs¡¢p¶¼ÔÚÄÚ²à£¬Êä³öp
+        if (vs.x >= window_vertex_left_top.x && vp.x >= window_vertex_left_top.x) { //æƒ…å†µä¸€ï¼šsã€péƒ½åœ¨å†…ä¾§ï¼Œè¾“å‡ºp
             p1.vertexes.push_back(vp);
             p1.vertex_num++;
         }
-        if (vs.x < window_vertex_left_top.x && vp.x < window_vertex_left_top.x) { //Çé¿ö¶ş£ºs¡¢p¶¼ÔÚÍâ²à£¬ÎŞÊä³ö
+        if (vs.x < window_vertex_left_top.x && vp.x < window_vertex_left_top.x) { //æƒ…å†µäºŒï¼šsã€péƒ½åœ¨å¤–ä¾§ï¼Œæ— è¾“å‡º
             continue;
         }
-        if (vs.x >= window_vertex_left_top.x && vp.x < window_vertex_left_top.x) { //Çé¿öÈı£ºsÔÚÄÚ²à£¬pÔÚÍâ²à£¬Êä³ö½»µãi
+        if (vs.x >= window_vertex_left_top.x && vp.x < window_vertex_left_top.x) { //æƒ…å†µä¸‰ï¼šsåœ¨å†…ä¾§ï¼Œpåœ¨å¤–ä¾§ï¼Œè¾“å‡ºäº¤ç‚¹i
             vertex vi(window_vertex_left_top.x, get_intersection_point(vs, vp, window_vertex_left_top.x, true));
             p1.vertexes.push_back(vi);
             p1.vertex_num++;
         }
-        if (vs.x < window_vertex_left_top.x && vp.x >= window_vertex_left_top.x) { //Çé¿öËÄ£ºsÔÚÍâ²à£¬pÔÚÄÚ²à£¬Êä³öiºÍp
+        if (vs.x < window_vertex_left_top.x && vp.x >= window_vertex_left_top.x) { //æƒ…å†µå››ï¼šsåœ¨å¤–ä¾§ï¼Œpåœ¨å†…ä¾§ï¼Œè¾“å‡ºiå’Œp
             vertex vi(window_vertex_left_top.x, get_intersection_point(vs, vp, window_vertex_left_top.x, true));
             p1.vertexes.push_back(vi);
             p1.vertexes.push_back(vp);
@@ -1130,25 +1271,25 @@ CMFCOpenGL01Doc::polygon CMFCOpenGL01Doc::polygon_cut_Sutherland_Hodgman(vertex 
         }
     }
 
-    //ÉÏ±ß¿ò²Ã¼ô
+    //ä¸Šè¾¹æ¡†è£å‰ª
     for (int i = 0; i < p1.vertex_num; i++) {
         vs = p1.vertexes[i];
         if (i == p1.vertex_num - 1) vp = p1.vertexes[0];
         else vp = p1.vertexes[i + 1];
 
-        if (vs.y <= window_vertex_left_top.y && vp.y <= window_vertex_left_top.y) { //Çé¿öÒ»£ºs¡¢p¶¼ÔÚÄÚ²à£¬Êä³öp
+        if (vs.y <= window_vertex_left_top.y && vp.y <= window_vertex_left_top.y) { //æƒ…å†µä¸€ï¼šsã€péƒ½åœ¨å†…ä¾§ï¼Œè¾“å‡ºp
             p2.vertexes.push_back(vp);
             p2.vertex_num++;
         }
-        if (vs.y > window_vertex_left_top.y && vp.y > window_vertex_left_top.y) { //Çé¿ö¶ş£ºs¡¢p¶¼ÔÚÍâ²à£¬ÎŞÊä³ö
+        if (vs.y > window_vertex_left_top.y && vp.y > window_vertex_left_top.y) { //æƒ…å†µäºŒï¼šsã€péƒ½åœ¨å¤–ä¾§ï¼Œæ— è¾“å‡º
             continue;
         }
-        if (vs.y <= window_vertex_left_top.y && vp.y > window_vertex_left_top.y) { //Çé¿öÈı£ºsÔÚÄÚ²à£¬pÔÚÍâ²à£¬Êä³ö½»µãi
+        if (vs.y <= window_vertex_left_top.y && vp.y > window_vertex_left_top.y) { //æƒ…å†µä¸‰ï¼šsåœ¨å†…ä¾§ï¼Œpåœ¨å¤–ä¾§ï¼Œè¾“å‡ºäº¤ç‚¹i
             vertex vi(get_intersection_point(vs, vp, window_vertex_left_top.y, false), window_vertex_left_top.y);
             p2.vertexes.push_back(vi);
             p2.vertex_num++;
         }
-        if (vs.y > window_vertex_left_top.y && vp.y <= window_vertex_left_top.y) { //Çé¿öËÄ£ºsÔÚÍâ²à£¬pÔÚÄÚ²à£¬Êä³öiºÍp
+        if (vs.y > window_vertex_left_top.y && vp.y <= window_vertex_left_top.y) { //æƒ…å†µå››ï¼šsåœ¨å¤–ä¾§ï¼Œpåœ¨å†…ä¾§ï¼Œè¾“å‡ºiå’Œp
             vertex vi(get_intersection_point(vs, vp, window_vertex_left_top.y, false), window_vertex_left_top.y);
             p2.vertexes.push_back(vi);
             p2.vertexes.push_back(vp);
@@ -1156,25 +1297,25 @@ CMFCOpenGL01Doc::polygon CMFCOpenGL01Doc::polygon_cut_Sutherland_Hodgman(vertex 
         }
     }
 
-    //ÓÒ±ß¿ò²Ã¼ô
+    //å³è¾¹æ¡†è£å‰ª
     for (int i = 0; i < p2.vertex_num; i++) {
         vs = p2.vertexes[i];
         if (i == p2.vertex_num - 1) vp = p2.vertexes[0];
         else vp = p2.vertexes[i + 1];
 
-        if (vs.x <= window_vertex_right_bottom.x && vp.x <= window_vertex_right_bottom.x) { //Çé¿öÒ»£ºs¡¢p¶¼ÔÚÄÚ²à£¬Êä³öp
+        if (vs.x <= window_vertex_right_bottom.x && vp.x <= window_vertex_right_bottom.x) { //æƒ…å†µä¸€ï¼šsã€péƒ½åœ¨å†…ä¾§ï¼Œè¾“å‡ºp
             p3.vertexes.push_back(vp);
             p3.vertex_num++;
         }
-        if (vs.x > window_vertex_right_bottom.x && vp.x > window_vertex_right_bottom.x) { //Çé¿ö¶ş£ºs¡¢p¶¼ÔÚÍâ²à£¬ÎŞÊä³ö
+        if (vs.x > window_vertex_right_bottom.x && vp.x > window_vertex_right_bottom.x) { //æƒ…å†µäºŒï¼šsã€péƒ½åœ¨å¤–ä¾§ï¼Œæ— è¾“å‡º
             continue;
         }
-        if (vs.x <= window_vertex_right_bottom.x && vp.x > window_vertex_right_bottom.x) { //Çé¿öÈı£ºsÔÚÄÚ²à£¬pÔÚÍâ²à£¬Êä³ö½»µãi
+        if (vs.x <= window_vertex_right_bottom.x && vp.x > window_vertex_right_bottom.x) { //æƒ…å†µä¸‰ï¼šsåœ¨å†…ä¾§ï¼Œpåœ¨å¤–ä¾§ï¼Œè¾“å‡ºäº¤ç‚¹i
             vertex vi(window_vertex_right_bottom.x, get_intersection_point(vs, vp, window_vertex_right_bottom.x, true));
             p3.vertexes.push_back(vi);
             p3.vertex_num++;
         }
-        if (vs.x > window_vertex_right_bottom.x && vp.x <= window_vertex_right_bottom.x) { //Çé¿öËÄ£ºsÔÚÍâ²à£¬pÔÚÄÚ²à£¬Êä³öiºÍp
+        if (vs.x > window_vertex_right_bottom.x && vp.x <= window_vertex_right_bottom.x) { //æƒ…å†µå››ï¼šsåœ¨å¤–ä¾§ï¼Œpåœ¨å†…ä¾§ï¼Œè¾“å‡ºiå’Œp
             vertex vi(window_vertex_right_bottom.x, get_intersection_point(vs, vp, window_vertex_right_bottom.x, true));
             p3.vertexes.push_back(vi);
             p3.vertexes.push_back(vp);
@@ -1182,25 +1323,25 @@ CMFCOpenGL01Doc::polygon CMFCOpenGL01Doc::polygon_cut_Sutherland_Hodgman(vertex 
         }
     }
 
-    //ÏÂ±ß¿ò²Ã¼ô
+    //ä¸‹è¾¹æ¡†è£å‰ª
     for (int i = 0; i < p3.vertex_num; i++) {
         vs = p3.vertexes[i];
         if (i == p3.vertex_num - 1) vp = p3.vertexes[0];
         else vp = p3.vertexes[i + 1];
 
-        if (vs.y >= window_vertex_right_bottom.y && vp.y >= window_vertex_right_bottom.y) { //Çé¿öÒ»£ºs¡¢p¶¼ÔÚÄÚ²à£¬Êä³öp
+        if (vs.y >= window_vertex_right_bottom.y && vp.y >= window_vertex_right_bottom.y) { //æƒ…å†µä¸€ï¼šsã€péƒ½åœ¨å†…ä¾§ï¼Œè¾“å‡ºp
             p4.vertexes.push_back(vp);
             p4.vertex_num++;
         }
-        if (vs.y < window_vertex_right_bottom.y && vp.y < window_vertex_right_bottom.y) { //Çé¿ö¶ş£ºs¡¢p¶¼ÔÚÍâ²à£¬ÎŞÊä³ö
+        if (vs.y < window_vertex_right_bottom.y && vp.y < window_vertex_right_bottom.y) { //æƒ…å†µäºŒï¼šsã€péƒ½åœ¨å¤–ä¾§ï¼Œæ— è¾“å‡º
             continue;
         }
-        if (vs.y >= window_vertex_right_bottom.y && vp.y < window_vertex_right_bottom.y) { //Çé¿öÈı£ºsÔÚÄÚ²à£¬pÔÚÍâ²à£¬Êä³ö½»µãi
+        if (vs.y >= window_vertex_right_bottom.y && vp.y < window_vertex_right_bottom.y) { //æƒ…å†µä¸‰ï¼šsåœ¨å†…ä¾§ï¼Œpåœ¨å¤–ä¾§ï¼Œè¾“å‡ºäº¤ç‚¹i
             vertex vi(get_intersection_point(vs, vp, window_vertex_right_bottom.y, false), window_vertex_right_bottom.y);
             p4.vertexes.push_back(vi);
             p4.vertex_num++;
         }
-        if (vs.y < window_vertex_right_bottom.y && vp.y >= window_vertex_right_bottom.y) { //Çé¿öËÄ£ºsÔÚÍâ²à£¬pÔÚÄÚ²à£¬Êä³öiºÍp
+        if (vs.y < window_vertex_right_bottom.y && vp.y >= window_vertex_right_bottom.y) { //æƒ…å†µå››ï¼šsåœ¨å¤–ä¾§ï¼Œpåœ¨å†…ä¾§ï¼Œè¾“å‡ºiå’Œp
             vertex vi(get_intersection_point(vs, vp, window_vertex_right_bottom.y, false), window_vertex_right_bottom.y);
             p4.vertexes.push_back(vi);
             p4.vertexes.push_back(vp);
@@ -1211,12 +1352,12 @@ CMFCOpenGL01Doc::polygon CMFCOpenGL01Doc::polygon_cut_Sutherland_Hodgman(vertex 
     return p4;
 }
 
-//Çó³öÖ±ÏßºÍ²Ã¼ô¿òµÄ½»µã£¨·µ»Ø½»µã´¦µÄÊıÖµ£©    ²ÎÊı£º´ı²Ã¼ôµÄÏßµÄÆğÊ¼µã£¬´ı²Ã¼ôµÄÏßµÄ½áÊøµã£¬²Ã¼ôÏß¿òµÄÄ³Ò»ÌõÏßx=value»òy=valueµÄvalueÖµ£¬ÊÇx=»¹ÊÇy=£¨trueÎªx£¬falseÎªy£©
+//æ±‚å‡ºç›´çº¿å’Œè£å‰ªæ¡†çš„äº¤ç‚¹ï¼ˆè¿”å›äº¤ç‚¹å¤„çš„æ•°å€¼ï¼‰    å‚æ•°ï¼šå¾…è£å‰ªçš„çº¿çš„èµ·å§‹ç‚¹ï¼Œå¾…è£å‰ªçš„çº¿çš„ç»“æŸç‚¹ï¼Œè£å‰ªçº¿æ¡†çš„æŸä¸€æ¡çº¿x=valueæˆ–y=valueçš„valueå€¼ï¼Œæ˜¯x=è¿˜æ˜¯y=ï¼ˆtrueä¸ºxï¼Œfalseä¸ºyï¼‰
 int CMFCOpenGL01Doc::get_intersection_point(vertex vb, vertex ve, int value, bool flag) {
 
     int result = 0;
 
-    if (flag) { //ÓëÖ±Ïßx=valueÏà½»£¬·µ»Øy
+    if (flag) { //ä¸ç›´çº¿x=valueç›¸äº¤ï¼Œè¿”å›y
         if (vb.y == ve.y) { //k=0
             result = vb.y;
         }
@@ -1226,8 +1367,8 @@ int CMFCOpenGL01Doc::get_intersection_point(vertex vb, vertex ve, int value, boo
             result = k*value + b;
         }
     }
-    else { //ÓëÖ±Ïßy=valueÏà½»£¬·µ»Øx
-        if (vb.x == ve.x) { //k²»´æÔÚ
+    else { //ä¸ç›´çº¿y=valueç›¸äº¤ï¼Œè¿”å›x
+        if (vb.x == ve.x) { //kä¸å­˜åœ¨
             result = vb.x;
         }
         else {
@@ -1240,7 +1381,7 @@ int CMFCOpenGL01Doc::get_intersection_point(vertex vb, vertex ve, int value, boo
     return result;
 }
 
-//»æÖÆ¶à±ßĞÎ    ²ÎÊı£ºPDC£¬ÑÕÉ«£¬¶¥µã¸öÊı£¬¶à±ßĞÎ
+//ç»˜åˆ¶å¤šè¾¹å½¢    å‚æ•°ï¼šPDCï¼Œé¢œè‰²ï¼Œé¡¶ç‚¹ä¸ªæ•°ï¼Œå¤šè¾¹å½¢
 void CMFCOpenGL01Doc::draw_polygon(CDC *pDC, COLORREF color, polygon p) {
     for (int i = 0; i < p.vertex_num - 1; i++)
         line_midpoint(pDC, color, p.vertexes[i].x, p.vertexes[i].y, p.vertexes[i + 1].x, p.vertexes[i + 1].y);
@@ -1258,17 +1399,16 @@ void CMFCOpenGL01Doc::draw_polygon(CDC *pDC, COLORREF color, polygon p) {
 
 
 
-///¶şÎ¬Í¼ĞÎ±ä»»Ëã·¨ ¿ªÊ¼
+///äºŒç»´å›¾å½¢å˜æ¢ç®—æ³• å¼€å§‹
 
-//Æ½ÒÆ
+//å¹³ç§»
 void CMFCOpenGL01Doc::transform_translate(){
 }
 
-//¶à±ßĞÎĞı×ª±ä»»    ²ÎÊı£ºPDC£¬ÑÕÉ«£¬Ô­Ê¼¶à±ßĞÎ£¬Ğı×ªÖĞĞÄµã£¬Ğı×ª½Ç¶È£¨½Ç¶ÈÖÆ£¬ÓĞÕı¸º£©
+//å¤šè¾¹å½¢æ—‹è½¬å˜æ¢    å‚æ•°ï¼šPDCï¼Œé¢œè‰²ï¼ŒåŸå§‹å¤šè¾¹å½¢ï¼Œæ—‹è½¬ä¸­å¿ƒç‚¹ï¼Œæ—‹è½¬è§’åº¦ï¼ˆè§’åº¦åˆ¶ï¼Œæœ‰æ­£è´Ÿï¼‰
 void CMFCOpenGL01Doc::transform_rotate_polygon(CDC *pDC, COLORREF color, polygon src_polygon, vertex center, int angle) {
 
-    double pi = 3.1415926;
-    double arc = pi / 180.0*angle; //×ª»¡¶ÈÖÆ
+    double arc = pi / 180.0*angle; //è½¬å¼§åº¦åˆ¶
 
     polygon res_polygon = src_polygon;
     for (int i = 0; i < res_polygon.vertex_num; i++) {
@@ -1283,39 +1423,39 @@ void CMFCOpenGL01Doc::transform_rotate_polygon(CDC *pDC, COLORREF color, polygon
 }
 
 
-//Ğı×ª
+//æ—‹è½¬
 void CMFCOpenGL01Doc::transform_rotate(){
 
 
 
 }
 
-//Ëõ·Å
+//ç¼©æ”¾
 void CMFCOpenGL01Doc::transform_scale(){
 
 
 }
 
 
-//¶Ô³Æ
+//å¯¹ç§°
 void CMFCOpenGL01Doc::transform_symmetry(){
 
 
 }
-//´íÇĞ
+//é”™åˆ‡
 void CMFCOpenGL01Doc::transform_shear(){
 
 
 }
 
 
-//·ÂÉä
+//ä»¿å°„
 void CMFCOpenGL01Doc::transform_affline(){
 
 
 }
 
-//¸´ºÏ
+//å¤åˆ
 void CMFCOpenGL01Doc::transform_compound(){
 
 

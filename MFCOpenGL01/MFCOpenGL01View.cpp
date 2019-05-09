@@ -130,7 +130,6 @@ CMFCOpenGL01Doc* CMFCOpenGL01View::GetDocument() const // 非调试版本是内联的
 
 // CMFCOpenGL01View 消息处理程序
 
-
 void CMFCOpenGL01View::OnDraw(CDC* pDC){
     
     CMFCOpenGL01Doc* pDoc = GetDocument();
@@ -143,8 +142,9 @@ void CMFCOpenGL01View::OnDraw(CDC* pDC){
 
     //作业
     COLORREF red = RGB(255, 0, 0), green = RGB(0, 255, 0), blue = RGB(0 ,0 ,255),  black = RGB(0, 0, 0);
-
+    
     m_pDoc->flush_all_drawing(pDC);
+    
 
 
     if (EntName.Compare(_T("bmp")) == 0){
@@ -332,6 +332,7 @@ std::vector<CPoint> temp_ps;
 void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
 {
     CDC *dc1 = GetDC();
+    
 
     if (m_pDoc->m_operation == 2) {
         oldPoint = point;
@@ -467,7 +468,7 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
         else if (m_pDoc->circle_oval_type == 1) m_pDoc->circle_oval_midpoint_cpen(dc2, m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);
         else if (m_pDoc->circle_oval_type == 2) m_pDoc->circle_oval_midpoint_cpen(dc2, m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);
 
-        m_pDoc->v_oval_circle.push_back(CMFCOpenGL01Doc::d_oval_circle(CPoint(x0, y0), a, b, m_pDoc->circle_oval_type, m_pDoc->m_size, m_pDoc->m_color));
+        m_pDoc->v_oval_circle.push_back(CMFCOpenGL01Doc::d_oval_circle(CPoint(x0, y0), a, b, 0, m_pDoc->circle_oval_type, m_pDoc->m_size, m_pDoc->m_color));
     }
     else if (m_pDoc->m_operation == 5) {
         //抹去最后一次的作图提示线
