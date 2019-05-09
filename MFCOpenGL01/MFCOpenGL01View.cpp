@@ -46,7 +46,6 @@ END_MESSAGE_MAP()
 
 // CMFCOpenGL01View 构造/析构
 
-
 CMFCOpenGL01View::CMFCOpenGL01View()
 {   
     m_RectTracker.m_rect.SetRect(0, 0, 0, 0);
@@ -144,19 +143,14 @@ void CMFCOpenGL01View::OnDraw(CDC* pDC){
 
     //作业
     COLORREF red = RGB(255, 0, 0), green = RGB(0, 255, 0), blue = RGB(0 ,0 ,255),  black = RGB(0, 0, 0);
-    
+
+    m_pDoc->flush_all_drawing(pDC);
+
+
     if (EntName.Compare(_T("bmp")) == 0){
         ShowBitmap(pDC, BmpName);               //显示图片
         EntName = "";
     }
-    /*
-    FillPath
-    FillRect 填矩形 √
-    FillRgn
-    PolyPolygon 填多边形，带黑色边框 √
-    FloodFill 填最小的封闭区域 （默认为FLOODFILLBORDER）√
-    ExtFloodFill 带模式填封闭区域（FLOODFILLBORDER 指定边界颜色，FLOODFILLSURFACE 指定需要覆盖的颜色）√
-    */
     
 }
 
@@ -173,8 +167,10 @@ void CMFCOpenGL01View::OnDrawRuler()
     // TODO: 在此添加命令处理程序代码
 
     //简单刻度（每50像素一刻度）
-    for (int i = 0; i <= 1920; i += 50) m_pDoc->line_dda(GetDC(), RGB(0, 0, 0), i, 0, i, 10);
-    for (int i = 0; i <= 1920; i += 50) m_pDoc->line_dda(GetDC(), RGB(0, 0, 0), 0, i, 10, i);
+    CDC* dc1 = GetDC();
+    for (int i = 0; i <= 1920; i += 50) m_pDoc->line_dda(dc1, RGB(0, 0, 0), i, 0, i, 10);
+    for (int i = 0; i <= 1920; i += 50) m_pDoc->line_dda(dc1, RGB(0, 0, 0), 0, i, 10, i);
+    ReleaseDC(dc1);
 }
 
 void CMFCOpenGL01View::OnDrawOrtho()
@@ -183,8 +179,10 @@ void CMFCOpenGL01View::OnDrawOrtho()
 
     //模拟笛卡尔坐标系（坐标原点在(900,400)，每隔50像素为单位1）
     int xx = 900, yy = 400;
-    m_pDoc->line_dda(GetDC(), RGB(0, 0, 0), xx, 0, xx, 1080); for (int j = 0; j <= 1080; j += 50)  m_pDoc->line_dda(GetDC(), RGB(0, 0, 0), xx, j, xx + 10, j);
-    m_pDoc->line_dda(GetDC(), RGB(0, 0, 0), 0, yy, 1960, yy); for (int j = 0; j <= 1920; j += 50)  m_pDoc->line_dda(GetDC(), RGB(0, 0, 0), j, yy - 10, j, yy);
+    CDC* dc1 = GetDC();
+    m_pDoc->line_dda(dc1, RGB(0, 0, 0), xx, 0, xx, 1080); for (int j = 0; j <= 1080; j += 50)  m_pDoc->line_dda(dc1, RGB(0, 0, 0), xx, j, xx + 10, j);
+    m_pDoc->line_dda(dc1, RGB(0, 0, 0), 0, yy, 1960, yy); for (int j = 0; j <= 1920; j += 50)  m_pDoc->line_dda(dc1, RGB(0, 0, 0), j, yy - 10, j, yy);
+    ReleaseDC(dc1);
 }
 
 
@@ -327,11 +325,14 @@ BOOL CMFCOpenGL01View::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 CPoint parentPoint, oldPoint, newPoint;
 //备份目标区域的内容，选择框再次移到别的地方去需要填回去
 CRect rect_parent, rect_old, rect_new;
-CDC dc_backup;
 int clk_inside = 0;
+
+std::vector<CPoint> temp_ps;
 
 void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
 {
+    CDC *dc1 = GetDC();
+
     if (m_pDoc->m_operation == 2) {
         oldPoint = point;
         newPoint = point;
@@ -354,9 +355,12 @@ void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
             oldPoint = point;
             newPoint = point;
             m_pDoc->is_drawing_polygon = TRUE;
+            temp_ps.clear();
+            temp_ps.push_back(parentPoint);
         }
         else {
             newPoint = point;
+            temp_ps.push_back(newPoint);
         }
     }
     else if (m_pDoc->m_operation == 20) {
@@ -379,7 +383,7 @@ void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
 
             if (clk_inside > 0) {
                 rect_parent.top--; rect_parent.bottom++; rect_parent.left--; rect_parent.right++;
-                GetDC()->FillSolidRect(rect_parent, RGB(255, 255, 255));
+                dc1->FillSolidRect(rect_parent, RGB(255, 255, 255));
             }
             
             clk_inside = 0;
@@ -393,9 +397,9 @@ void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
 
             m_RectTracker.Track(this, point, TRUE);
             //Invalidate(TRUE);
-            m_RectTracker.Draw(GetDC());
+            m_RectTracker.Draw(dc1);
 
-            BitBlt(GetDC()->m_hDC, rect_old.TopLeft().x, rect_old.TopLeft().y, rect_old.Width(), rect_old.Height(), dc_backup.m_hDC, 0, 0, SRCCOPY);
+            //BitBlt(GetDC()->m_hDC, rect_old.TopLeft().x, rect_old.TopLeft().y, rect_old.Width(), rect_old.Height(), dc_backup.m_hDC, 0, 0, SRCCOPY);
 
             rect_new = m_RectTracker.m_rect;
             int x = m_RectTracker.m_rect.TopLeft().x, y = m_RectTracker.m_rect.TopLeft().y;
@@ -406,97 +410,106 @@ void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
 
             
             //绘制图像
-            BitBlt(GetDC()->m_hDC, x, y, width, height, GetDC()->m_hDC, rect_old.TopLeft().x, rect_old.TopLeft().y, SRCCOPY);
+            BitBlt(GetDC()->m_hDC, x, y, width, height, dc1->m_hDC, rect_old.TopLeft().x, rect_old.TopLeft().y, SRCCOPY);
 
             rect_old.top--; rect_old.bottom++; rect_old.left--; rect_old.right++;
-            GetDC()->FillSolidRect(rect_old, RGB(255, 255, 255));
+            dc1->FillSolidRect(rect_old, RGB(255, 255, 255));
         }
     }
 
+    ReleaseDC(dc1);
     CView::OnLButtonDown(nFlags, point);
 }
 
-CDC *dc2;
 
 void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
 {
-    dc2 = GetDC();
-    dc2->SetROP2(R2_NOT);
+    CDC* dc1 = GetDC(), *dc2 = GetDC();
+    dc1->SetROP2(R2_NOT);
 
     if (m_pDoc->m_operation == 1) {
-        if (m_pDoc->point_type == 0)
-            m_pDoc->point_circle(GetDC(), m_pDoc->m_color, point.x, point.y, m_pDoc->m_size);
+        if (m_pDoc->point_type == 0) m_pDoc->point_circle(dc2, m_pDoc->m_color, point.x, point.y, m_pDoc->m_size);
+        if (m_pDoc->point_type == 1) m_pDoc->point_cross(dc2, m_pDoc->m_color, point.x, point.y, m_pDoc->m_size);
+        if (m_pDoc->point_type == 2) m_pDoc->point_rhombus(dc2, m_pDoc->m_color, point.x, point.y, m_pDoc->m_size);
 
-        if (m_pDoc->point_type == 1)
-            m_pDoc->point_cross(GetDC(), m_pDoc->m_color, point.x, point.y, m_pDoc->m_size);
-
-        if (m_pDoc->point_type == 2)
-            m_pDoc->point_rhombus(GetDC(), m_pDoc->m_color, point.x, point.y, m_pDoc->m_size);
+        m_pDoc->v_point.push_back(CMFCOpenGL01Doc::d_point(point, m_pDoc->point_type, m_pDoc->m_size, m_pDoc->m_color));
     }
     else if (m_pDoc->m_operation == 2) {
         //抹去最后一次的作图提示线
-        dc2->MoveTo(oldPoint);
-        dc2->LineTo(newPoint);
+        dc1->MoveTo(oldPoint);
+        dc1->LineTo(newPoint);
 
-        if (m_pDoc->line_type == 0) m_pDoc->line_dda_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, point.x, point.y, m_pDoc->m_size);
-        else if (m_pDoc->line_type == 1) m_pDoc->line_midpoint_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, point.x, point.y, m_pDoc->m_size);
-        else if (m_pDoc->line_type == 2) m_pDoc->line_bresenham_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, point.x, point.y, m_pDoc->m_size);
+        if (m_pDoc->line_type == 0) m_pDoc->line_dda_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, point.x, point.y, m_pDoc->m_size);
+        else if (m_pDoc->line_type == 1) m_pDoc->line_midpoint_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, point.x, point.y, m_pDoc->m_size);
+        else if (m_pDoc->line_type == 2) m_pDoc->line_bresenham_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, point.x, point.y, m_pDoc->m_size);
+
+        m_pDoc->v_line.push_back(CMFCOpenGL01Doc::d_line(oldPoint, newPoint, m_pDoc->line_type, m_pDoc->m_size, m_pDoc->m_color));
     }
     else if (m_pDoc->m_operation == 3) {
         int radius = std::sqrt((newPoint.x - oldPoint.x)*(newPoint.x - oldPoint.x) + ((newPoint.y - oldPoint.y)*(newPoint.y - oldPoint.y)));
         
         //抹去最后一次的作图提示线
-        dc2->Arc(CRect(oldPoint.x - radius, oldPoint.y - radius, oldPoint.x + radius, oldPoint.y + radius), CPoint(0, 0), CPoint(0, 0));
+        dc1->Arc(CRect(oldPoint.x - radius, oldPoint.y - radius, oldPoint.x + radius, oldPoint.y + radius), CPoint(0, 0), CPoint(0, 0));
         
-        if (m_pDoc->circle_perfect_type == 0) m_pDoc->circle_perfect_bresenham_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, radius, m_pDoc->m_size);
-        else if (m_pDoc->circle_perfect_type == 1) m_pDoc->circle_perfect_midpoint_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, radius, m_pDoc->m_size);
-        else if (m_pDoc->circle_perfect_type == 2) m_pDoc->circle_perfect_midpoint_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, radius, m_pDoc->m_size);
+        if (m_pDoc->circle_perfect_type == 0) m_pDoc->circle_perfect_bresenham_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, radius, m_pDoc->m_size);
+        else if (m_pDoc->circle_perfect_type == 1) m_pDoc->circle_perfect_midpoint_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, radius, m_pDoc->m_size);
+        else if (m_pDoc->circle_perfect_type == 2) m_pDoc->circle_perfect_midpoint_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, radius, m_pDoc->m_size);
+
+        m_pDoc->v_perf_circle.push_back(CMFCOpenGL01Doc::d_perf_circle(oldPoint, radius, m_pDoc->circle_perfect_type, m_pDoc->m_size, m_pDoc->m_color));
     }
     else if (m_pDoc->m_operation == 4) {
         //抹去最后一次的作图提示线
-        dc2->Arc(CRect(oldPoint.x, oldPoint.y, newPoint.x, newPoint.y), CPoint(0, 0), CPoint(0, 0));
+        dc1->Arc(CRect(oldPoint.x, oldPoint.y, newPoint.x, newPoint.y), CPoint(0, 0), CPoint(0, 0));
 
         int x0 = (oldPoint.x + newPoint.x) / 2, y0 = (oldPoint.y + newPoint.y) / 2;
         int a = std::abs(x0 - oldPoint.x), b = std::abs(y0 - oldPoint.y);
-        if (m_pDoc->circle_oval_type == 0) m_pDoc->circle_oval_bresenham_cpen(GetDC(), m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);
-        else if (m_pDoc->circle_oval_type == 1) m_pDoc->circle_oval_midpoint_cpen(GetDC(), m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);
-        else if (m_pDoc->circle_oval_type == 2) m_pDoc->circle_oval_midpoint_cpen(GetDC(), m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);
+        if (m_pDoc->circle_oval_type == 0) m_pDoc->circle_oval_bresenham_cpen(dc2, m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);
+        else if (m_pDoc->circle_oval_type == 1) m_pDoc->circle_oval_midpoint_cpen(dc2, m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);
+        else if (m_pDoc->circle_oval_type == 2) m_pDoc->circle_oval_midpoint_cpen(dc2, m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);
+
+        m_pDoc->v_oval_circle.push_back(CMFCOpenGL01Doc::d_oval_circle(CPoint(x0, y0), a, b, m_pDoc->circle_oval_type, m_pDoc->m_size, m_pDoc->m_color));
     }
     else if (m_pDoc->m_operation == 5) {
         //抹去最后一次的作图提示线
-        dc2->MoveTo(oldPoint);
-        dc2->LineTo(newPoint);
-
-        m_pDoc->point_circle(GetDC(), m_pDoc->m_color, newPoint.x, newPoint.y, m_pDoc->m_size);
-        m_pDoc->line_midpoint_cpen(GetDC(), m_pDoc->m_color, oldPoint.x, oldPoint.y, newPoint.x, newPoint.y, m_pDoc->m_size);
+        dc1->MoveTo(oldPoint);
+        dc1->LineTo(newPoint);
+        
+        m_pDoc->point_circle(dc2, m_pDoc->m_color, newPoint.x, newPoint.y, m_pDoc->m_size);
+        m_pDoc->line_midpoint_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, newPoint.x, newPoint.y, m_pDoc->m_size);
 
         oldPoint = newPoint;
     }
     else if (m_pDoc->m_operation == 10) {
-        m_pDoc->flood_fill_cbrush(GetDC(), m_pDoc->m_color, GetDC()->GetPixel(point.x, point.y), point);
+        m_pDoc->flood_fill_cbrush(dc2, m_pDoc->m_color, GetDC()->GetPixel(point.x, point.y), point);
+
+        m_pDoc->v_fill.push_back(CMFCOpenGL01Doc::d_fill(point, m_pDoc->m_color));
     }
     
+    //Invalidate();
+    ReleaseDC(dc2);
+    ReleaseDC(dc1);
     CView::OnLButtonUp(nFlags, point);
 }
 
 
 void CMFCOpenGL01View::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
+    CDC *dc1 = GetDC();
     if (m_pDoc->m_operation == 5) {
-        m_pDoc->line_midpoint_cpen(GetDC(), m_pDoc->m_color, newPoint.x, newPoint.y, parentPoint.x, parentPoint.y, m_pDoc->m_size);
+        m_pDoc->line_midpoint_cpen(dc1, m_pDoc->m_color, newPoint.x, newPoint.y, parentPoint.x, parentPoint.y, m_pDoc->m_size);
         m_pDoc->is_drawing_polygon = FALSE;
+
+        m_pDoc->v_polygon.push_back(CMFCOpenGL01Doc::d_polygon(temp_ps, m_pDoc->m_size, m_pDoc->m_color));
     }
-    
+
+    ReleaseDC(dc1);
     CView::OnLButtonDblClk(nFlags, point);
 }
 
 
-CRect rect_eraser;
-CDC *dc1;
-
 void CMFCOpenGL01View::OnMouseMove(UINT nFlags, CPoint point)
 {
-    dc1 = GetDC();
+    CDC *dc1 = GetDC(), *dc2 = GetDC();
     dc1->SetROP2(R2_NOT);
 
     if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 2) {
@@ -530,12 +543,14 @@ void CMFCOpenGL01View::OnMouseMove(UINT nFlags, CPoint point)
         dc1->LineTo(newPoint);
     }
     if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 30) {
+        CRect rect_eraser;
         rect_eraser.SetRect(CPoint(point.x - 25, point.y - 25), CPoint(point.x + 25, point.y + 25));
-        //GetDC()->FillSolidRect(&rect_eraser, RGB(255, 255, 255));
-        InvalidateRect(rect_eraser);
-
+        dc2->FillSolidRect(&rect_eraser, RGB(255, 255, 255));
+        //InvalidateRect(rect_eraser);
     }
 
+    ReleaseDC(dc2);
+    ReleaseDC(dc1);
     CView::OnMouseMove(nFlags, point);
 }
 

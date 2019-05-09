@@ -7,7 +7,6 @@
 #include "afxdialogex.h"
 
 // DialogLine ¶Ô»°¿ò
-
 IMPLEMENT_DYNAMIC(DialogLine, CDialogEx)
 
 DialogLine::DialogLine(CWnd* pParent /*=NULL*/)

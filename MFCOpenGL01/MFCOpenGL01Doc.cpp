@@ -144,6 +144,62 @@ void CMFCOpenGL01Doc::Dump(CDumpContext& dc) const
 
 
 
+
+
+///刷新所有绘制的图像
+void CMFCOpenGL01Doc::flush_all_drawing(CDC * pDC){
+    
+    for (int i = 0; i < v_point.size(); i++) {
+        if (v_point[i].type == 0) point_circle(pDC, v_point[i].color, v_point[i].p.x, v_point[i].p.y, v_point[i].size);
+        else if(v_point[i].type == 1) point_cross(pDC, v_point[i].color, v_point[i].p.x, v_point[i].p.y, v_point[i].size);
+        else if(v_point[i].type == 2) point_rhombus(pDC, v_point[i].color, v_point[i].p.x, v_point[i].p.y, v_point[i].size);
+    }
+
+    for (int i = 0; i < v_line.size(); i++) {
+        if (v_line[i].type == 0) line_dda_cpen(pDC, v_line[i].color, v_line[i].p1.x, v_line[i].p1.y, v_line[i].p2.x, v_line[i].p2.y, v_line[i].size);
+        else if (v_line[i].type == 1) line_midpoint_cpen(pDC, v_line[i].color, v_line[i].p1.x, v_line[i].p1.y, v_line[i].p2.x, v_line[i].p2.y, v_line[i].size);
+        else if (v_line[i].type == 2) line_bresenham_cpen(pDC, v_line[i].color, v_line[i].p1.x, v_line[i].p1.y, v_line[i].p2.x, v_line[i].p2.y, v_line[i].size);
+    }
+
+    for (int i = 0; i < v_perf_circle.size(); i++) {
+        if (v_perf_circle[i].type == 0) circle_perfect_bresenham_cpen(pDC, v_perf_circle[i].color, v_perf_circle[i].p0.x, v_perf_circle[i].p0.y, v_perf_circle[i].radius, v_perf_circle[i].size);
+        else if(v_perf_circle[i].type == 1) circle_perfect_midpoint_cpen(pDC, v_perf_circle[i].color, v_perf_circle[i].p0.x, v_perf_circle[i].p0.y, v_perf_circle[i].radius, v_perf_circle[i].size);
+        else if (v_perf_circle[i].type == 2) circle_perfect_bresenham_cpen(pDC, v_perf_circle[i].color, v_perf_circle[i].p0.x, v_perf_circle[i].p0.y, v_perf_circle[i].radius, v_perf_circle[i].size);
+    }
+
+    for (int i = 0; i < v_oval_circle.size(); i++) {
+        if (v_oval_circle[i].type == 0) circle_oval_bresenham_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].size);
+        else if (v_oval_circle[i].type == 1) circle_oval_midpoint_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].size);
+        else if (v_oval_circle[i].type == 2) circle_oval_midpoint_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].size);
+    }
+
+    for (int i = 0; i < v_polygon.size(); i++) {
+        draw_polygon_cpen(pDC, v_polygon[i]);
+    }
+
+    for (int i = 0; i < v_fill.size(); i++) {
+        flood_fill_cbrush(pDC, v_fill[i].color, pDC->GetPixel(v_fill[i].p.x, v_fill[i].p.y), v_fill[i].p);
+    }
+
+}
+
+
+
+void CMFCOpenGL01Doc::draw_polygon_cpen(CDC * pDC, d_polygon p){
+
+    for (int i = 0; i < p.ps.size() - 1; i++)
+        line_midpoint_cpen(pDC, p.color, p.ps[i].x, p.ps[i].y, p.ps[i + 1].x, p.ps[i + 1].y, p.size);
+
+    line_midpoint_cpen(pDC, p.color, p.ps[p.ps.size()-1].x, p.ps[p.ps.size()-1].y, p.ps[0].x, p.ps[0].y, p.size);
+
+}
+
+
+
+
+
+
+
 ///画点 开始
 
 //绘制圆形的点
@@ -1204,6 +1260,10 @@ void CMFCOpenGL01Doc::draw_polygon(CDC *pDC, COLORREF color, polygon p) {
 
 ///二维图形变换算法 开始
 
+//平移
+void CMFCOpenGL01Doc::transform_translate(){
+}
+
 //多边形旋转变换    参数：PDC，颜色，原始多边形，旋转中心点，旋转角度（角度制，有正负）
 void CMFCOpenGL01Doc::transform_rotate_polygon(CDC *pDC, COLORREF color, polygon src_polygon, vertex center, int angle) {
 
@@ -1221,6 +1281,46 @@ void CMFCOpenGL01Doc::transform_rotate_polygon(CDC *pDC, COLORREF color, polygon
 
     return;
 }
+
+
+//旋转
+void CMFCOpenGL01Doc::transform_rotate(){
+
+
+
+}
+
+//缩放
+void CMFCOpenGL01Doc::transform_scale(){
+
+
+}
+
+
+//对称
+void CMFCOpenGL01Doc::transform_symmetry(){
+
+
+}
+//错切
+void CMFCOpenGL01Doc::transform_shear(){
+
+
+}
+
+
+//仿射
+void CMFCOpenGL01Doc::transform_affline(){
+
+
+}
+
+//复合
+void CMFCOpenGL01Doc::transform_compound(){
+
+
+}
+
 
 
 

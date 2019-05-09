@@ -106,8 +106,109 @@ public:
 
 
 
+
+    ///所有直接用于绘图的数据结构
+
+    typedef struct draw_point {
+        CPoint p;
+        int type; //指点的类型
+        int size;
+        COLORREF color;
+
+        draw_point(CPoint p, int type, int size, COLORREF color) {
+            this->p = p;
+            this->type = type;
+            this->size = size;
+            this->color = color;
+        }
+    }d_point;
+
+    typedef struct draw_line {
+        CPoint p1, p2;
+        int type; //指线的算法
+        int size;
+        COLORREF color;
+
+        draw_line(CPoint p1, CPoint p2, int type, int size, COLORREF color) {
+            this->p1 = p1;
+            this->p2 = p2;
+            this->type = type;
+            this->size = size;
+            this->color = color;
+        }
+    }d_line;
+
+    typedef struct draw_perfect_circle {
+        CPoint p0;
+        int radius;
+        int type;
+        int size;
+        COLORREF color;
+
+        draw_perfect_circle(CPoint p0, int radius, int type, int size, COLORREF color) {
+            this->p0 = p0;
+            this->radius = radius;
+            this->type = type;
+            this->size = size;
+            this->color = color;
+        }
+    }d_perf_circle;
+
+    typedef struct draw_oval_circle {
+        CPoint p0;
+        int a, b;
+        int type;
+        int size;
+        COLORREF color;
+
+        draw_oval_circle(CPoint p0, int a, int b, int type, int size, COLORREF color) {
+            this->p0 = p0;
+            this->a = a;
+            this->b = b;
+            this->type = type;
+            this->size = size;
+            this->color = color;
+        }
+    }d_oval_circle;
+
+    typedef struct draw_polygon {
+        std::vector<CPoint> ps;
+        int size;
+        COLORREF color;
+
+        draw_polygon(std::vector<CPoint> ps, int size, COLORREF color) {
+            this->ps = ps;
+            this->size = size;
+            this->color = color;
+        }
+    }d_polygon;
+
+    typedef struct draw_fill {
+        CPoint p;
+        COLORREF color;
+
+        draw_fill(CPoint p, COLORREF color) {
+            this->p = p;
+            this->color = color;
+        }
+    }d_fill;
+
+
+
+
 ///绘图数据存储
 public:
+
+    //存储所有绘图内容
+    std::vector<d_point> v_point;
+    std::vector<d_line> v_line;
+    std::vector<d_perf_circle> v_perf_circle;
+    std::vector<d_oval_circle> v_oval_circle;
+    std::vector<d_polygon> v_polygon;
+    std::vector<d_fill> v_fill;
+
+
+
 
     //当前操作、当前颜色、当前线宽
     int m_operation; //0无，1点，2线，3正圆，4椭圆，5多边形，10填充，20/21裁剪，30橡皮擦
@@ -123,6 +224,16 @@ public:
     polygon m_polygon;
     BOOL is_drawing_polygon = FALSE;
 
+
+
+
+
+
+
+    ///刷新所有绘制的图像
+    void flush_all_drawing(CDC *pDC);
+
+    void draw_polygon_cpen(CDC *pDC, d_polygon p);
 
 
 
@@ -144,7 +255,7 @@ public:
 
 
 
-    ///画线算法 开始/
+    ///画线算法 开始
 
     //DDA数值微分法法画线，斜率任意；    参数：pDC，颜色，起点x坐标，起点y坐标，终点x坐标，终点y坐标
     void line_dda(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1);
@@ -268,11 +379,29 @@ public:
 
     ///二维图形变换算法 开始
 
+    //平移
+    void transform_translate();
+
     //多边形旋转变换    参数：PDC，颜色，原始多边形，旋转中心点，旋转角度（角度制，有正负）
     void transform_rotate_polygon(CDC *pDC, COLORREF color, polygon src_polygon, vertex center, int angle);
 
+    //旋转
+    void transform_rotate();
 
+    //缩放
+    void transform_scale();
 
+    //对称
+    void transform_symmetry();
+
+    //错切
+    void transform_shear();
+
+    //仿射
+    void transform_affline();
+
+    //复合
+    void transform_compound();
 
 
 #ifdef SHARED_HANDLERS
