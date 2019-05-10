@@ -333,12 +333,38 @@ void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
 {
     CDC *dc1 = GetDC();
     
+    if (m_pDoc->m_operation == 0) {
+        int sp = m_pDoc->select_point(point);
+        if (sp != -1) {
+            if (m_pDoc->v_point[sp].type == 0) m_pDoc->point_circle(dc1, RGB(255, 0, 128), m_pDoc->v_point[sp].p.x, m_pDoc->v_point[sp].p.y, m_pDoc->v_point[sp].size);
+            else if (m_pDoc->v_point[sp].type == 1) m_pDoc->point_cross(dc1, RGB(255, 0, 128), m_pDoc->v_point[sp].p.x, m_pDoc->v_point[sp].p.y, m_pDoc->v_point[sp].size);
+            else if (m_pDoc->v_point[sp].type == 2) m_pDoc->point_rhombus(dc1, RGB(255, 0, 128), m_pDoc->v_point[sp].p.x, m_pDoc->v_point[sp].p.y, m_pDoc->v_point[sp].size);
+        }
+        if (m_pDoc->selected_point != -1) {
+            int msp = m_pDoc->selected_point;
+            if (m_pDoc->v_point[msp].type == 0) m_pDoc->point_circle(dc1, m_pDoc->v_point[msp].color, m_pDoc->v_point[msp].p.x, m_pDoc->v_point[msp].p.y, m_pDoc->v_point[msp].size);
+            else if (m_pDoc->v_point[msp].type == 1) m_pDoc->point_cross(dc1, m_pDoc->v_point[msp].color, m_pDoc->v_point[msp].p.x, m_pDoc->v_point[msp].p.y, m_pDoc->v_point[msp].size);
+            else if (m_pDoc->v_point[msp].type == 2) m_pDoc->point_rhombus(dc1, m_pDoc->v_point[msp].color, m_pDoc->v_point[msp].p.x, m_pDoc->v_point[msp].p.y, m_pDoc->v_point[msp].size);
+        }
+        m_pDoc->selected_point = sp;
 
-    if (m_pDoc->m_operation == 2) {
-        oldPoint = point;
-        newPoint = point;
+
+        int sl = m_pDoc->select_line(point);
+        if (sl != -1) { //当前选中
+            if (m_pDoc->v_line[sl].type == 0) m_pDoc->line_dda_cpen(dc1, RGB(255, 0, 128), m_pDoc->v_line[sl].p1.x, m_pDoc->v_line[sl].p1.y, m_pDoc->v_line[sl].p2.x, m_pDoc->v_line[sl].p2.y, m_pDoc->v_line[sl].size);
+            else if (m_pDoc->v_line[sl].type == 1) m_pDoc->line_midpoint_cpen(dc1, RGB(255, 0, 128), m_pDoc->v_line[sl].p1.x, m_pDoc->v_line[sl].p1.y, m_pDoc->v_line[sl].p2.x, m_pDoc->v_line[sl].p2.y, m_pDoc->v_line[sl].size);
+            else if (m_pDoc->v_line[sl].type == 2) m_pDoc->line_bresenham_cpen(dc1, RGB(255, 0, 128), m_pDoc->v_line[sl].p1.x, m_pDoc->v_line[sl].p1.y, m_pDoc->v_line[sl].p2.x, m_pDoc->v_line[sl].p2.y, m_pDoc->v_line[sl].size);
+        }
+        if (m_pDoc->selected_line != -1) { //上次选中
+            int msl = m_pDoc->selected_line;
+            if (m_pDoc->v_line[msl].type == 0) m_pDoc->line_dda_cpen(dc1, m_pDoc->v_line[msl].color, m_pDoc->v_line[msl].p1.x, m_pDoc->v_line[msl].p1.y, m_pDoc->v_line[msl].p2.x, m_pDoc->v_line[msl].p2.y, m_pDoc->v_line[msl].size);
+            else if (m_pDoc->v_line[msl].type == 1) m_pDoc->line_midpoint_cpen(dc1, m_pDoc->v_line[msl].color, m_pDoc->v_line[msl].p1.x, m_pDoc->v_line[msl].p1.y, m_pDoc->v_line[msl].p2.x, m_pDoc->v_line[msl].p2.y, m_pDoc->v_line[msl].size);
+            else if (m_pDoc->v_line[msl].type == 2) m_pDoc->line_bresenham_cpen(dc1, m_pDoc->v_line[msl].color, m_pDoc->v_line[msl].p1.x, m_pDoc->v_line[msl].p1.y, m_pDoc->v_line[msl].p2.x, m_pDoc->v_line[msl].p2.y, m_pDoc->v_line[msl].size);
+        }
+        m_pDoc->selected_line = sl;
     }
-    else if (m_pDoc->m_operation == 3) {
+
+    else if (m_pDoc->m_operation == 2) {
         oldPoint = point;
         newPoint = point;
     }

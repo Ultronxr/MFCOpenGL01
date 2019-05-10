@@ -229,14 +229,37 @@ public:
 
 
 
+    //上次被选中的图形
+    int selected_point = -1, selected_line = -1, selected_perfect_circle = -1, selected_oval_circle = -1, selected_polygon = -1;
+
+
+    ///寻找鼠标是否选中图形
+
+    //选中点
+    int select_point(CPoint pos);
+
+    //选中线
+    int select_line(CPoint pos);
+
+    //选中正圆
+    int select_perfect_circle(CPoint pos);
+
+    //选中椭圆
+    int select_oval_circle(CPoint pos);
+
+    //选中多边形
+    int select_polygon(CPoint pos);
+    
 
 
 
-    ///刷新所有绘制的图像
+    //刷新所有绘制的图像
     void flush_all_drawing(CDC *pDC);
 
+    //绘制多边形
     void draw_polygon_cpen(CDC *pDC, d_polygon p);
 
+    
 
 
 

@@ -144,9 +144,51 @@ void CMFCOpenGL01Doc::Dump(CDumpContext& dc) const
 
 
 
+///寻找鼠标是否选中图形
+
+int CMFCOpenGL01Doc::select_point(CPoint pos){
+    double am = 0.0;
+    for (int i = 0; i < v_point.size(); i++) {
+        am = sqrt((v_point[i].p.x - pos.x)*(v_point[i].p.x - pos.x) + (v_point[i].p.y - pos.y)*(v_point[i].p.y - pos.y));
+        if (am < (v_point[i].size/2 + 5.0)) return i;
+    }
+    return -1;
+}
+
+int CMFCOpenGL01Doc::select_line(CPoint pos){
+    double am = 0.0, bm = 0.0, ab = 0.0;
+    for (int i = 0; i < v_line.size(); i++) {
+        am = sqrt((v_line[i].p1.x - pos.x)*(v_line[i].p1.x - pos.x) + (v_line[i].p1.y - pos.y)*(v_line[i].p1.y - pos.y));
+        bm = sqrt((v_line[i].p2.x - pos.x)*(v_line[i].p2.x - pos.x) + (v_line[i].p2.y - pos.y)*(v_line[i].p2.y - pos.y));
+        ab = sqrt((v_line[i].p1.x - v_line[i].p2.x)*(v_line[i].p1.x - v_line[i].p2.x) + (v_line[i].p1.y - v_line[i].p2.y)*(v_line[i].p1.y - v_line[i].p2.y));
+        if (abs(am + bm - ab) < 5.0) return i;
+    }
+    return -1;
+}
+
+int CMFCOpenGL01Doc::select_perfect_circle(CPoint pos){
 
 
-///刷新所有绘制的图像
+    return -1;
+}
+
+int CMFCOpenGL01Doc::select_oval_circle(CPoint pos){
+
+
+    return -1;
+}
+
+int CMFCOpenGL01Doc::select_polygon(CPoint pos){
+
+
+    return -1;
+}
+
+
+
+
+
+//刷新所有绘制的图像
 void CMFCOpenGL01Doc::flush_all_drawing(CDC * pDC){
     
     for (int i = 0; i < v_point.size(); i++) {
@@ -184,8 +226,7 @@ void CMFCOpenGL01Doc::flush_all_drawing(CDC * pDC){
 
 }
 
-
-
+//绘制多边形
 void CMFCOpenGL01Doc::draw_polygon_cpen(CDC * pDC, d_polygon p){
 
     for (int i = 0; i < p.ps.size() - 1; i++)
