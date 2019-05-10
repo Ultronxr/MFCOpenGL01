@@ -235,6 +235,8 @@ public:
 
     ///寻找鼠标是否选中图形
 
+    void select_all(CDC *pDC, CPoint point);
+
     //选中点
     int select_point(CPoint pos);
 

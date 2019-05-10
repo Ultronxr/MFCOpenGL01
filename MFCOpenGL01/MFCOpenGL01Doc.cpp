@@ -146,18 +146,74 @@ void CMFCOpenGL01Doc::Dump(CDumpContext& dc) const
 
 ///寻找鼠标是否选中图形
 
+void CMFCOpenGL01Doc::select_all(CDC * pDC, CPoint point){
+
+    //选点
+    int sp = select_point(point);
+    if (sp != -1) { //当前选中
+        if (v_point[sp].type == 0) point_circle(pDC, RGB(255, 0, 128), v_point[sp].p.x, v_point[sp].p.y, v_point[sp].size);
+        else if (v_point[sp].type == 1) point_cross(pDC, RGB(255, 0, 128), v_point[sp].p.x, v_point[sp].p.y, v_point[sp].size);
+        else if (v_point[sp].type == 2) point_rhombus(pDC, RGB(255, 0, 128), v_point[sp].p.x, v_point[sp].p.y, v_point[sp].size);
+    }
+    if (selected_point != -1 && selected_point != sp) { //上次选中
+        int msp = selected_point;
+        if (v_point[msp].type == 0) point_circle(pDC, v_point[msp].color, v_point[msp].p.x, v_point[msp].p.y, v_point[msp].size);
+        else if (v_point[msp].type == 1) point_cross(pDC, v_point[msp].color, v_point[msp].p.x, v_point[msp].p.y, v_point[msp].size);
+        else if (v_point[msp].type == 2) point_rhombus(pDC, v_point[msp].color, v_point[msp].p.x, v_point[msp].p.y, v_point[msp].size);
+    }
+    selected_point = sp;
+
+    //选线
+    int sl = select_line(point);
+    if (sl != -1) { 
+        if (v_line[sl].type == 0) line_dda_cpen(pDC, RGB(255, 0, 128), v_line[sl].p1.x, v_line[sl].p1.y, v_line[sl].p2.x, v_line[sl].p2.y, v_line[sl].size);
+        else if (v_line[sl].type == 1) line_midpoint_cpen(pDC, RGB(255, 0, 128), v_line[sl].p1.x, v_line[sl].p1.y, v_line[sl].p2.x, v_line[sl].p2.y, v_line[sl].size);
+        else if (v_line[sl].type == 2) line_bresenham_cpen(pDC, RGB(255, 0, 128), v_line[sl].p1.x, v_line[sl].p1.y, v_line[sl].p2.x, v_line[sl].p2.y, v_line[sl].size);
+    }
+    if (selected_line != -1 && selected_line != sl) {
+        int msl = selected_line;
+        if (v_line[msl].type == 0) line_dda_cpen(pDC, v_line[msl].color, v_line[msl].p1.x, v_line[msl].p1.y, v_line[msl].p2.x, v_line[msl].p2.y, v_line[msl].size);
+        else if (v_line[msl].type == 1) line_midpoint_cpen(pDC, v_line[msl].color, v_line[msl].p1.x, v_line[msl].p1.y, v_line[msl].p2.x, v_line[msl].p2.y, v_line[msl].size);
+        else if (v_line[msl].type == 2) line_bresenham_cpen(pDC, v_line[msl].color, v_line[msl].p1.x, v_line[msl].p1.y, v_line[msl].p2.x, v_line[msl].p2.y, v_line[msl].size);
+    }
+    selected_line = sl;
+
+    //选正圆
+    int spc = select_perfect_circle(point);
+    if (spc != -1) {
+        if (v_perf_circle[spc].type == 0) circle_perfect_bresenham_cpen(pDC, RGB(255, 0, 128), v_perf_circle[spc].p0.x, v_perf_circle[spc].p0.y, v_perf_circle[spc].radius, v_perf_circle[spc].size);
+        else if (v_perf_circle[spc].type == 1) circle_perfect_midpoint_cpen(pDC, RGB(255, 0, 128), v_perf_circle[spc].p0.x, v_perf_circle[spc].p0.y, v_perf_circle[spc].radius, v_perf_circle[spc].size);
+        else if (v_perf_circle[spc].type == 2) circle_perfect_midpoint_cpen(pDC, RGB(255, 0, 128), v_perf_circle[spc].p0.x, v_perf_circle[spc].p0.y, v_perf_circle[spc].radius, v_perf_circle[spc].size);
+    }
+    if (selected_perfect_circle != -1 && selected_perfect_circle != spc) {
+        int mspc = selected_perfect_circle;
+        if (v_perf_circle[mspc].type == 0) circle_perfect_bresenham_cpen(pDC, v_perf_circle[mspc].color, v_perf_circle[mspc].p0.x, v_perf_circle[mspc].p0.y, v_perf_circle[mspc].radius, v_perf_circle[mspc].size);
+        else if (v_perf_circle[mspc].type == 1) circle_perfect_midpoint_cpen(pDC, v_perf_circle[mspc].color, v_perf_circle[mspc].p0.x, v_perf_circle[mspc].p0.y, v_perf_circle[mspc].radius, v_perf_circle[mspc].size);
+        else if (v_perf_circle[mspc].type == 2) circle_perfect_midpoint_cpen(pDC, v_perf_circle[mspc].color, v_perf_circle[mspc].p0.x, v_perf_circle[mspc].p0.y, v_perf_circle[mspc].radius, v_perf_circle[mspc].size);
+    }
+    selected_perfect_circle = spc;
+
+    //选椭圆
+}
+
 int CMFCOpenGL01Doc::select_point(CPoint pos){
-    double am = 0.0;
+    double dis = 0.0;
     for (int i = 0; i < v_point.size(); i++) {
-        am = sqrt((v_point[i].p.x - pos.x)*(v_point[i].p.x - pos.x) + (v_point[i].p.y - pos.y)*(v_point[i].p.y - pos.y));
-        if (am < (v_point[i].size/2 + 5.0)) return i;
+        dis = sqrt((v_point[i].p.x - pos.x)*(v_point[i].p.x - pos.x) + (v_point[i].p.y - pos.y)*(v_point[i].p.y - pos.y));
+        if (dis < (v_point[i].size / 2.0 + 5.0)) return i;
     }
     return -1;
 }
 
 int CMFCOpenGL01Doc::select_line(CPoint pos){
+    //double dis = 0.0, a = 0.0, b = 0.0, c = 0.0;
     double am = 0.0, bm = 0.0, ab = 0.0;
     for (int i = 0; i < v_line.size(); i++) {
+        /*a = v_line[i].p2.y - v_line[i].p1.y;
+        b = v_line[i].p1.x - v_line[i].p2.x;
+        c = v_line[i].p2.x*v_line[i].p1.y - v_line[i].p1.x*v_line[i].p2.y;
+        dis = abs((a*pos.x + b*pos.y + c)) / (sqrt(a*a + b*b));
+        if (dis < (v_line[i].size / 2.0 + 5.0)) return i;*/
         am = sqrt((v_line[i].p1.x - pos.x)*(v_line[i].p1.x - pos.x) + (v_line[i].p1.y - pos.y)*(v_line[i].p1.y - pos.y));
         bm = sqrt((v_line[i].p2.x - pos.x)*(v_line[i].p2.x - pos.x) + (v_line[i].p2.y - pos.y)*(v_line[i].p2.y - pos.y));
         ab = sqrt((v_line[i].p1.x - v_line[i].p2.x)*(v_line[i].p1.x - v_line[i].p2.x) + (v_line[i].p1.y - v_line[i].p2.y)*(v_line[i].p1.y - v_line[i].p2.y));
@@ -167,8 +223,11 @@ int CMFCOpenGL01Doc::select_line(CPoint pos){
 }
 
 int CMFCOpenGL01Doc::select_perfect_circle(CPoint pos){
-
-
+    double dis = 0.0;
+    for (int i = 0; i < v_perf_circle.size(); i++) {
+        dis = sqrt((v_perf_circle[i].p0.x - pos.x)*(v_perf_circle[i].p0.x - pos.x) + (v_perf_circle[i].p0.y - pos.y)*(v_perf_circle[i].p0.y - pos.y));
+        if (abs(dis - v_perf_circle[i].radius) < (v_perf_circle[i].size / 2.0 + 5.0)) return i;
+    }
     return -1;
 }
 
