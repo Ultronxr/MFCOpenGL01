@@ -71,3 +71,14 @@
 #include <utility>
 #include <map>
 #include <cmath>
+//向控制台输出信息的头文件
+#include "conio.h"
+/*
+//调试输出信息用的控制台
+::AllocConsole();
+FILE *fp;
+freopen_s(&fp, "CONOUT$", "w+t", stdout);
+_cprintf("a=%d\n", 10);
+//释放调试控制台
+FreeConsole();
+*/

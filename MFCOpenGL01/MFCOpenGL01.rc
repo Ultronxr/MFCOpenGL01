@@ -128,13 +128,13 @@ IDB_PROPERTIES_HC       BITMAP                  "res\\properties_hc.bmp"
 
 IDR_TOOLBAR_DRAW        BITMAP                  "res\\toolbar1.bmp"
 
-IDR_TOOLBAR_COLOR       BITMAP                  "res\\bmp00001.bmp"
-
 IDR_TOOLBAR_TOOLS       BITMAP                  "res\\toolbar2.bmp"
 
 IDR_TOOLBAR_COLORREF    BITMAP                  "res\\bmp00002.bmp"
 
 IDR_TOOLBAR_LINESIZE    BITMAP                  "res\\bmp00003.bmp"
+
+IDR_TOOLBAR_TRANSFORM   BITMAP                  "res\\bmp00004.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -228,6 +228,15 @@ END
 IDR_TOOLBAR_LINESIZE TOOLBAR 16, 15
 BEGIN
     BUTTON      ID_BUTTON32826
+END
+
+IDR_TOOLBAR_TRANSFORM TOOLBAR 16, 15
+BEGIN
+    BUTTON      TOOLBAR_TRANSFORM_TRANSLATE
+    BUTTON      TOOLBAR_TRANSFORM_ROTATE
+    BUTTON      TOOLBAR_TRANSFORM_SCALE
+    BUTTON      TOOLBAR_TRANSFORM_SYMMETRY_LR
+    BUTTON      TOOLBAR_TRANSFORM_SYMMETRY_TB
 END
 
 
@@ -740,6 +749,16 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Cursor
+//
+
+CURSOR_TRANSFORM_ROTATE CURSOR                  "res\\cursor1.cur"
+
+CURSOR_TRANSFORM_SCALE  CURSOR                  "res\\cur00001.cur"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
@@ -914,6 +933,15 @@ BEGIN
     TOOLBAR_TOOLS_MOUSE     "恢复成普通光标模式\n鼠标"
     TOOLBAR_DRAW_POINT      "点绘制工具\n点"
     TOOLBAR_TOOLS_CLEAR     "清空画布\n清空"
+    TOOLBAR_TRANSFORM_TRANSLATE "图形平移工具\n平移"
+    TOOLBAR_TRANSFORM_ROTATE "图形中心旋转工具\n旋转"
+    TOOLBAR_TRANSFORM_SCALE "图形放大/缩小工具\n缩放"
+END
+
+STRINGTABLE
+BEGIN
+    TOOLBAR_TRANSFORM_SYMMETRY_LR "图形左右对称翻转工具\n左右对称"
+    TOOLBAR_TRANSFORM_SYMMETRY_TB "图形上下对称翻转工具\n上下对称"
 END
 
 #endif    // 中文(简体，中国) resources

@@ -212,8 +212,10 @@ public:
 
     double pi = acos(-1.0);
 
-    //当前操作、当前颜色、当前线宽
-    int m_operation; //0无，1点，2线，3正圆，4椭圆，5多边形，10填充，20/21裁剪，30橡皮擦
+    //当前操作
+    //0无，1点、2线、3正圆、4椭圆、5多边形，10填充、20/21裁剪、30橡皮擦，100平移、101旋转、102缩放
+    int m_operation; 
+    //当前颜色、当前线宽
     COLORREF m_color;
     int m_size;
 
@@ -234,7 +236,7 @@ public:
 
 
     ///寻找鼠标是否选中图形
-
+    //一次只能选中一个图形（不论何种类型的图形） 优先级：点>线>正圆>椭圆>多边形
     void select_all(CDC *pDC, CPoint point);
 
     //选中点
@@ -259,7 +261,7 @@ public:
     void flush_all_drawing(CDC *pDC);
 
     //绘制多边形
-    void draw_polygon_cpen(CDC *pDC, d_polygon p);
+    void draw_polygon_cpen(CDC *pDC, d_polygon p, COLORREF color);
 
     
 
@@ -406,6 +408,10 @@ public:
 
 
     ///二维图形变换算法 开始
+
+    //获取点p围绕p0旋转后的点，angle为角度制，顺时针为正
+    CPoint get_rotated_point(CPoint p, CPoint p0, int angle);
+
 
     //平移
     void transform_translate();

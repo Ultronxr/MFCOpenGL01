@@ -34,9 +34,14 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
     ON_COMMAND(TOOLBAR_TOOLS_MOUSE, &CMainFrame::OnToolBarToolsMouse)
     ON_COMMAND(TOOLBAR_TOOLS_SELECT, &CMainFrame::OnToolBarToolsSelect)
     ON_COMMAND(TOOLBAR_TOOLS_FILL, &CMainFrame::OnToolBarToolsFill)
-    ON_COMMAND(TOOLBAR_TOOLS_ERASE, &CMainFrame::OnToolBarToolsErase)
+    //ON_COMMAND(TOOLBAR_TOOLS_ERASE, &CMainFrame::OnToolBarToolsErase)
     ON_COMMAND(TOOLBAR_TOOLS_CLEAR, &CMainFrame::OnToolBarToolsClear)
     //ON_NOTIFY(TBN_DROPDOWN, AFX_IDW_TOOLBAR, &CMainFrame::OnToolbarDropDown)
+    ON_COMMAND(TOOLBAR_TRANSFORM_TRANSLATE, &CMainFrame::OnToolBarTransformTranslate)
+    ON_COMMAND(TOOLBAR_TRANSFORM_ROTATE, &CMainFrame::OnToolBarTransformRotate)
+    ON_COMMAND(TOOLBAR_TRANSFORM_SCALE, &CMainFrame::OnToolBarTransformScale)
+    ON_COMMAND(TOOLBAR_TRANSFORM_SYMMETRY_LR, &CMainFrame::OnToolBarTransformSymmetryLR)
+    ON_COMMAND(TOOLBAR_TRANSFORM_SYMMETRY_TB, &CMainFrame::OnToolBarTransformSymmetryTB)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -88,9 +93,14 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct){
         !m_toolsToolBar.LoadToolBar(IDR_TOOLBAR_TOOLS)) {
         TRACE0("未能创建工具工具栏\n"); return -1; }
 
-    if (!m_linesizeToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC, CRect(1, 1, 1, 1), IDR_TOOLBAR_LINESIZE) ||
+    /*if (!m_linesizeToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC, CRect(1, 1, 1, 1), IDR_TOOLBAR_LINESIZE) ||
         !m_linesizeToolBar.LoadToolBar(IDR_TOOLBAR_LINESIZE)) {
         TRACE0("未能创建线宽工具栏\n"); return -1;
+    }*/
+
+    if (!m_transformToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC, CRect(1, 1, 1, 1), IDR_TOOLBAR_TOOLS) ||
+        !m_transformToolBar.LoadToolBar(IDR_TOOLBAR_TRANSFORM)) {
+        TRACE0("未能创建图形变换工具栏\n"); return -1;
     }
 
     EnableDocking(CBRS_ALIGN_TOP);
@@ -98,11 +108,13 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct){
     m_wndToolBar.EnableDocking(CBRS_ALIGN_TOP);
     m_drawToolBar.EnableDocking(CBRS_ALIGN_TOP);
     m_toolsToolBar.EnableDocking(CBRS_ALIGN_TOP);
-    m_linesizeToolBar.EnableDocking(CBRS_ALIGN_TOP);
+    //m_linesizeToolBar.EnableDocking(CBRS_ALIGN_TOP);
+    m_transformToolBar.EnableDocking(CBRS_ALIGN_TOP);
     
     DockPane(&m_wndMenuBar);
-    DockPane(&m_linesizeToolBar);
-    DockPaneLeftOf(&m_toolsToolBar, &m_linesizeToolBar);
+    //DockPane(&m_linesizeToolBar);
+    DockPane(&m_transformToolBar);
+    DockPaneLeftOf(&m_toolsToolBar, &m_transformToolBar);
     DockPaneLeftOf(&m_drawToolBar, &m_toolsToolBar);
     DockPaneLeftOf(&m_wndToolBar, &m_drawToolBar);
     
@@ -197,7 +209,103 @@ void CMainFrame::OnToolBarToolsErase() {
 }
 
 void CMainFrame::OnToolBarToolsClear() {
+    if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
+
+    m_pDoc->v_point.clear();
+    m_pDoc->v_line.clear();
+    m_pDoc->v_perf_circle.clear();
+    m_pDoc->v_oval_circle.clear();
+    m_pDoc->v_polygon.clear();
     ((CMFCOpenGL01View*)GetActiveView())->Invalidate(TRUE);
+    m_pDoc->selected_point = -1;
+    m_pDoc->selected_line = -1;
+    m_pDoc->selected_perfect_circle = -1;
+    m_pDoc->selected_oval_circle = -1;
+    m_pDoc->selected_polygon = -1;
+}
+
+void CMainFrame::OnToolBarTransformTranslate(){
+    if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
+
+    m_pDoc->m_operation = 100;
+}
+
+void CMainFrame::OnToolBarTransformRotate(){
+    if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
+
+    m_pDoc->m_operation = 101;
+}
+
+void CMainFrame::OnToolBarTransformScale(){
+    if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
+
+    m_pDoc->m_operation = 102;
+}
+
+void CMainFrame::OnToolBarTransformSymmetryLR(){
+    if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
+
+    int index = -1;
+    if ((index = m_pDoc->selected_line) != -1) {
+        int xm = (m_pDoc->v_line[index].p1.x + m_pDoc->v_line[index].p2.x) / 2,
+            ym = (m_pDoc->v_line[index].p1.y + m_pDoc->v_line[index].p2.y) / 2;
+        m_pDoc->v_line[index].p1.x = xm * 2 - m_pDoc->v_line[index].p1.x;
+        m_pDoc->v_line[index].p2.x = xm * 2 - m_pDoc->v_line[index].p2.x;
+
+        m_pDoc->selected_line = -1;
+    }
+    else if ((index = m_pDoc->selected_oval_circle) != -1) {
+        m_pDoc->v_oval_circle[index].angle = 180.0 - m_pDoc->v_oval_circle[index].angle;
+
+        m_pDoc->selected_oval_circle = -1;
+    }
+    else if ((index = m_pDoc->selected_polygon) != -1) {
+        int mid_x = 0, mid_y = 0;
+        for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
+            mid_x += m_pDoc->v_polygon[index].ps[i].x;
+            mid_y += m_pDoc->v_polygon[index].ps[i].y;
+        }
+        mid_x /= m_pDoc->v_polygon[index].ps.size();
+        mid_y /= m_pDoc->v_polygon[index].ps.size();
+        for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
+            m_pDoc->v_polygon[index].ps[i].x = mid_x * 2 - m_pDoc->v_polygon[index].ps[i].x;
+        }
+        m_pDoc->selected_polygon = -1;
+    }
+    Invalidate(TRUE);
+}
+
+void CMainFrame::OnToolBarTransformSymmetryTB(){
+    if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
+
+    int index = -1;
+    if ((index = m_pDoc->selected_line) != -1) {
+        int xm = (m_pDoc->v_line[index].p1.x + m_pDoc->v_line[index].p2.x) / 2,
+            ym = (m_pDoc->v_line[index].p1.y + m_pDoc->v_line[index].p2.y) / 2;
+        m_pDoc->v_line[index].p1.y = ym * 2 - m_pDoc->v_line[index].p1.y;
+        m_pDoc->v_line[index].p2.y = ym * 2 - m_pDoc->v_line[index].p2.y;
+
+        m_pDoc->selected_line = -1;
+    }
+    else if ((index = m_pDoc->selected_oval_circle) != -1) {
+        m_pDoc->v_oval_circle[index].angle = 180.0 - m_pDoc->v_oval_circle[index].angle;
+
+        m_pDoc->selected_oval_circle = -1;
+    }
+    else if ((index = m_pDoc->selected_polygon) != -1) {
+        int mid_x = 0, mid_y = 0;
+        for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
+            mid_x += m_pDoc->v_polygon[index].ps[i].x;
+            mid_y += m_pDoc->v_polygon[index].ps[i].y;
+        }
+        mid_x /= m_pDoc->v_polygon[index].ps.size();
+        mid_y /= m_pDoc->v_polygon[index].ps.size();
+        for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
+            m_pDoc->v_polygon[index].ps[i].y = mid_y * 2 - m_pDoc->v_polygon[index].ps[i].y;
+        }
+        m_pDoc->selected_polygon = -1;
+    }
+    Invalidate(TRUE);
 }
 
 

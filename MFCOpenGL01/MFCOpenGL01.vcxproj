@@ -231,9 +231,11 @@
     <Image Include="..\show\10_storage.gif" />
     <Image Include="..\show\CMFCColorButton_pixel_lost_bug_01.png" />
     <Image Include="..\show\CMFCColorButton_pixel_lost_bug_02.png" />
+    <Image Include="res\bitmap1.bmp" />
     <Image Include="res\bmp00001.bmp" />
     <Image Include="res\bmp00002.bmp" />
     <Image Include="res\bmp00003.bmp" />
+    <Image Include="res\bmp00004.bmp" />
     <Image Include="res\classview.bmp" />
     <Image Include="res\classview_hc.bmp" />
     <Image Include="res\class_view.ico" />
@@ -265,6 +267,8 @@
   <ItemGroup>
     <None Include="..\README.md" />
     <None Include="packages.config" />
+    <None Include="res\cur00001.cur" />
+    <None Include="res\cursor1.cur" />
     <None Include="res\MFCOpenGL01.rc2" />
   </ItemGroup>
   <ItemGroup>

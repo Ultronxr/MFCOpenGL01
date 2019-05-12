@@ -44,12 +44,13 @@ public:
 protected:
     CMFCOpenGL01Doc* m_pDoc = NULL;
 
-	CMFCMenuBar       m_wndMenuBar;
-	CMFCToolBar       m_wndToolBar;
-    CMFCToolBar       m_drawToolBar;
-    CMFCToolBar       m_toolsToolBar;
-    CMFCToolBar       m_linesizeToolBar;
-    CMFCToolBar       m_colorrefToolBar;
+	CMFCMenuBar m_wndMenuBar;
+	CMFCToolBar m_wndToolBar;
+    CMFCToolBar m_drawToolBar;
+    CMFCToolBar m_toolsToolBar;
+    //CMFCToolBar m_linesizeToolBar;
+    //CMFCToolBar m_colorrefToolBar;
+    CMFCToolBar m_transformToolBar;
     
 
 // 生成的消息映射函数
@@ -75,7 +76,11 @@ protected:
     afx_msg void OnToolBarToolsErase();
     afx_msg void OnToolBarToolsClear();
     
-
+    afx_msg void OnToolBarTransformTranslate();
+    afx_msg void OnToolBarTransformRotate();
+    afx_msg void OnToolBarTransformScale();
+    afx_msg void OnToolBarTransformSymmetryLR();
+    afx_msg void OnToolBarTransformSymmetryTB();
 };
 
 
