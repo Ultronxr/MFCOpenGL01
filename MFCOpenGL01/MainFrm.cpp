@@ -247,29 +247,15 @@ void CMainFrame::OnToolBarTransformSymmetryLR(){
 
     int index = -1;
     if ((index = m_pDoc->selected_line) != -1) {
-        int xm = (m_pDoc->v_line[index].p1.x + m_pDoc->v_line[index].p2.x) / 2,
-            ym = (m_pDoc->v_line[index].p1.y + m_pDoc->v_line[index].p2.y) / 2;
-        m_pDoc->v_line[index].p1.x = xm * 2 - m_pDoc->v_line[index].p1.x;
-        m_pDoc->v_line[index].p2.x = xm * 2 - m_pDoc->v_line[index].p2.x;
-
+        m_pDoc->transform_symmetry_line(m_pDoc->v_line, index, 1);
         m_pDoc->selected_line = -1;
     }
     else if ((index = m_pDoc->selected_oval_circle) != -1) {
-        m_pDoc->v_oval_circle[index].angle = 180.0 - m_pDoc->v_oval_circle[index].angle;
-
+        m_pDoc->transform_symmetry_oval_circle(m_pDoc->v_oval_circle, index, 1);
         m_pDoc->selected_oval_circle = -1;
     }
     else if ((index = m_pDoc->selected_polygon) != -1) {
-        int mid_x = 0, mid_y = 0;
-        for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
-            mid_x += m_pDoc->v_polygon[index].ps[i].x;
-            mid_y += m_pDoc->v_polygon[index].ps[i].y;
-        }
-        mid_x /= m_pDoc->v_polygon[index].ps.size();
-        mid_y /= m_pDoc->v_polygon[index].ps.size();
-        for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
-            m_pDoc->v_polygon[index].ps[i].x = mid_x * 2 - m_pDoc->v_polygon[index].ps[i].x;
-        }
+        m_pDoc->transform_symmetry_polygon(m_pDoc->v_polygon, index, 1);
         m_pDoc->selected_polygon = -1;
     }
     Invalidate(TRUE);
@@ -280,29 +266,15 @@ void CMainFrame::OnToolBarTransformSymmetryTB(){
 
     int index = -1;
     if ((index = m_pDoc->selected_line) != -1) {
-        int xm = (m_pDoc->v_line[index].p1.x + m_pDoc->v_line[index].p2.x) / 2,
-            ym = (m_pDoc->v_line[index].p1.y + m_pDoc->v_line[index].p2.y) / 2;
-        m_pDoc->v_line[index].p1.y = ym * 2 - m_pDoc->v_line[index].p1.y;
-        m_pDoc->v_line[index].p2.y = ym * 2 - m_pDoc->v_line[index].p2.y;
-
+        m_pDoc->transform_symmetry_line(m_pDoc->v_line, index, 0);
         m_pDoc->selected_line = -1;
     }
     else if ((index = m_pDoc->selected_oval_circle) != -1) {
-        m_pDoc->v_oval_circle[index].angle = 180.0 - m_pDoc->v_oval_circle[index].angle;
-
+        m_pDoc->transform_symmetry_oval_circle(m_pDoc->v_oval_circle, index, 0);
         m_pDoc->selected_oval_circle = -1;
     }
     else if ((index = m_pDoc->selected_polygon) != -1) {
-        int mid_x = 0, mid_y = 0;
-        for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
-            mid_x += m_pDoc->v_polygon[index].ps[i].x;
-            mid_y += m_pDoc->v_polygon[index].ps[i].y;
-        }
-        mid_x /= m_pDoc->v_polygon[index].ps.size();
-        mid_y /= m_pDoc->v_polygon[index].ps.size();
-        for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
-            m_pDoc->v_polygon[index].ps[i].y = mid_y * 2 - m_pDoc->v_polygon[index].ps[i].y;
-        }
+        m_pDoc->transform_symmetry_polygon(m_pDoc->v_polygon, index, 0);
         m_pDoc->selected_polygon = -1;
     }
     Invalidate(TRUE);

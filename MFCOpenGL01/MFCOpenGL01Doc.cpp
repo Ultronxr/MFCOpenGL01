@@ -1554,6 +1554,55 @@ void CMFCOpenGL01Doc::draw_polygon(CDC *pDC, COLORREF color, polygon p) {
 
 ///二维图形变换算法 开始
 
+//平移（以图形的重心点作为基准平移）    参数：图形集，待平移图形的下标，平移到哪个位置
+void CMFCOpenGL01Doc::transform_translate_point(std::vector<d_point> &v_point, int index, CPoint point){
+    v_point[index].p.x = point.x;
+    v_point[index].p.y = point.y;
+    return;
+}
+
+void CMFCOpenGL01Doc::transform_translate_line(std::vector<d_line> &v_line, int index, CPoint point){
+    int xm = (v_line[index].p1.x + v_line[index].p2.x) / 2,
+        ym = (v_line[index].p1.y + v_line[index].p2.y) / 2;
+    int delta_x = point.x - xm,
+        delta_y = point.y - ym;
+    v_line[index].p1.x += delta_x;
+    v_line[index].p1.y += delta_y;
+    v_line[index].p2.x += delta_x;
+    v_line[index].p2.y += delta_y;
+    return;
+}
+
+void CMFCOpenGL01Doc::transform_translate_perfect_circle(std::vector<d_perf_circle>& v_perf_circle, int index, CPoint point){
+    v_perf_circle[index].p0.x = point.x;
+    v_perf_circle[index].p0.y = point.y;
+    return;
+}
+
+void CMFCOpenGL01Doc::transform_translate_oval_circle(std::vector<d_oval_circle>& v_oval_circle, int index, CPoint point){
+    v_oval_circle[index].p0.x = point.x;
+    v_oval_circle[index].p0.y = point.y;
+    return;
+}
+
+void CMFCOpenGL01Doc::transform_translate_polygon(std::vector<d_polygon>& v_polygon, int index, CPoint point){
+    int mid_x = 0, mid_y = 0;
+    for (int i = 0; i < v_polygon[index].ps.size(); i++) {
+        mid_x += v_polygon[index].ps[i].x;
+        mid_y += v_polygon[index].ps[i].y;
+    }
+    mid_x /= v_polygon[index].ps.size();
+    mid_y /= v_polygon[index].ps.size();
+    int delta_x = point.x - mid_x,
+        delta_y = point.y - mid_y;
+    for (int i = 0; i < v_polygon[index].ps.size(); i++) {
+        v_polygon[index].ps[i].x += delta_x;
+        v_polygon[index].ps[i].y += delta_y;
+    }
+    return;
+}
+
+
 //获取点p围绕p0旋转后的点，angle为角度制，顺时针为正
 CPoint CMFCOpenGL01Doc::get_rotated_point(CPoint p, CPoint p0, int angle) {
     double arc = pi / 180.0*angle;
@@ -1562,47 +1611,154 @@ CPoint CMFCOpenGL01Doc::get_rotated_point(CPoint p, CPoint p0, int angle) {
     return CPoint(pxx, pyy);
 }
 
-//平移
-void CMFCOpenGL01Doc::transform_translate(){
+//旋转    参数：图形集，待旋转图形的下标，旋转前鼠标位置，旋转后鼠标位置（以图形重心为基准）
+//旋转角度（角度制，顺时针 >= 0，逆时针<0）
+void CMFCOpenGL01Doc::transform_rotate_line(std::vector<d_line>& v_line, int index, CPoint oldPoint, CPoint point){
+    int xm = (v_line[index].p1.x + v_line[index].p2.x) / 2,
+        ym = (v_line[index].p1.y + v_line[index].p2.y) / 2;
+    double a = sqrt((xm - point.x)*(xm - point.x) + (ym - point.y)*(ym - point.y)),
+        b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
+        c = sqrt((xm - oldPoint.x)*(xm - oldPoint.x) + (ym - oldPoint.y)*(ym - oldPoint.y));
+    double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / pi * 180.0);
+    double angle_judge = (oldPoint.x - xm)*(point.y - ym) - (point.x - xm)*(oldPoint.y - ym); //>0顺时针，<0逆时针
+    angle = (angle_judge >= 0.0 ? angle : -angle);
+    v_line[index].p1 = get_rotated_point(v_line[index].p1, CPoint(xm, ym), angle);
+    v_line[index].p2 = get_rotated_point(v_line[index].p2, CPoint(xm, ym), angle);
+    return;
 }
 
-//多边形旋转变换    参数：PDC，颜色，原始多边形，旋转中心点，旋转角度（角度制，有正负）
-void CMFCOpenGL01Doc::transform_rotate_polygon(CDC *pDC, COLORREF color, polygon src_polygon, vertex center, int angle) {
+void CMFCOpenGL01Doc::transform_rotate_oval_circle(std::vector<d_oval_circle>& v_oval_circle, int index, CPoint oldPoint, CPoint point){
+    int xm = v_oval_circle[index].p0.x,
+        ym = v_oval_circle[index].p0.y;
+    double a = sqrt((xm - point.x)*(xm - point.x) + (ym - point.y)*(ym - point.y)),
+        b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
+        c = sqrt((xm - oldPoint.x)*(xm - oldPoint.x) + (ym - oldPoint.y)*(ym - oldPoint.y));
+    double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / pi * 180.0);
+    double angle_judge = (oldPoint.x - xm)*(point.y - ym) - (point.x - xm)*(oldPoint.y - ym); //>0顺时针，<0逆时针
+    angle = (angle_judge >= 0.0 ? angle : -angle);
+    v_oval_circle[index].angle += angle;
+    return;
+}
 
-    double arc = pi / 180.0*angle; //转弧度制
-
-    polygon res_polygon = src_polygon;
-    for (int i = 0; i < res_polygon.vertex_num; i++) {
-        vertex t = res_polygon.vertexes[i];
-        res_polygon.vertexes[i].x = center.x + (t.x - center.x)*std::cos(arc) - (t.y - center.y)*std::sin(arc);
-        res_polygon.vertexes[i].y = center.y + (t.x - center.x)*std::sin(arc) + (t.y - center.y)*std::cos(arc);
+void CMFCOpenGL01Doc::transform_rotate_polygon(std::vector<d_polygon>& v_polygon, int index, CPoint oldPoint, CPoint point){
+    int mid_x = 0, mid_y = 0;
+    for (int i = 0; i < v_polygon[index].ps.size(); i++) {
+        mid_x += v_polygon[index].ps[i].x;
+        mid_y += v_polygon[index].ps[i].y;
     }
+    mid_x /= v_polygon[index].ps.size();
+    mid_y /= v_polygon[index].ps.size();
 
-    draw_polygon(pDC, color, res_polygon);
-
+    double a = sqrt((mid_x - point.x)*(mid_x - point.x) + (mid_y - point.y)*(mid_y - point.y)),
+        b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
+        c = sqrt((mid_x - oldPoint.x)*(mid_x - oldPoint.x) + (mid_y - oldPoint.y)*(mid_y - oldPoint.y));
+    double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / pi * 180.0);
+    double angle_judge = (oldPoint.x - mid_x)*(point.y - mid_y) - (point.x - mid_x)*(oldPoint.y - mid_y); //>0顺时针，<0逆时针
+    angle = (angle_judge >= 0.0 ? angle : -angle);
+    for (int i = 0; i < v_polygon[index].ps.size(); i++)
+        v_polygon[index].ps[i] = get_rotated_point(v_polygon[index].ps[i], CPoint(mid_x, mid_y), angle);
     return;
 }
 
 
-//旋转
-void CMFCOpenGL01Doc::transform_rotate(){
-
-
-
+//缩放    参数：图形集，待缩放图形的下标，缩放前鼠标位置，缩放后鼠标位置（以图形重心为基准）
+void CMFCOpenGL01Doc::transform_scale_line(std::vector<d_line>& v_line, int index, CPoint oldPoint, CPoint point){
+    int xm = (v_line[index].p1.x + v_line[index].p2.x) / 2,
+        ym = (v_line[index].p1.y + v_line[index].p2.y) / 2;
+    double dis1 = sqrt((oldPoint.x - xm)*(oldPoint.x - xm) + (oldPoint.y - ym)*(oldPoint.y - ym)),
+        dis2 = sqrt((point.x - xm)*(point.x - xm) + (point.y - ym)*(point.y - ym));
+    double rate = dis2 / dis1;
+    v_line[index].p1.x = (v_line[index].p1.x - xm)*rate + xm;
+    v_line[index].p1.y = (v_line[index].p1.y - ym)*rate + ym;
+    v_line[index].p2.x = (v_line[index].p2.x - xm)*rate + xm;
+    v_line[index].p2.y = (v_line[index].p2.y - ym)*rate + ym;
+    return;
 }
 
-//缩放
-void CMFCOpenGL01Doc::transform_scale(){
+void CMFCOpenGL01Doc::transform_scale_perfect_circle(std::vector<d_perf_circle>& v_perf_circle, int index, CPoint oldPoint, CPoint point){
+    int xm = v_perf_circle[index].p0.x,
+        ym = v_perf_circle[index].p0.y;
+    double dis1 = sqrt((oldPoint.x - xm)*(oldPoint.x - xm) + (oldPoint.y - ym)*(oldPoint.y - ym)),
+        dis2 = sqrt((point.x - xm)*(point.x - xm) + (point.y - ym)*(point.y - ym));
+    double rate = dis2 / dis1;
+    v_perf_circle[index].radius *= rate;
+    return;
+}
 
+void CMFCOpenGL01Doc::transform_scale_oval_circle(std::vector<d_oval_circle>& v_oval_circle, int index, CPoint oldPoint, CPoint point){
+    int xm = v_oval_circle[index].p0.x,
+        ym = v_oval_circle[index].p0.y;
+    double dis1 = sqrt((oldPoint.x - xm)*(oldPoint.x - xm) + (oldPoint.y - ym)*(oldPoint.y - ym)),
+        dis2 = sqrt((point.x - xm)*(point.x - xm) + (point.y - ym)*(point.y - ym));
+    double rate = dis2 / dis1;
+    v_oval_circle[index].a *= rate;
+    v_oval_circle[index].b *= rate;
+    return;
+}
 
+void CMFCOpenGL01Doc::transform_scale_polygon(std::vector<d_polygon>& v_polygon, int index, CPoint oldPoint, CPoint point){
+    int mid_x = 0, mid_y = 0;
+    for (int i = 0; i < v_polygon[index].ps.size(); i++) {
+        mid_x += v_polygon[index].ps[i].x;
+        mid_y += v_polygon[index].ps[i].y;
+    }
+    mid_x /= v_polygon[index].ps.size();
+    mid_y /= v_polygon[index].ps.size();
+    double dis1 = sqrt((oldPoint.x - mid_x)*(oldPoint.x - mid_x) + (oldPoint.y - mid_y)*(oldPoint.y - mid_y)),
+        dis2 = sqrt((point.x - mid_x)*(point.x - mid_x) + (point.y - mid_y)*(point.y - mid_y));
+    double rate = dis2 / dis1;
+    for (int i = 0; i < v_polygon[index].ps.size(); i++) {
+        v_polygon[index].ps[i].x = (v_polygon[index].ps[i].x - mid_x)*rate + mid_x;
+        v_polygon[index].ps[i].y = (v_polygon[index].ps[i].y - mid_y)*rate + mid_y;
+    }
+    return;
 }
 
 
-//对称
-void CMFCOpenGL01Doc::transform_symmetry(){
-
-
+//对称    参数：图形集，待对称的图形的下标，对称标志（0为上下，1为左右）
+void CMFCOpenGL01Doc::transform_symmetry_line(std::vector<d_line>& v_line, int index, int flag){
+    int xm = (v_line[index].p1.x + v_line[index].p2.x) / 2,
+        ym = (v_line[index].p1.y + v_line[index].p2.y) / 2;
+    if (!flag) {
+        v_line[index].p1.y = ym * 2 - v_line[index].p1.y;
+        v_line[index].p2.y = ym * 2 - v_line[index].p2.y;
+    }
+    else {
+        v_line[index].p1.x = xm * 2 - v_line[index].p1.x;
+        v_line[index].p2.x = xm * 2 - v_line[index].p2.x;
+    }
+    return;
 }
+
+void CMFCOpenGL01Doc::transform_symmetry_oval_circle(std::vector<d_oval_circle>& v_oval_circle, int index, int flag){
+    v_oval_circle[index].angle = 180.0 - v_oval_circle[index].angle; //椭圆两种对称结果形状相同
+    return;
+}
+
+void CMFCOpenGL01Doc::transform_symmetry_polygon(std::vector<d_polygon>& v_line, int index, int flag){
+    int mid_x = 0, mid_y = 0;
+    for (int i = 0; i < v_polygon[index].ps.size(); i++) {
+        mid_x += v_polygon[index].ps[i].x;
+        mid_y += v_polygon[index].ps[i].y;
+    }
+    mid_x /= v_polygon[index].ps.size();
+    mid_y /= v_polygon[index].ps.size();
+    if (!flag) {
+        for (int i = 0; i < v_polygon[index].ps.size(); i++)
+            v_polygon[index].ps[i].y = mid_y * 2 - v_polygon[index].ps[i].y;
+    }
+    else {
+        for (int i = 0; i < v_polygon[index].ps.size(); i++)
+            v_polygon[index].ps[i].x = mid_x * 2 - v_polygon[index].ps[i].x;
+    }
+}
+
+
+
+
+
+
+
 //错切
 void CMFCOpenGL01Doc::transform_shear(){
 

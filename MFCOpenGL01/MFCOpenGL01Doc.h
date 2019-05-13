@@ -397,36 +397,41 @@ public:
     void draw_polygon(CDC *pDC, COLORREF color, polygon p);
 
 
-    //CPen
-
-
-
-
-
 
 
 
 
     ///二维图形变换算法 开始
 
-    //获取点p围绕p0旋转后的点，angle为角度制，顺时针为正
+    //平移（以图形的重心点作为基准平移）    参数：图形集，待平移图形的下标，平移到哪个位置
+    void transform_translate_point(std::vector<d_point> &v_point, int index, CPoint point);
+    void transform_translate_line(std::vector<d_line> &v_line, int index, CPoint point);
+    void transform_translate_perfect_circle(std::vector<d_perf_circle> &v_perf_circle, int index, CPoint point);
+    void transform_translate_oval_circle(std::vector<d_oval_circle> &v_oval_circle, int index, CPoint point);
+    void transform_translate_polygon(std::vector<d_polygon> &v_polygon, int index, CPoint point);
+
+    //获取点p绕点p0旋转后的点    参数：待旋转点，旋转中心，旋转角度（角度制，顺时针>=0，逆时针<0）
     CPoint get_rotated_point(CPoint p, CPoint p0, int angle);
+    
+    //旋转    参数：图形集，待旋转图形的下标，旋转前鼠标位置，旋转后鼠标位置（以图形重心为基准）
+    //旋转角度（角度制，顺时针 >= 0，逆时针<0）
+    void transform_rotate_line(std::vector<d_line> &v_line, int index, CPoint oldPoint, CPoint point);
+    void transform_rotate_oval_circle(std::vector<d_oval_circle> &v_oval_circle, int index, CPoint oldPoint, CPoint point);
+    void transform_rotate_polygon(std::vector<d_polygon> &v_polygon, int index, CPoint oldPoint, CPoint point);
+    
+    //缩放    参数：图形集，待缩放图形的下标，缩放前鼠标位置，缩放后鼠标位置（以图形重心为基准）
+    void transform_scale_line(std::vector<d_line> &v_line, int index, CPoint oldPoint, CPoint point);
+    void transform_scale_perfect_circle(std::vector<d_perf_circle> &v_perf_circle, int index, CPoint oldPoint, CPoint point);
+    void transform_scale_oval_circle(std::vector<d_oval_circle> &v_oval_circle, int index, CPoint oldPoint, CPoint point);
+    void transform_scale_polygon(std::vector<d_polygon> &v_polygon, int index, CPoint oldPoint, CPoint point);
+
+    //对称    参数：图形集，待对称的图形的下标，对称标志（0为上下，1为左右）
+    void transform_symmetry_line(std::vector<d_line> &v_line, int index, int flag);
+    void transform_symmetry_oval_circle(std::vector<d_oval_circle> &v_oval_circle, int index, int flag);
+    void transform_symmetry_polygon(std::vector<d_polygon> &v_polygon, int index, int flag);
 
 
-    //平移
-    void transform_translate();
 
-    //多边形旋转变换    参数：PDC，颜色，原始多边形，旋转中心点，旋转角度（角度制，有正负）
-    void transform_rotate_polygon(CDC *pDC, COLORREF color, polygon src_polygon, vertex center, int angle);
-
-    //旋转
-    void transform_rotate();
-
-    //缩放
-    void transform_scale();
-
-    //对称
-    void transform_symmetry();
 
     //错切
     void transform_shear();

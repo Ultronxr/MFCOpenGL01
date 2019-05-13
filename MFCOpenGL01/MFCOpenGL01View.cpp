@@ -532,175 +532,76 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
 
         m_pDoc->v_fill.push_back(CMFCOpenGL01Doc::d_fill(point, m_pDoc->m_color));
     }
-    else if (m_pDoc->m_operation == 100) {
+    else if (m_pDoc->m_operation == 100) { //∆Ω“∆
         if ((index = m_pDoc->selected_point) != -1) {
-            m_pDoc->v_point[index].p.x = point.x;
-            m_pDoc->v_point[index].p.y = point.y;
+            m_pDoc->transform_translate_point(m_pDoc->v_point, index, point);
             
             m_pDoc->selected_point = -1;
             m_pDoc->m_operation = 0;
         }
         else if ((index = m_pDoc->selected_line) != -1) {
-            int xm = (m_pDoc->v_line[index].p1.x + m_pDoc->v_line[index].p2.x) / 2, 
-                ym = (m_pDoc->v_line[index].p1.y + m_pDoc->v_line[index].p2.y) / 2;
-            int delta_x = point.x - xm, 
-                delta_y = point.y - ym;
-            m_pDoc->v_line[index].p1.x += delta_x;
-            m_pDoc->v_line[index].p1.y += delta_y;
-            m_pDoc->v_line[index].p2.x += delta_x;
-            m_pDoc->v_line[index].p2.y += delta_y;
+            m_pDoc->transform_translate_line(m_pDoc->v_line, index, point);
 
             m_pDoc->selected_line = -1;
             m_pDoc->m_operation = 0;
         }
         else if ((index = m_pDoc->selected_perfect_circle) != -1) {
-            m_pDoc->v_perf_circle[index].p0.x = point.x;
-            m_pDoc->v_perf_circle[index].p0.y = point.y;
+            m_pDoc->transform_translate_perfect_circle(m_pDoc->v_perf_circle, index, point);
 
             m_pDoc->selected_perfect_circle = -1;
             m_pDoc->m_operation = 0;
         }
         else if ((index = m_pDoc->selected_oval_circle) != -1) {
-            m_pDoc->v_oval_circle[index].p0.x = point.x;
-            m_pDoc->v_oval_circle[index].p0.y = point.y;
+            m_pDoc->transform_translate_oval_circle(m_pDoc->v_oval_circle, index, point);
 
             m_pDoc->selected_oval_circle = -1;
             m_pDoc->m_operation = 0;
         }
         else if ((index = m_pDoc->selected_polygon) != -1) {
-            int mid_x = 0, mid_y = 0;
-            for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
-                mid_x += m_pDoc->v_polygon[index].ps[i].x;
-                mid_y += m_pDoc->v_polygon[index].ps[i].y;
-            }
-            mid_x /= m_pDoc->v_polygon[index].ps.size();
-            mid_y /= m_pDoc->v_polygon[index].ps.size();
-            int delta_x = point.x - mid_x,
-                delta_y = point.y - mid_y;
-            for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
-                m_pDoc->v_polygon[index].ps[i].x += delta_x;
-                m_pDoc->v_polygon[index].ps[i].y += delta_y;
-            }
+            m_pDoc->transform_translate_polygon(m_pDoc->v_polygon, index, point);
 
             m_pDoc->selected_polygon = -1;
             m_pDoc->m_operation = 0;
         }
         Invalidate(TRUE);
     }
-    else if (m_pDoc->m_operation == 101) {
+    else if (m_pDoc->m_operation == 101) { //–˝◊™
         if ((index = m_pDoc->selected_line) != -1) {
-            int xm = (m_pDoc->v_line[index].p1.x + m_pDoc->v_line[index].p2.x) / 2,
-                ym = (m_pDoc->v_line[index].p1.y + m_pDoc->v_line[index].p2.y) / 2;
-            double a = sqrt((xm - point.x)*(xm - point.x) + (ym - point.y)*(ym - point.y)),
-                b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
-                c = sqrt((xm - oldPoint.x)*(xm - oldPoint.x) + (ym - oldPoint.y)*(ym - oldPoint.y));
-            double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / m_pDoc->pi * 180.0);
-            double angle_judge = (oldPoint.x - xm)*(point.y - ym) - (point.x - xm)*(oldPoint.y - ym); //>0À≥ ±’Î£¨<0ƒÊ ±’Î
-            angle = (angle_judge >= 0.0 ? angle : -angle);
-            m_pDoc->v_line[index].p1 = m_pDoc->get_rotated_point(m_pDoc->v_line[index].p1, CPoint(xm, ym), angle);
-            m_pDoc->v_line[index].p2 = m_pDoc->get_rotated_point(m_pDoc->v_line[index].p2, CPoint(xm, ym), angle);
-
+            m_pDoc->transform_rotate_line(m_pDoc->v_line, index, oldPoint, point);
             m_pDoc->selected_line = -1;
-            m_pDoc->m_operation = 0;
         }
         else if ((index = m_pDoc->selected_oval_circle) != -1) {
-            int xm = m_pDoc->v_oval_circle[index].p0.x,
-                ym = m_pDoc->v_oval_circle[index].p0.y;
-            double a = sqrt((xm - point.x)*(xm - point.x) + (ym - point.y)*(ym - point.y)),
-                b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
-                c = sqrt((xm - oldPoint.x)*(xm - oldPoint.x) + (ym - oldPoint.y)*(ym - oldPoint.y));
-            double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / m_pDoc->pi * 180.0);
-            double angle_judge = (oldPoint.x - xm)*(point.y - ym) - (point.x - xm)*(oldPoint.y - ym); //>0À≥ ±’Î£¨<0ƒÊ ±’Î
-            angle = (angle_judge >= 0.0 ? angle : -angle);
-            m_pDoc->v_oval_circle[index].angle += angle;
-
+            m_pDoc->transform_rotate_oval_circle(m_pDoc->v_oval_circle, index, oldPoint, point);
             m_pDoc->selected_oval_circle = -1;
-            m_pDoc->m_operation = 0;
         }
         else if ((index = m_pDoc->selected_polygon) != -1) {
-            int mid_x = 0, mid_y = 0;
-            for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
-                mid_x += m_pDoc->v_polygon[index].ps[i].x;
-                mid_y += m_pDoc->v_polygon[index].ps[i].y;
-            }
-            mid_x /= m_pDoc->v_polygon[index].ps.size();
-            mid_y /= m_pDoc->v_polygon[index].ps.size();
-            
-            double a = sqrt((mid_x - point.x)*(mid_x - point.x) + (mid_y - point.y)*(mid_y - point.y)),
-                b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
-                c = sqrt((mid_x - oldPoint.x)*(mid_x - oldPoint.x) + (mid_y - oldPoint.y)*(mid_y - oldPoint.y));
-            double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / m_pDoc->pi * 180.0);
-            double angle_judge = (oldPoint.x - mid_x)*(point.y - mid_y) - (point.x - mid_x)*(oldPoint.y - mid_y); //>0À≥ ±’Î£¨<0ƒÊ ±’Î
-            angle = (angle_judge >= 0.0 ? angle : -angle);
-            for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++)
-                m_pDoc->v_polygon[index].ps[i] = m_pDoc->get_rotated_point(m_pDoc->v_polygon[index].ps[i], CPoint(mid_x, mid_y), angle);
-
+            m_pDoc->transform_rotate_polygon(m_pDoc->v_polygon, index, oldPoint, point);
             m_pDoc->selected_polygon = -1;
-            m_pDoc->m_operation = 0;
         }
+        m_pDoc->m_operation = 0;
         Invalidate(TRUE);
     }
-    else if (m_pDoc->m_operation == 102) {
+    else if (m_pDoc->m_operation == 102) { //Àı∑≈
         int index = -1;
         if ((index = m_pDoc->selected_line) != -1) {
-            int xm = (m_pDoc->v_line[index].p1.x + m_pDoc->v_line[index].p2.x) / 2,
-                ym = (m_pDoc->v_line[index].p1.y + m_pDoc->v_line[index].p2.y) / 2;
-            double dis1 = sqrt((oldPoint.x - xm)*(oldPoint.x - xm) + (oldPoint.y - ym)*(oldPoint.y - ym)),
-                dis2 = sqrt((point.x - xm)*(point.x - xm) + (point.y - ym)*(point.y - ym));
-            double rate = dis2 / dis1;
-            m_pDoc->v_line[index].p1.x = (m_pDoc->v_line[index].p1.x - xm)*rate + xm;
-            m_pDoc->v_line[index].p1.y = (m_pDoc->v_line[index].p1.y - ym)*rate + ym;
-            m_pDoc->v_line[index].p2.x = (m_pDoc->v_line[index].p2.x - xm)*rate + xm;
-            m_pDoc->v_line[index].p2.y = (m_pDoc->v_line[index].p2.y - ym)*rate + ym;
-
-            m_pDoc->m_operation = 0;
+            m_pDoc->transform_scale_line(m_pDoc->v_line, index, oldPoint, point);
             m_pDoc->selected_line = -1;
         }
         else if ((index = m_pDoc->selected_perfect_circle) != -1) {
-            int xm = m_pDoc->v_perf_circle[index].p0.x,
-                ym = m_pDoc->v_perf_circle[index].p0.y;
-            double dis1 = sqrt((oldPoint.x - xm)*(oldPoint.x - xm) + (oldPoint.y - ym)*(oldPoint.y - ym)),
-                dis2 = sqrt((point.x - xm)*(point.x - xm) + (point.y - ym)*(point.y - ym));
-            double rate = dis2 / dis1;
-            m_pDoc->v_perf_circle[index].radius *= rate;
-
-            m_pDoc->m_operation = 0;
+            m_pDoc->transform_scale_perfect_circle(m_pDoc->v_perf_circle, index, oldPoint, point);
             m_pDoc->selected_perfect_circle = -1;
         }
         else if ((index = m_pDoc->selected_oval_circle) != -1) {
-            int xm = m_pDoc->v_oval_circle[index].p0.x,
-                ym = m_pDoc->v_oval_circle[index].p0.y;
-            double dis1 = sqrt((oldPoint.x - xm)*(oldPoint.x - xm) + (oldPoint.y - ym)*(oldPoint.y - ym)),
-                dis2 = sqrt((point.x - xm)*(point.x - xm) + (point.y - ym)*(point.y - ym));
-            double rate = dis2 / dis1;
-            m_pDoc->v_oval_circle[index].a *= rate;
-            m_pDoc->v_oval_circle[index].b *= rate;
-
-            m_pDoc->m_operation = 0;
+            m_pDoc->transform_scale_oval_circle(m_pDoc->v_oval_circle, index, oldPoint, point);
             m_pDoc->selected_oval_circle = -1;
         }
         else if ((index = m_pDoc->selected_polygon) != -1) {
-            int mid_x = 0, mid_y = 0;
-            for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
-                mid_x += m_pDoc->v_polygon[index].ps[i].x;
-                mid_y += m_pDoc->v_polygon[index].ps[i].y;
-            }
-            mid_x /= m_pDoc->v_polygon[index].ps.size();
-            mid_y /= m_pDoc->v_polygon[index].ps.size();
-            double dis1 = sqrt((oldPoint.x - mid_x)*(oldPoint.x - mid_x) + (oldPoint.y - mid_y)*(oldPoint.y - mid_y)),
-                dis2 = sqrt((point.x - mid_x)*(point.x - mid_x) + (point.y - mid_y)*(point.y - mid_y));
-            double rate = dis2 / dis1;
-            for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
-                m_pDoc->v_polygon[index].ps[i].x = (m_pDoc->v_polygon[index].ps[i].x - mid_x)*rate + mid_x;
-                m_pDoc->v_polygon[index].ps[i].y = (m_pDoc->v_polygon[index].ps[i].y - mid_y)*rate + mid_y;
-            }
-
-            m_pDoc->m_operation = 0;
+            m_pDoc->transform_scale_polygon(m_pDoc->v_polygon, index, oldPoint, point);
             m_pDoc->selected_polygon = -1;
         }
+        m_pDoc->m_operation = 0;
         Invalidate(TRUE);
     }
-    //Invalidate();
     ReleaseDC(dc2);
     ReleaseDC(dc1);
     CView::OnLButtonUp(nFlags, point);
