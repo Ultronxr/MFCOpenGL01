@@ -372,6 +372,7 @@ std::vector<CPoint> temp_ps;
 double oldRadius = 0.0;
 CPoint tp1(0, 0), tp2(0, 0);
 int ta = 0, tb = 0;
+
 CMFCOpenGL01Doc::d_polygon tpolygon(temp_ps, 1, RGB(0,0,0));
 
 void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
@@ -551,6 +552,7 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
         if ((index = m_pDoc->selected_line) != -1) {
             m_pDoc->transform_rotate_line(m_pDoc->v_line, index, oldPoint, point);
             m_pDoc->selected_line = -1;
+            tp1.x = tp1.y = tp2.x = tp2.y = 0;
         }
         else if ((index = m_pDoc->selected_oval_circle) != -1) {
             m_pDoc->transform_rotate_oval_circle(m_pDoc->v_oval_circle, index, oldPoint, point);
@@ -559,6 +561,9 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
         else if ((index = m_pDoc->selected_polygon) != -1) {
             m_pDoc->transform_rotate_polygon(m_pDoc->v_polygon, index, oldPoint, point);
             m_pDoc->selected_polygon = -1;
+            tpolygon.ps.clear();
+            tpolygon.size = 1;
+            tpolygon.color = RGB(0, 0, 0);
         }
         m_pDoc->m_operation = 0;
         Invalidate(TRUE);
@@ -671,13 +676,23 @@ void CMFCOpenGL01View::OnMouseMove(UINT nFlags, CPoint point)
         }
     }
     if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 101) { //旋转
-        //COLORREF co = RGB(255, 0, 128);
         if (m_pDoc->selected_line != -1) {
             index = m_pDoc->selected_line;
-            m_pDoc->line_cpen(dc1, m_pDoc->v_line[index].color, m_pDoc->v_line[index].p1, m_pDoc->v_line[index].p2, m_pDoc->v_line[index].size);
-            m_pDoc->transform_rotate_line(m_pDoc->v_line, index, oldPoint, point);
-            oldPoint = point;
-            m_pDoc->line_cpen(dc1, m_pDoc->v_line[index].color, m_pDoc->v_line[index].p1, m_pDoc->v_line[index].p2, m_pDoc->v_line[index].size);
+            m_pDoc->line_cpen(dc1, m_pDoc->v_line[index].color, tp1, tp2, m_pDoc->v_line[index].size);
+
+            //此处单独计算是为了不把数据写入存储对象，保持旋转过程不产生误差
+            int xm = (m_pDoc->v_line[index].p1.x + m_pDoc->v_line[index].p2.x) / 2,
+                ym = (m_pDoc->v_line[index].p1.y + m_pDoc->v_line[index].p2.y) / 2;
+            double a = sqrt((xm - point.x)*(xm - point.x) + (ym - point.y)*(ym - point.y)),
+                b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
+                c = sqrt((xm - oldPoint.x)*(xm - oldPoint.x) + (ym - oldPoint.y)*(ym - oldPoint.y));
+            double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / m_pDoc->pi * 180.0);
+            double angle_judge = (oldPoint.x - xm)*(point.y - ym) - (point.x - xm)*(oldPoint.y - ym); //>0顺时针，<0逆时针
+            angle = (angle_judge >= 0.0 ? angle : -angle);
+            tp1 = m_pDoc->get_rotated_point(m_pDoc->v_line[index].p1, CPoint(xm, ym), angle);
+            tp2 = m_pDoc->get_rotated_point(m_pDoc->v_line[index].p2, CPoint(xm, ym), angle);
+
+            m_pDoc->line_cpen(dc1, m_pDoc->v_line[index].color, tp1, tp2, m_pDoc->v_line[index].size);
         }
         else if (m_pDoc->selected_oval_circle != -1) {
             index = m_pDoc->selected_oval_circle;
@@ -688,14 +703,31 @@ void CMFCOpenGL01View::OnMouseMove(UINT nFlags, CPoint point)
         }
         else if (m_pDoc->selected_polygon != -1) {
             index = m_pDoc->selected_polygon;
-            m_pDoc->draw_polygon_cpen(dc1, m_pDoc->v_polygon[index], m_pDoc->v_polygon[index].color, m_pDoc->v_polygon[index].size);
-            m_pDoc->transform_rotate_polygon(m_pDoc->v_polygon, index, oldPoint, point);
-            oldPoint = point;
-            m_pDoc->draw_polygon_cpen(dc1, m_pDoc->v_polygon[index], m_pDoc->v_polygon[index].color, m_pDoc->v_polygon[index].size);
+            m_pDoc->draw_polygon_cpen(dc1, tpolygon, m_pDoc->v_polygon[index].color, m_pDoc->v_polygon[index].size);
+
+            //此处单独计算是为了不把数据写入存储对象，保持旋转过程不产生误差
+            int mid_x = 0, mid_y = 0;
+            for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
+                mid_x += m_pDoc->v_polygon[index].ps[i].x;
+                mid_y += m_pDoc->v_polygon[index].ps[i].y;
+            }
+            mid_x /= m_pDoc->v_polygon[index].ps.size();
+            mid_y /= m_pDoc->v_polygon[index].ps.size();
+
+            double a = sqrt((mid_x - point.x)*(mid_x - point.x) + (mid_y - point.y)*(mid_y - point.y)),
+                b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
+                c = sqrt((mid_x - oldPoint.x)*(mid_x - oldPoint.x) + (mid_y - oldPoint.y)*(mid_y - oldPoint.y));
+            double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / m_pDoc->pi * 180.0);
+            double angle_judge = (oldPoint.x - mid_x)*(point.y - mid_y) - (point.x - mid_x)*(oldPoint.y - mid_y); //>0顺时针，<0逆时针
+            angle = (angle_judge >= 0.0 ? angle : -angle);
+            tpolygon = m_pDoc->v_polygon[index];
+            for (int i = 0; i < tpolygon.ps.size(); i++)
+                tpolygon.ps[i] = m_pDoc->get_rotated_point(tpolygon.ps[i], CPoint(mid_x, mid_y), angle);
+
+            m_pDoc->draw_polygon_cpen(dc1, tpolygon, m_pDoc->v_polygon[index].color, m_pDoc->v_polygon[index].size);
         }
     }
     if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 102) { //缩放
-        //COLORREF co = RGB(255, 0, 128);
         if (m_pDoc->selected_line != -1) {
             index = m_pDoc->selected_line;
             m_pDoc->line_cpen(dc1, m_pDoc->v_line[index].color, tp1, tp2, m_pDoc->v_line[index].size);
