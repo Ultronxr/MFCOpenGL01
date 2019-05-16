@@ -73,7 +73,6 @@ protected:
     afx_msg void OnToolBarToolsMouse();
     afx_msg void OnToolBarToolsSelect();
     afx_msg void OnToolBarToolsFill();
-    afx_msg void OnToolBarToolsErase();
     afx_msg void OnToolBarToolsClear();
     
     afx_msg void OnToolBarTransformTranslate();

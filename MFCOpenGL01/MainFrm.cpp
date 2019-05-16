@@ -32,7 +32,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
     ON_COMMAND(TOOLBAR_DRAW_CIRCLE_OVAL, &CMainFrame::OnToolBarDrawCircleOval)
     ON_COMMAND(TOOLBAR_DRAW_POLYGON, &CMainFrame::OnToolBarDrawPolygon)
     ON_COMMAND(TOOLBAR_TOOLS_MOUSE, &CMainFrame::OnToolBarToolsMouse)
-    ON_COMMAND(TOOLBAR_TOOLS_SELECT, &CMainFrame::OnToolBarToolsSelect)
+    //ON_COMMAND(TOOLBAR_TOOLS_SELECT, &CMainFrame::OnToolBarToolsSelect)
     ON_COMMAND(TOOLBAR_TOOLS_FILL, &CMainFrame::OnToolBarToolsFill)
     //ON_COMMAND(TOOLBAR_TOOLS_ERASE, &CMainFrame::OnToolBarToolsErase)
     ON_COMMAND(TOOLBAR_TOOLS_CLEAR, &CMainFrame::OnToolBarToolsClear)
@@ -200,12 +200,6 @@ void CMainFrame::OnToolBarToolsFill() {
     m_pDoc->m_color = RGB(0, 0, 0);
     DialogFill dlg;
     dlg.DoModal();
-}
-
-void CMainFrame::OnToolBarToolsErase() {
-    if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
-
-    m_pDoc->m_operation = 30;
 }
 
 void CMainFrame::OnToolBarToolsClear() {

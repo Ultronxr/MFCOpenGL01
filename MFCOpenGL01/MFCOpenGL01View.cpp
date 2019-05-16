@@ -369,6 +369,10 @@ CRect rect_parent, rect_old, rect_new;
 int clk_inside = 0;
 
 std::vector<CPoint> temp_ps;
+double oldRadius = 0.0;
+CPoint tp1(0, 0), tp2(0, 0);
+int ta = 0, tb = 0;
+CMFCOpenGL01Doc::d_polygon tpolygon(temp_ps, 1, RGB(0,0,0));
 
 void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
 {
@@ -478,7 +482,6 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
         if (m_pDoc->point_type == 0) m_pDoc->point_circle(dc2, m_pDoc->m_color, point.x, point.y, m_pDoc->m_size);
         else if (m_pDoc->point_type == 1) m_pDoc->point_cross(dc2, m_pDoc->m_color, point.x, point.y, m_pDoc->m_size);
         else if (m_pDoc->point_type == 2) m_pDoc->point_rhombus(dc2, m_pDoc->m_color, point.x, point.y, m_pDoc->m_size);
-
         m_pDoc->v_point.push_back(CMFCOpenGL01Doc::d_point(point, m_pDoc->point_type, m_pDoc->m_size, m_pDoc->m_color));
     }
     else if (m_pDoc->m_operation == 2) {
@@ -486,10 +489,7 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
         dc1->MoveTo(oldPoint);
         dc1->LineTo(newPoint);
 
-        if (m_pDoc->line_type == 0) m_pDoc->line_dda_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, point.x, point.y, m_pDoc->m_size);
-        else if (m_pDoc->line_type == 1) m_pDoc->line_midpoint_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, point.x, point.y, m_pDoc->m_size);
-        else if (m_pDoc->line_type == 2) m_pDoc->line_bresenham_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, point.x, point.y, m_pDoc->m_size);
-
+        m_pDoc->line_cpen(dc2, m_pDoc->m_color, oldPoint, point, m_pDoc->m_size);
         m_pDoc->v_line.push_back(CMFCOpenGL01Doc::d_line(oldPoint, newPoint, m_pDoc->line_type, m_pDoc->m_size, m_pDoc->m_color));
     }
     else if (m_pDoc->m_operation == 3) {
@@ -498,10 +498,7 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
         //抹去最后一次的作图提示线
         dc1->Arc(CRect(oldPoint.x - radius, oldPoint.y - radius, oldPoint.x + radius, oldPoint.y + radius), CPoint(0, 0), CPoint(0, 0));
         
-        if (m_pDoc->circle_perfect_type == 0) m_pDoc->circle_perfect_bresenham_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, radius, m_pDoc->m_size);
-        else if (m_pDoc->circle_perfect_type == 1) m_pDoc->circle_perfect_midpoint_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, radius, m_pDoc->m_size);
-        else if (m_pDoc->circle_perfect_type == 2) m_pDoc->circle_perfect_midpoint_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, radius, m_pDoc->m_size);
-
+        m_pDoc->circle_perfect_cpen(dc2, m_pDoc->m_color, oldPoint, radius, m_pDoc->m_size);
         m_pDoc->v_perf_circle.push_back(CMFCOpenGL01Doc::d_perf_circle(oldPoint, radius, m_pDoc->circle_perfect_type, m_pDoc->m_size, m_pDoc->m_color));
     }
     else if (m_pDoc->m_operation == 4) {
@@ -510,59 +507,44 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
 
         int x0 = (oldPoint.x + newPoint.x) / 2, y0 = (oldPoint.y + newPoint.y) / 2;
         int a = std::abs(x0 - oldPoint.x), b = std::abs(y0 - oldPoint.y);
-        /*if (m_pDoc->circle_oval_type == 0) m_pDoc->circle_oval_bresenham_cpen(dc2, m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);
-        else if (m_pDoc->circle_oval_type == 1) m_pDoc->circle_oval_midpoint_cpen(dc2, m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);
-        else if (m_pDoc->circle_oval_type == 2) m_pDoc->circle_oval_midpoint_cpen(dc2, m_pDoc->m_color, x0, y0, a, b, m_pDoc->m_size);*/
         m_pDoc->circle_oval_angle_cpen(dc2, m_pDoc->m_color, x0, y0, a, b, 0, m_pDoc->m_size);
-
         m_pDoc->v_oval_circle.push_back(CMFCOpenGL01Doc::d_oval_circle(CPoint(x0, y0), a, b, 0, m_pDoc->circle_oval_type, m_pDoc->m_size, m_pDoc->m_color));
     }
     else if (m_pDoc->m_operation == 5) {
         //抹去最后一次的作图提示线
         dc1->MoveTo(oldPoint);
         dc1->LineTo(newPoint);
-        
-        m_pDoc->point_circle(dc2, m_pDoc->m_color, newPoint.x, newPoint.y, m_pDoc->m_size);
-        m_pDoc->line_midpoint_cpen(dc2, m_pDoc->m_color, oldPoint.x, oldPoint.y, newPoint.x, newPoint.y, m_pDoc->m_size);
 
+        m_pDoc->point_circle(dc2, m_pDoc->m_color, newPoint.x, newPoint.y, m_pDoc->m_size);
+        m_pDoc->line_cpen(dc2, m_pDoc->m_color, oldPoint, newPoint, m_pDoc->m_size);
         oldPoint = newPoint;
     }
     else if (m_pDoc->m_operation == 10) {
         m_pDoc->flood_fill_cbrush(dc2, m_pDoc->m_color, GetDC()->GetPixel(point.x, point.y), point);
-
         m_pDoc->v_fill.push_back(CMFCOpenGL01Doc::d_fill(point, m_pDoc->m_color));
     }
     else if (m_pDoc->m_operation == 100) { //平移
         if ((index = m_pDoc->selected_point) != -1) {
             m_pDoc->transform_translate_point(m_pDoc->v_point, index, point);
-            
             m_pDoc->selected_point = -1;
-            m_pDoc->m_operation = 0;
         }
         else if ((index = m_pDoc->selected_line) != -1) {
             m_pDoc->transform_translate_line(m_pDoc->v_line, index, point);
-
             m_pDoc->selected_line = -1;
-            m_pDoc->m_operation = 0;
         }
         else if ((index = m_pDoc->selected_perfect_circle) != -1) {
             m_pDoc->transform_translate_perfect_circle(m_pDoc->v_perf_circle, index, point);
-
             m_pDoc->selected_perfect_circle = -1;
-            m_pDoc->m_operation = 0;
         }
         else if ((index = m_pDoc->selected_oval_circle) != -1) {
             m_pDoc->transform_translate_oval_circle(m_pDoc->v_oval_circle, index, point);
-
             m_pDoc->selected_oval_circle = -1;
-            m_pDoc->m_operation = 0;
         }
         else if ((index = m_pDoc->selected_polygon) != -1) {
             m_pDoc->transform_translate_polygon(m_pDoc->v_polygon, index, point);
-
             m_pDoc->selected_polygon = -1;
-            m_pDoc->m_operation = 0;
         }
+        m_pDoc->m_operation = 0;
         Invalidate(TRUE);
     }
     else if (m_pDoc->m_operation == 101) { //旋转
@@ -586,18 +568,24 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
         if ((index = m_pDoc->selected_line) != -1) {
             m_pDoc->transform_scale_line(m_pDoc->v_line, index, oldPoint, point);
             m_pDoc->selected_line = -1;
+            tp1.x = tp1.y = tp2.x = tp2.y = 0;
         }
         else if ((index = m_pDoc->selected_perfect_circle) != -1) {
             m_pDoc->transform_scale_perfect_circle(m_pDoc->v_perf_circle, index, oldPoint, point);
             m_pDoc->selected_perfect_circle = -1;
+            oldRadius = 0.0;
         }
         else if ((index = m_pDoc->selected_oval_circle) != -1) {
             m_pDoc->transform_scale_oval_circle(m_pDoc->v_oval_circle, index, oldPoint, point);
             m_pDoc->selected_oval_circle = -1;
+            ta = tb = 0;
         }
         else if ((index = m_pDoc->selected_polygon) != -1) {
             m_pDoc->transform_scale_polygon(m_pDoc->v_polygon, index, oldPoint, point);
             m_pDoc->selected_polygon = -1;
+            tpolygon.ps.clear();
+            tpolygon.size = 1;
+            tpolygon.color = RGB(0, 0, 0);
         }
         m_pDoc->m_operation = 0;
         Invalidate(TRUE);
@@ -612,7 +600,7 @@ void CMFCOpenGL01View::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
     CDC *dc1 = GetDC();
     if (m_pDoc->m_operation == 5) {
-        m_pDoc->line_midpoint_cpen(dc1, m_pDoc->m_color, newPoint.x, newPoint.y, parentPoint.x, parentPoint.y, m_pDoc->m_size);
+        m_pDoc->line_cpen(dc1, m_pDoc->m_color, newPoint, parentPoint, m_pDoc->m_size);
         m_pDoc->is_drawing_polygon = FALSE;
 
         m_pDoc->v_polygon.push_back(CMFCOpenGL01Doc::d_polygon(temp_ps, m_pDoc->m_size, m_pDoc->m_color));
@@ -632,7 +620,6 @@ void CMFCOpenGL01View::OnMouseMove(UINT nFlags, CPoint point)
     if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 2) {
         dc1->MoveTo(oldPoint);
         dc1->LineTo(newPoint);
-
         newPoint = point;
         dc1->MoveTo(oldPoint);
         dc1->LineTo(newPoint);
@@ -640,38 +627,141 @@ void CMFCOpenGL01View::OnMouseMove(UINT nFlags, CPoint point)
     if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 3) {
         int radius = std::sqrt((newPoint.x - oldPoint.x)*(newPoint.x - oldPoint.x) + ((newPoint.y - oldPoint.y)*(newPoint.y - oldPoint.y)));
         dc1->Arc(CRect(oldPoint.x - radius, oldPoint.y - radius, oldPoint.x + radius, oldPoint.y + radius), CPoint(0, 0), CPoint(0, 0));
-        
         newPoint = point;
         radius = std::sqrt((newPoint.x - oldPoint.x)*(newPoint.x - oldPoint.x) + ((newPoint.y - oldPoint.y)*(newPoint.y - oldPoint.y)));
         dc1->Arc(CRect(oldPoint.x - radius, oldPoint.y - radius, oldPoint.x + radius, oldPoint.y + radius), CPoint(0, 0), CPoint(0, 0));
     }
     if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 4) {
         dc1->Arc(CRect(oldPoint.x, oldPoint.y, newPoint.x, newPoint.y), CPoint(0, 0), CPoint(0, 0));
-
         newPoint = point;
         dc1->Arc(CRect(oldPoint.x, oldPoint.y, newPoint.x, newPoint.y), CPoint(0, 0), CPoint(0, 0));
     }
     if (m_pDoc->m_operation == 5 && m_pDoc->is_drawing_polygon) {
         dc1->MoveTo(oldPoint);
         dc1->LineTo(newPoint);
-
         newPoint = point;
         dc1->MoveTo(oldPoint);
         dc1->LineTo(newPoint);
     }
-    if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 30) {
-        CRect rect_eraser;
-        rect_eraser.SetRect(CPoint(point.x - 25, point.y - 25), CPoint(point.x + 25, point.y + 25));
-        dc2->FillSolidRect(&rect_eraser, RGB(255, 255, 255));
-        //InvalidateRect(rect_eraser);
-    }
-    if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 100) {
+    if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 100) { //平移
         //COLORREF co = RGB(255, 0, 128);
-        //if (m_pDoc->selected_point != -1) {
-        //    index = m_pDoc->selected_point;
-            //dc1->MoveTo(CPoint(m_pDoc->v_point[index].p.x, m_pDoc->v_point[index].p.y));
-            //dc1->LineTo(point);
-        //}
+        if (m_pDoc->selected_line != -1) {
+            index = m_pDoc->selected_line;
+            m_pDoc->line_cpen(dc1, m_pDoc->v_line[index].color, m_pDoc->v_line[index].p1, m_pDoc->v_line[index].p2, m_pDoc->v_line[index].size);
+            m_pDoc->transform_translate_line(m_pDoc->v_line, index, point);
+            m_pDoc->line_cpen(dc1, m_pDoc->v_line[index].color, m_pDoc->v_line[index].p1, m_pDoc->v_line[index].p2, m_pDoc->v_line[index].size);
+        }
+        else if (m_pDoc->selected_perfect_circle != -1) {
+            index = m_pDoc->selected_perfect_circle;
+            m_pDoc->circle_perfect_cpen(dc1, m_pDoc->v_perf_circle[index].color, m_pDoc->v_perf_circle[index].p0, m_pDoc->v_perf_circle[index].radius, m_pDoc->v_perf_circle[index].size);
+            m_pDoc->transform_translate_perfect_circle(m_pDoc->v_perf_circle, index, point);
+            m_pDoc->circle_perfect_cpen(dc1, m_pDoc->v_perf_circle[index].color, m_pDoc->v_perf_circle[index].p0, m_pDoc->v_perf_circle[index].radius, m_pDoc->v_perf_circle[index].size);
+        }
+        else if (m_pDoc->selected_oval_circle != -1) {
+            index = m_pDoc->selected_oval_circle;
+            m_pDoc->circle_oval_angle_cpen(dc1, m_pDoc->v_oval_circle[index].color, m_pDoc->v_oval_circle[index].p0.x, m_pDoc->v_oval_circle[index].p0.y, m_pDoc->v_oval_circle[index].a, m_pDoc->v_oval_circle[index].b, m_pDoc->v_oval_circle[index].angle, m_pDoc->v_oval_circle[index].size);
+            m_pDoc->transform_translate_oval_circle(m_pDoc->v_oval_circle, index, point);
+            m_pDoc->circle_oval_angle_cpen(dc1, m_pDoc->v_oval_circle[index].color, m_pDoc->v_oval_circle[index].p0.x, m_pDoc->v_oval_circle[index].p0.y, m_pDoc->v_oval_circle[index].a, m_pDoc->v_oval_circle[index].b, m_pDoc->v_oval_circle[index].angle, m_pDoc->v_oval_circle[index].size);
+        }
+        else if (m_pDoc->selected_polygon != -1) {
+            index = m_pDoc->selected_polygon;
+            m_pDoc->draw_polygon_cpen(dc1, m_pDoc->v_polygon[index], m_pDoc->v_polygon[index].color, m_pDoc->v_polygon[index].size);
+            m_pDoc->transform_translate_polygon(m_pDoc->v_polygon, index, point);
+            m_pDoc->draw_polygon_cpen(dc1, m_pDoc->v_polygon[index], m_pDoc->v_polygon[index].color, m_pDoc->v_polygon[index].size);
+        }
+    }
+    if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 101) { //旋转
+        //COLORREF co = RGB(255, 0, 128);
+        if (m_pDoc->selected_line != -1) {
+            index = m_pDoc->selected_line;
+            m_pDoc->line_cpen(dc1, m_pDoc->v_line[index].color, m_pDoc->v_line[index].p1, m_pDoc->v_line[index].p2, m_pDoc->v_line[index].size);
+            m_pDoc->transform_rotate_line(m_pDoc->v_line, index, oldPoint, point);
+            oldPoint = point;
+            m_pDoc->line_cpen(dc1, m_pDoc->v_line[index].color, m_pDoc->v_line[index].p1, m_pDoc->v_line[index].p2, m_pDoc->v_line[index].size);
+        }
+        else if (m_pDoc->selected_oval_circle != -1) {
+            index = m_pDoc->selected_oval_circle;
+            m_pDoc->circle_oval_angle_cpen(dc1, m_pDoc->v_oval_circle[index].color, m_pDoc->v_oval_circle[index].p0.x, m_pDoc->v_oval_circle[index].p0.y, m_pDoc->v_oval_circle[index].a, m_pDoc->v_oval_circle[index].b, m_pDoc->v_oval_circle[index].angle, m_pDoc->v_oval_circle[index].size);
+            m_pDoc->transform_rotate_oval_circle(m_pDoc->v_oval_circle, index, oldPoint, point);
+            oldPoint = point;
+            m_pDoc->circle_oval_angle_cpen(dc1, m_pDoc->v_oval_circle[index].color, m_pDoc->v_oval_circle[index].p0.x, m_pDoc->v_oval_circle[index].p0.y, m_pDoc->v_oval_circle[index].a, m_pDoc->v_oval_circle[index].b, m_pDoc->v_oval_circle[index].angle, m_pDoc->v_oval_circle[index].size);
+        }
+        else if (m_pDoc->selected_polygon != -1) {
+            index = m_pDoc->selected_polygon;
+            m_pDoc->draw_polygon_cpen(dc1, m_pDoc->v_polygon[index], m_pDoc->v_polygon[index].color, m_pDoc->v_polygon[index].size);
+            m_pDoc->transform_rotate_polygon(m_pDoc->v_polygon, index, oldPoint, point);
+            oldPoint = point;
+            m_pDoc->draw_polygon_cpen(dc1, m_pDoc->v_polygon[index], m_pDoc->v_polygon[index].color, m_pDoc->v_polygon[index].size);
+        }
+    }
+    if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 102) { //缩放
+        //COLORREF co = RGB(255, 0, 128);
+        if (m_pDoc->selected_line != -1) {
+            index = m_pDoc->selected_line;
+            m_pDoc->line_cpen(dc1, m_pDoc->v_line[index].color, tp1, tp2, m_pDoc->v_line[index].size);
+            
+            //此处单独计算是为了不把数据写入存储对象，保持缩放速率不变
+            int x1 = m_pDoc->v_line[index].p1.x, y1 = m_pDoc->v_line[index].p1.y,
+                x2 = m_pDoc->v_line[index].p2.x, y2 = m_pDoc->v_line[index].p2.y;
+            int xm = (x1 + x2) / 2, ym = (y1 + y2) / 2;
+            double dis1 = sqrt((oldPoint.x - xm)*(oldPoint.x - xm) + (oldPoint.y - ym)*(oldPoint.y - ym)),
+                dis2 = sqrt((point.x - xm)*(point.x - xm) + (point.y - ym)*(point.y - ym));
+            double rate = dis2 / dis1;
+            tp1 = CPoint((x1 - xm)*rate + xm, (y1 - ym)*rate + ym), tp2 = CPoint((x2 - xm)*rate + xm, (y2 - ym)*rate + ym);
+
+            m_pDoc->line_cpen(dc1, m_pDoc->v_line[index].color, tp1, tp2, m_pDoc->v_line[index].size);
+        }
+        else if (m_pDoc->selected_perfect_circle != -1) {
+            index = m_pDoc->selected_perfect_circle;
+            m_pDoc->circle_perfect_cpen(dc1, m_pDoc->v_perf_circle[index].color, m_pDoc->v_perf_circle[index].p0, oldRadius, m_pDoc->v_perf_circle[index].size);
+            
+            //此处单独计算是为了不把数据写入存储对象，保持缩放速率不变
+            int xm = m_pDoc->v_perf_circle[index].p0.x, ym = m_pDoc->v_perf_circle[index].p0.y;
+            double dis1 = sqrt((oldPoint.x - xm)*(oldPoint.x - xm) + (oldPoint.y - ym)*(oldPoint.y - ym)),
+                dis2 = sqrt((point.x - xm)*(point.x - xm) + (point.y - ym)*(point.y - ym));
+            double rate = dis2 / dis1;
+            oldRadius = (m_pDoc->v_perf_circle[index].radius)*rate;
+            
+            m_pDoc->circle_perfect_cpen(dc1, m_pDoc->v_perf_circle[index].color, m_pDoc->v_perf_circle[index].p0, oldRadius, m_pDoc->v_perf_circle[index].size);
+        }
+        else if (m_pDoc->selected_oval_circle != -1) {
+            index = m_pDoc->selected_oval_circle;
+            m_pDoc->circle_oval_angle_cpen(dc1, m_pDoc->v_oval_circle[index].color, m_pDoc->v_oval_circle[index].p0.x, m_pDoc->v_oval_circle[index].p0.y, ta, tb, m_pDoc->v_oval_circle[index].angle, m_pDoc->v_oval_circle[index].size);
+            
+            //此处单独计算是为了不把数据写入存储对象，保持缩放速率不变
+            int xm = m_pDoc->v_oval_circle[index].p0.x,
+                ym = m_pDoc->v_oval_circle[index].p0.y;
+            double dis1 = sqrt((oldPoint.x - xm)*(oldPoint.x - xm) + (oldPoint.y - ym)*(oldPoint.y - ym)),
+                dis2 = sqrt((point.x - xm)*(point.x - xm) + (point.y - ym)*(point.y - ym));
+            double rate = dis2 / dis1;
+            ta = m_pDoc->v_oval_circle[index].a * rate;
+            tb = m_pDoc->v_oval_circle[index].b * rate;
+            
+            m_pDoc->circle_oval_angle_cpen(dc1, m_pDoc->v_oval_circle[index].color, m_pDoc->v_oval_circle[index].p0.x, m_pDoc->v_oval_circle[index].p0.y, ta, tb, m_pDoc->v_oval_circle[index].angle, m_pDoc->v_oval_circle[index].size);
+        }
+        else if (m_pDoc->selected_polygon != -1) {
+            index = m_pDoc->selected_polygon;
+            m_pDoc->draw_polygon_cpen(dc1, tpolygon, m_pDoc->v_polygon[index].color, m_pDoc->v_polygon[index].size);
+            
+            //此处单独计算是为了不把数据写入存储对象，保持缩放速率不变
+            int mid_x = 0, mid_y = 0;
+            for (int i = 0; i < m_pDoc->v_polygon[index].ps.size(); i++) {
+                mid_x += m_pDoc->v_polygon[index].ps[i].x;
+                mid_y += m_pDoc->v_polygon[index].ps[i].y;
+            }
+            mid_x /= m_pDoc->v_polygon[index].ps.size();
+            mid_y /= m_pDoc->v_polygon[index].ps.size();
+            double dis1 = sqrt((oldPoint.x - mid_x)*(oldPoint.x - mid_x) + (oldPoint.y - mid_y)*(oldPoint.y - mid_y)),
+                dis2 = sqrt((point.x - mid_x)*(point.x - mid_x) + (point.y - mid_y)*(point.y - mid_y));
+            double rate = dis2 / dis1;
+            tpolygon = m_pDoc->v_polygon[index];
+            for (int i = 0; i < tpolygon.ps.size(); i++) {
+                tpolygon.ps[i].x = (tpolygon.ps[i].x - mid_x)*rate + mid_x;
+                tpolygon.ps[i].y = (tpolygon.ps[i].y - mid_y)*rate + mid_y;
+            }
+            
+            m_pDoc->draw_polygon_cpen(dc1, tpolygon, m_pDoc->v_polygon[index].color, m_pDoc->v_polygon[index].size);
+        }
     }
 
     ReleaseDC(dc2);

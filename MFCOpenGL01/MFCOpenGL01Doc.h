@@ -115,6 +115,7 @@ public:
         int size;
         COLORREF color;
 
+        draw_point() {}
         draw_point(CPoint p, int type, int size, COLORREF color) {
             this->p = p;
             this->type = type;
@@ -129,6 +130,7 @@ public:
         int size;
         COLORREF color;
 
+        draw_line() {}
         draw_line(CPoint p1, CPoint p2, int type, int size, COLORREF color) {
             this->p1 = p1;
             this->p2 = p2;
@@ -145,6 +147,7 @@ public:
         int size;
         COLORREF color;
 
+        draw_perfect_circle(){}
         draw_perfect_circle(CPoint p0, int radius, int type, int size, COLORREF color) {
             this->p0 = p0;
             this->radius = radius;
@@ -162,6 +165,7 @@ public:
         int size;
         COLORREF color;
 
+        draw_oval_circle() {}
         draw_oval_circle(CPoint p0, int a, int b, int angle, int type, int size, COLORREF color) {
             this->p0 = p0;
             this->a = a;
@@ -178,6 +182,7 @@ public:
         int size;
         COLORREF color;
 
+        draw_polygon(){}
         draw_polygon(std::vector<CPoint> ps, int size, COLORREF color) {
             this->ps = ps;
             this->size = size;
@@ -189,6 +194,7 @@ public:
         CPoint p;
         COLORREF color;
 
+        draw_fill() {}
         draw_fill(CPoint p, COLORREF color) {
             this->p = p;
             this->color = color;
@@ -213,7 +219,7 @@ public:
     double pi = acos(-1.0);
 
     //当前操作
-    //0无，1点、2线、3正圆、4椭圆、5多边形，10填充、20/21裁剪、30橡皮擦，100平移、101旋转、102缩放
+    //0无，1点、2线、3正圆、4椭圆、5多边形，10填充、20/21裁剪，100平移、101旋转、102缩放
     int m_operation; 
     //当前颜色、当前线宽
     COLORREF m_color;
@@ -261,7 +267,7 @@ public:
     void flush_all_drawing(CDC *pDC);
 
     //绘制多边形
-    void draw_polygon_cpen(CDC *pDC, d_polygon p, COLORREF color);
+    void draw_polygon_cpen(CDC *pDC, d_polygon p, COLORREF color, int size);
 
     
 
@@ -305,10 +311,10 @@ public:
     void line_bresenham(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1);
 
 
+    
+
     //CPen函数
-    void line_dda_cpen(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1, int size);
-    void line_midpoint_cpen(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1, int size);
-    void line_bresenham_cpen(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1, int size);
+    void line_cpen(CDC * pDC, COLORREF color, CPoint p1, CPoint p2, int size);
 
 
 
@@ -341,13 +347,7 @@ public:
 
 
     //CPen函数
-    void circle_perfect_bresenham_cpen(CDC *pDC, COLORREF color, int x0, int y0, int radius, int size);
-    void circle_perfect_midpoint_cpen(CDC *pDC, COLORREF color, int x0, int y0, int radius, int size);
-    void set_points_on_circle_cpen(CDC *pDC, COLORREF color, int x0, int y0, int x, int y, int size);
-
-    void circle_oval_bresenham_cpen(CDC *pDC, COLORREF color, int x0, int y0, int a, int b, int size);
-    void circle_oval_midpoint_cpen(CDC *pDC, COLORREF color, int x0, int y0, int a, int b, int size);
-    void set_points_on_oval_cpen(CDC *pDC, COLORREF color, int x0, int y0, int x, int y, int size);
+    void circle_perfect_cpen(CDC * pDC, COLORREF color, CPoint p0, int radius, int size);
 
     //带有旋转角度的椭圆，顺时针旋转  参数：pDC，颜色，圆心x，圆心y，长轴a，短轴b，旋转角度（角度制），线宽
     void circle_oval_angle_cpen(CDC *pDC, COLORREF color, float x0, float y0, float a, float b, double angle, int size);
@@ -430,17 +430,6 @@ public:
     void transform_symmetry_oval_circle(std::vector<d_oval_circle> &v_oval_circle, int index, int flag);
     void transform_symmetry_polygon(std::vector<d_polygon> &v_polygon, int index, int flag);
 
-
-
-
-    //错切
-    void transform_shear();
-
-    //仿射
-    void transform_affline();
-
-    //复合
-    void transform_compound();
 
 
 #ifdef SHARED_HANDLERS

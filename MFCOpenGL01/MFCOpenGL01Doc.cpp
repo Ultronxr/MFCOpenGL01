@@ -174,38 +174,27 @@ void CMFCOpenGL01Doc::select_all(CDC * pDC, CPoint point){
     
     //处理线
     if (sl != -1) { 
-        if (v_line[sl].type == 0) line_dda_cpen(pDC, co, v_line[sl].p1.x, v_line[sl].p1.y, v_line[sl].p2.x, v_line[sl].p2.y, v_line[sl].size);
-        else if (v_line[sl].type == 1) line_midpoint_cpen(pDC, co, v_line[sl].p1.x, v_line[sl].p1.y, v_line[sl].p2.x, v_line[sl].p2.y, v_line[sl].size);
-        else if (v_line[sl].type == 2) line_bresenham_cpen(pDC, co, v_line[sl].p1.x, v_line[sl].p1.y, v_line[sl].p2.x, v_line[sl].p2.y, v_line[sl].size);
-
+        line_cpen(pDC, co, v_line[sl].p1, v_line[sl].p2, v_line[sl].size);
         spc = soc = spo = -1;
     }
     if (selected_line != -1 && selected_line != sl) {
         int msl = selected_line;
-        if (v_line[msl].type == 0) line_dda_cpen(pDC, v_line[msl].color, v_line[msl].p1.x, v_line[msl].p1.y, v_line[msl].p2.x, v_line[msl].p2.y, v_line[msl].size);
-        else if (v_line[msl].type == 1) line_midpoint_cpen(pDC, v_line[msl].color, v_line[msl].p1.x, v_line[msl].p1.y, v_line[msl].p2.x, v_line[msl].p2.y, v_line[msl].size);
-        else if (v_line[msl].type == 2) line_bresenham_cpen(pDC, v_line[msl].color, v_line[msl].p1.x, v_line[msl].p1.y, v_line[msl].p2.x, v_line[msl].p2.y, v_line[msl].size);
+        line_cpen(pDC, co, v_line[msl].p1, v_line[msl].p2, v_line[msl].size);
     }
     
     //处理正圆
     if (spc != -1) {
-        if (v_perf_circle[spc].type == 0) circle_perfect_bresenham_cpen(pDC, co, v_perf_circle[spc].p0.x, v_perf_circle[spc].p0.y, v_perf_circle[spc].radius, v_perf_circle[spc].size);
-        else if (v_perf_circle[spc].type == 1) circle_perfect_midpoint_cpen(pDC, co, v_perf_circle[spc].p0.x, v_perf_circle[spc].p0.y, v_perf_circle[spc].radius, v_perf_circle[spc].size);
-        else if (v_perf_circle[spc].type == 2) circle_perfect_midpoint_cpen(pDC, co, v_perf_circle[spc].p0.x, v_perf_circle[spc].p0.y, v_perf_circle[spc].radius, v_perf_circle[spc].size);
-
+        circle_perfect_cpen(pDC, co, v_perf_circle[spc].p0, v_perf_circle[spc].radius, v_perf_circle[spc].size);
         soc = spo = -1;
     }
     if (selected_perfect_circle != -1 && selected_perfect_circle != spc) {
         int mspc = selected_perfect_circle;
-        if (v_perf_circle[mspc].type == 0) circle_perfect_bresenham_cpen(pDC, v_perf_circle[mspc].color, v_perf_circle[mspc].p0.x, v_perf_circle[mspc].p0.y, v_perf_circle[mspc].radius, v_perf_circle[mspc].size);
-        else if (v_perf_circle[mspc].type == 1) circle_perfect_midpoint_cpen(pDC, v_perf_circle[mspc].color, v_perf_circle[mspc].p0.x, v_perf_circle[mspc].p0.y, v_perf_circle[mspc].radius, v_perf_circle[mspc].size);
-        else if (v_perf_circle[mspc].type == 2) circle_perfect_midpoint_cpen(pDC, v_perf_circle[mspc].color, v_perf_circle[mspc].p0.x, v_perf_circle[mspc].p0.y, v_perf_circle[mspc].radius, v_perf_circle[mspc].size);
+        circle_perfect_cpen(pDC, v_perf_circle[mspc].color, v_perf_circle[mspc].p0, v_perf_circle[mspc].radius, v_perf_circle[mspc].size);
     }
 
     //处理椭圆
     if (soc != -1) {
         circle_oval_angle_cpen(pDC, co, v_oval_circle[soc].p0.x, v_oval_circle[soc].p0.y, v_oval_circle[soc].a, v_oval_circle[soc].b, v_oval_circle[soc].angle, v_oval_circle[soc].size);
-
         spo = -1;
     }
     if (selected_oval_circle != -1 && selected_oval_circle != soc) {
@@ -214,10 +203,10 @@ void CMFCOpenGL01Doc::select_all(CDC * pDC, CPoint point){
 
     //处理多边形
     if (spo != -1) {
-        draw_polygon_cpen(pDC, v_polygon[spo], co);
+        draw_polygon_cpen(pDC, v_polygon[spo], co, v_polygon[spo].size);
     }
     if (selected_polygon != -1 && selected_polygon != spo) {
-        draw_polygon_cpen(pDC, v_polygon[selected_polygon], v_polygon[selected_polygon].color);
+        draw_polygon_cpen(pDC, v_polygon[selected_polygon], v_polygon[selected_polygon].color, v_polygon[selected_polygon].size);
     }
 
     selected_point = sp;
@@ -307,43 +296,36 @@ void CMFCOpenGL01Doc::flush_all_drawing(CDC * pDC){
         else if(v_point[i].type == 2) point_rhombus(pDC, v_point[i].color, v_point[i].p.x, v_point[i].p.y, v_point[i].size);
     }
 
-    for (int i = 0; i < v_line.size(); i++) {
-        if (v_line[i].type == 0) line_dda_cpen(pDC, v_line[i].color, v_line[i].p1.x, v_line[i].p1.y, v_line[i].p2.x, v_line[i].p2.y, v_line[i].size);
-        else if (v_line[i].type == 1) line_midpoint_cpen(pDC, v_line[i].color, v_line[i].p1.x, v_line[i].p1.y, v_line[i].p2.x, v_line[i].p2.y, v_line[i].size);
-        else if (v_line[i].type == 2) line_bresenham_cpen(pDC, v_line[i].color, v_line[i].p1.x, v_line[i].p1.y, v_line[i].p2.x, v_line[i].p2.y, v_line[i].size);
-    }
+    for (int i = 0; i < v_line.size(); i++)
+        line_cpen(pDC, v_line[i].color, v_line[i].p1, v_line[i].p2, v_line[i].size);
 
-    for (int i = 0; i < v_perf_circle.size(); i++) {
-        if (v_perf_circle[i].type == 0) circle_perfect_bresenham_cpen(pDC, v_perf_circle[i].color, v_perf_circle[i].p0.x, v_perf_circle[i].p0.y, v_perf_circle[i].radius, v_perf_circle[i].size);
-        else if(v_perf_circle[i].type == 1) circle_perfect_midpoint_cpen(pDC, v_perf_circle[i].color, v_perf_circle[i].p0.x, v_perf_circle[i].p0.y, v_perf_circle[i].radius, v_perf_circle[i].size);
-        else if (v_perf_circle[i].type == 2) circle_perfect_bresenham_cpen(pDC, v_perf_circle[i].color, v_perf_circle[i].p0.x, v_perf_circle[i].p0.y, v_perf_circle[i].radius, v_perf_circle[i].size);
-    }
+    for (int i = 0; i < v_perf_circle.size(); i++)
+        circle_perfect_cpen(pDC, v_perf_circle[i].color, v_perf_circle[i].p0, v_perf_circle[i].radius, v_perf_circle[i].size);
 
-    for (int i = 0; i < v_oval_circle.size(); i++) {
+    for (int i = 0; i < v_oval_circle.size(); i++)
         circle_oval_angle_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].angle, v_oval_circle[i].size);
-        //if (v_oval_circle[i].type == 0) circle_oval_bresenham_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].size);
-        //else if (v_oval_circle[i].type == 1) circle_oval_midpoint_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].size);
-        //else if (v_oval_circle[i].type == 2) circle_oval_midpoint_cpen(pDC, v_oval_circle[i].color, v_oval_circle[i].p0.x, v_oval_circle[i].p0.y, v_oval_circle[i].a, v_oval_circle[i].b, v_oval_circle[i].size);
-    }
 
-    for (int i = 0; i < v_polygon.size(); i++) {
-        draw_polygon_cpen(pDC, v_polygon[i], v_polygon[i].color);
-    }
+    for (int i = 0; i < v_polygon.size(); i++)
+        draw_polygon_cpen(pDC, v_polygon[i], v_polygon[i].color, v_polygon[i].size);
 
-    for (int i = 0; i < v_fill.size(); i++) {
+    for (int i = 0; i < v_fill.size(); i++)
         flood_fill_cbrush(pDC, v_fill[i].color, pDC->GetPixel(v_fill[i].p.x, v_fill[i].p.y), v_fill[i].p);
-    }
-
 }
 
 //绘制多边形
-void CMFCOpenGL01Doc::draw_polygon_cpen(CDC * pDC, d_polygon p, COLORREF color){
+void CMFCOpenGL01Doc::draw_polygon_cpen(CDC * pDC, d_polygon p, COLORREF color, int size){
 
-    for (int i = 0; i < p.ps.size() - 1; i++)
-        line_midpoint_cpen(pDC, color, p.ps[i].x, p.ps[i].y, p.ps[i + 1].x, p.ps[i + 1].y, p.size);
+    if (p.ps.size() == 0) return;
+    CPen cpen;
+    cpen.CreatePen(PS_SOLID, size, color);
+    CPen* pOldPen = (CPen*)pDC->SelectObject(&cpen);
+    
+    pDC->MoveTo(p.ps[0]);
+    for (int i = 0; i < p.ps.size(); i++) pDC->LineTo(p.ps[i]);
+    pDC->LineTo(p.ps[0]);
 
-    line_midpoint_cpen(pDC, color, p.ps[p.ps.size()-1].x, p.ps[p.ps.size()-1].y, p.ps[0].x, p.ps[0].y, p.size);
-
+    pDC->SelectObject(pOldPen);
+    cpen.DeleteObject();
 }
 
 
@@ -673,124 +655,20 @@ void CMFCOpenGL01Doc::line_bresenham(CDC *pDC, COLORREF color, int x0, int y0, i
 
 //Cpen函数
 
-void CMFCOpenGL01Doc::line_dda_cpen(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1, int size) {
-    size++;
+void CMFCOpenGL01Doc::line_cpen(CDC* pDC, COLORREF color, CPoint p1, CPoint p2, int size) {
     CPen cpen;
     cpen.CreatePen(PS_SOLID, size, color);
     CPen* pOldPen = (CPen*)pDC->SelectObject(&cpen);
 
-    double delta_x = 0.0, delta_y = 0.0, x = 0.0, y = 0.0;
-    int dx = 0, dy = 0, steps = 0;
-    dx = x1 - x0;
-    dy = y1 - y0;
-    if (abs(dx)>abs(dy)) steps = abs(dx);
-    else steps = abs(dy);
-    delta_x = (double)dx / (double)steps;
-    delta_y = (double)dy / (double)steps;
-    x = x0, y = y0;
-    pDC->MoveTo(x, y);
-    pDC->LineTo(x, y);
-    for (int i = 1; i <= steps; i++) {
-        x += delta_x;
-        y += delta_y;
-        pDC->MoveTo(x, y);
-        pDC->LineTo(x, y);
-    }
+    pDC->MoveTo(p1);
+    pDC->LineTo(p2);
 
     pDC->SelectObject(pOldPen);
     cpen.DeleteObject();
-    return;
 }
 
-void CMFCOpenGL01Doc::line_midpoint_cpen(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1, int size) {
-    size++;
-    CPen cpen;
-    cpen.CreatePen(PS_SOLID, size, color);
-    CPen* pOldPen = (CPen*)pDC->SelectObject(&cpen);
 
-    int x = x0, y = y0;
-    int a = y0 - y1;
-    int b = x1 - x0;
-    int cx = (b >= 0 ? 1 : (b = -b, -1));
-    int cy = (a <= 0 ? 1 : (a = -a, -1));
-    int d, d1, d2;
-    if (-a <= b) { // 斜率绝对值 <= 1
-        d = a + a + b;
-        d1 = a + a;
-        d2 = a + a + b + b;
-        while (x != x1) {
-            if (d < 0) {
-                y += cy;
-                d += d2;
-            }
-            else {
-                d += d1;
-            }
-            x += cx;
-            pDC->MoveTo(x, y);
-            pDC->LineTo(x, y);
-        }
-    }
-    else { // 斜率绝对值 > 1
-        d = a + b + b;
-        d1 = b + b;
-        d2 = a + a + b + b;
-        while (y != y1) {
-            if (d < 0) {
-                d += d1;
-            }
-            else {
-                x += cx;
-                d += d2;
-            }
-            y += cy;
-            pDC->MoveTo(x, y);
-            pDC->LineTo(x, y);
-        }
-    }
-    pDC->SelectObject(pOldPen);
-    cpen.DeleteObject();
-    return;
-}
 
-void CMFCOpenGL01Doc::line_bresenham_cpen(CDC *pDC, COLORREF color, int x0, int y0, int x1, int y1, int size) {
-    size++;
-    CPen cpen;
-    cpen.CreatePen(PS_SOLID, size, color);
-    CPen* pOldPen = (CPen*)pDC->SelectObject(&cpen);
-
-    int dx = x1 - x0;
-    int dy = y1 - y0;
-    int ux = ((dx > 0) << 1) - 1;
-    int uy = ((dy > 0) << 1) - 1;
-    int x = x0, y = y0, eps;
-
-    eps = 0; dx = abs(dx); dy = abs(dy);
-    if (dx > dy) {
-        for (x = x0; x != x1; x += ux) {
-            pDC->MoveTo(x, y);
-            pDC->LineTo(x, y);
-            eps += dy;
-            if ((eps << 1) >= dx) {
-                y += uy; eps -= dx;
-            }
-        }
-    }
-    else {
-        for (y = y0; y != y1; y += uy) {
-            pDC->MoveTo(x, y);
-            pDC->LineTo(x, y);
-            eps += dx;
-            if ((eps << 1) >= dy) {
-                x += ux; eps -= dy;
-            }
-        }
-    }
-
-    pDC->SelectObject(pOldPen);
-    cpen.DeleteObject();
-    return;
-}
 
 
 
@@ -964,153 +842,16 @@ void CMFCOpenGL01Doc::set_points_on_oval(CDC *pDC, COLORREF color, int x0, int y
 
 //CPen函数
 
-void CMFCOpenGL01Doc::circle_perfect_bresenham_cpen(CDC *pDC, COLORREF color, int x0, int y0, int radius, int size) {
-    double x = 0.0, y = 0.0, d = 0.0;
-    d = 1.25 - radius;
-    x = 0; y = radius;
-    for (x = 0; x <= y; x++) {
-        set_points_on_circle_cpen(pDC, color, x0, y0, x, y, size);
-        if (d < 0) d += 2 * x + 3;
-        else {
-            d += 2 * (x - y) + 5;
-            y--;
-        }
-    }
-    return;
-}
-
-void CMFCOpenGL01Doc::circle_perfect_midpoint_cpen(CDC *pDC, COLORREF color, int x0, int y0, int radius, int size) {
-    int x = 0, y = 0, h = 0;
-    x = 0, y = radius;
-    h = 1 - radius;
-    set_points_on_circle_cpen(pDC, color, x0, y0, x, y, size);
-    while (x < y) {
-        if (h < 0) h += 2 * x + 2;
-        else {
-            h += 2 * (x - y) + 5;
-            y--;
-        }
-        x++;
-        set_points_on_circle_cpen(pDC, color, x0, y0, x, y, size);
-    }
-    return;
-}
-
-void CMFCOpenGL01Doc::set_points_on_circle_cpen(CDC *pDC, COLORREF color, int x0, int y0, int x, int y, int size) {
-    size++;
+void CMFCOpenGL01Doc::circle_perfect_cpen(CDC *pDC, COLORREF color, CPoint p0, int radius, int size) {
     CPen cpen;
     cpen.CreatePen(PS_SOLID, size, color);
     CPen* pOldPen = (CPen*)pDC->SelectObject(&cpen);
-    pDC->MoveTo((x0 + x), (y0 + y));
-    pDC->LineTo((x0 + x), (y0 + y));
-    pDC->MoveTo((x0 - x), (y0 + y));
-    pDC->LineTo((x0 - x), (y0 + y));
-    pDC->MoveTo((x0 + x), (y0 - y));
-    pDC->LineTo((x0 + x), (y0 - y));
-    pDC->MoveTo((x0 - x), (y0 - y));
-    pDC->LineTo((x0 - x), (y0 - y));
-
-    pDC->MoveTo((x0 + y), (y0 + x));
-    pDC->LineTo((x0 + y), (y0 + x));
-    pDC->MoveTo((x0 - y), (y0 + x));
-    pDC->LineTo((x0 - y), (y0 + x));
-    pDC->MoveTo((x0 + y), (y0 - x));
-    pDC->LineTo((x0 + y), (y0 - x));
-    pDC->MoveTo((x0 - y), (y0 - x));
-    pDC->LineTo((x0 - y), (y0 - x));
-
+    pDC->Arc(CRect(p0.x-radius, p0.y-radius, p0.x+radius, p0.y+radius), CPoint(0, 0), CPoint(0, 0));
     pDC->SelectObject(pOldPen);
     cpen.DeleteObject();
-    return;
 }
 
 
-void CMFCOpenGL01Doc::circle_oval_bresenham_cpen(CDC *pDC, COLORREF color, int x0, int y0, int a, int b, int size) {
-
-    size++;
-    int sqa = a * a, sqb = b * b;
-    int x = 0, y = b;
-    int d = 2 * sqb - 2 * b * sqa + sqa;
-    set_points_on_oval_cpen(pDC, color, x0, y0, x, y, size);
-    int P_x = round((double)sqa / sqrt((double)(sqa + sqb)));
-    while (x <= P_x) {
-        if (d < 0)
-            d += 2 * sqb * (2 * x + 3);
-        else {
-            d += 2 * sqb * (2 * x + 3) - 4 * sqa * (y - 1);
-            y--;
-        }
-        x++;
-        set_points_on_oval_cpen(pDC, color, x0, y0, x, y, size);
-    }
-
-    d = sqb * (x * x + x) + sqa * (y * y - y) - sqa * sqb;
-    while (y >= 0) {
-        set_points_on_oval_cpen(pDC, color, x0, y0, x, y, size);
-        y--;
-        if (d < 0) {
-            x++;
-            d = d - 2 * sqa * y - sqa + 2 * sqb * x + 2 * sqb;
-        }
-        else
-            d = d - 2 * sqa * y - sqa;
-    }
-
-    return;
-}
-
-void CMFCOpenGL01Doc::circle_oval_midpoint_cpen(CDC *pDC, COLORREF color, int x0, int y0, int a, int b, int size) {
-
-    size++;
-
-    double sqa = a * a;
-    double sqb = b * b;
-    double d = sqb + sqa * (-b + 0.25);
-    int x = 0;
-    int y = b;
-    set_points_on_oval_cpen(pDC, color, x0, y0, x, y, size);
-    while (sqb * (x + 1) < sqa * (y - 0.5)) {
-        if (d < 0) d += sqb * (2 * x + 3);
-        else {
-            d += (sqb * (2 * x + 3) + sqa * (-2 * y + 2));
-            y--;
-        }
-        x++;
-        set_points_on_oval_cpen(pDC, color, x0, y0, x, y, size);
-    }
-    d = (b * (x + 0.5)) * 2 + (a * (y - 1)) * 2 - (a * b) * 2;
-    while (y > 0) {
-        if (d < 0) {
-            d += sqb * (2 * x + 2) + sqa * (-2 * y + 3);
-            x++;
-        }
-        else d += sqa * (-2 * y + 3);
-        y--;
-        set_points_on_oval_cpen(pDC, color, x0, y0, x, y, size);
-    }
-
-    return;
-}
-
-void CMFCOpenGL01Doc::set_points_on_oval_cpen(CDC *pDC, COLORREF color, int x0, int y0, int x, int y, int size) {
-
-    CPen cpen;
-    cpen.CreatePen(PS_SOLID, size, color);
-    CPen* pOldPen = (CPen*)pDC->SelectObject(&cpen);
-
-    pDC->MoveTo((x0 + x), (y0 + y));
-    pDC->LineTo((x0 + x), (y0 + y));
-    pDC->MoveTo((x0 - x), (y0 + y));
-    pDC->LineTo((x0 - x), (y0 + y));
-    pDC->MoveTo((x0 + x), (y0 - y));
-    pDC->LineTo((x0 + x), (y0 - y));
-    pDC->MoveTo((x0 - x), (y0 - y));
-    pDC->LineTo((x0 - x), (y0 - y));
-
-    pDC->SelectObject(pOldPen);
-    cpen.DeleteObject();
-    return;
-}
 
 //带有旋转角度的椭圆，顺时针旋转  参数：pDC，颜色，圆心x，圆心y，长轴a，短轴b，旋转角度（角度制），线宽
 void CMFCOpenGL01Doc::circle_oval_angle_cpen(CDC *pDC, COLORREF color, float x0, float y0, float a, float b, double angle, int size){
@@ -1752,36 +1493,4 @@ void CMFCOpenGL01Doc::transform_symmetry_polygon(std::vector<d_polygon>& v_line,
             v_polygon[index].ps[i].x = mid_x * 2 - v_polygon[index].ps[i].x;
     }
 }
-
-
-
-
-
-
-
-//错切
-void CMFCOpenGL01Doc::transform_shear(){
-
-
-}
-
-
-//仿射
-void CMFCOpenGL01Doc::transform_affline(){
-
-
-}
-
-//复合
-void CMFCOpenGL01Doc::transform_compound(){
-
-
-}
-
-
-
-
-
-
-
 
