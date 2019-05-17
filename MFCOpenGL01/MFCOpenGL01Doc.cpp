@@ -179,7 +179,7 @@ void CMFCOpenGL01Doc::select_all(CDC * pDC, CPoint point){
     }
     if (selected_line != -1 && selected_line != sl) {
         int msl = selected_line;
-        line_cpen(pDC, co, v_line[msl].p1, v_line[msl].p2, v_line[msl].size);
+        line_cpen(pDC, v_line[msl].color, v_line[msl].p1, v_line[msl].p2, v_line[msl].size);
     }
     
     //处理正圆
