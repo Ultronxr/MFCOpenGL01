@@ -21,12 +21,7 @@
 
 ## 已知BUG
 
-1. 裁剪功能不够完善（各种BUG）；
-2. 使用对话框中选择颜色的CMFCColorButton时，如果点击了右侧的下拉三角形，绘制下拉菜单时会使下拉菜单阴影处“_|”形的像素丢失，而且不会自动刷新（见下二图）；
-
-![CMFCColorButton像素丢失BUG_01](./show/CMFCColorButton_pixel_lost_bug_01.png)
-
-![CMFCColorButton像素丢失BUG_02](./show/CMFCColorButton_pixel_lost_bug_02.png)
+1. 只记录填充位置，窗口大小改变时会导致填充错位。
 
 
 ## 演示图片（选取几张，所有图片在`show`目录下，这些图片不一定是最新版本的效果！）
