@@ -26,15 +26,22 @@
 
 ## 演示图片（选取几张，所有图片在`show`目录下，这些图片不一定是最新版本的效果！）
 
-![绘制点](./show/01_draw_point.gif)
+![绘制点](./show/draw_point.gif)
 
-![绘制直线](./show/02_draw_line.gif)
+![绘制直线](./show/draw_line.gif)
 
-![绘制正圆](./show/03_draw_circle_perfect.gif)
+![绘制椭圆](./show/draw_circle_oval.gif)
 
-![绘制椭圆](./show/04_draw_circle_oval.gif)
+![绘制多边形](./show/draw_polygon.gif)
 
-![绘制多边形](./show/05_draw_polygon.gif)
+![填充](./show/fill.gif)
 
-![填充](./show/06_fill.gif)
+![选择图形](./show/select.gif)
 
+![平移](./show/transform_translate.gif)
+
+![旋转](./show/transform_rotate.gif)
+
+![缩放](./show/transform_scale.gif)
+
+![对称](./show/transform_symmetry.gif)
