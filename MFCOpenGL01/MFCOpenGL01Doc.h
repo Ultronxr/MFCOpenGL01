@@ -1,4 +1,8 @@
-
+/*
+Ctrl+M+O 折叠所有方法
+Ctrl+M+M 折叠或者展开当前方法
+Ctrl+M+L 展开所有方法
+*/
 // MFCOpenGL01Doc.h : CMFCOpenGL01Doc 类的接口
 //
 
@@ -190,6 +194,21 @@ public:
         }
     }d_polygon;
 
+    typedef struct draw_bezier {
+        int order; //几次贝塞尔曲线，n次 有n+1个控制点
+        std::vector<CPoint> ps;
+        int size;
+        COLORREF color;
+
+        draw_bezier() {}
+        draw_bezier(int order, std::vector<CPoint> ps, int size, COLORREF color) {
+            this->order = order;
+            this->ps = ps;
+            this->size = size;
+            this->color = color;
+        }
+    }d_bezier;
+
     typedef struct draw_fill {
         CPoint p;
         COLORREF color;
@@ -202,8 +221,6 @@ public:
     }d_fill;
 
 
-
-
 ///绘图数据存储
 public:
 
@@ -213,26 +230,26 @@ public:
     std::vector<d_perf_circle> v_perf_circle;
     std::vector<d_oval_circle> v_oval_circle;
     std::vector<d_polygon> v_polygon;
+    std::vector<d_bezier> v_bezier;
     std::vector<d_fill> v_fill;
-
-
+    
+    long long yanghui[55][55]; //计算贝塞尔曲线阶乘部分时的杨辉三角
     double pi = acos(-1.0);
 
     //当前操作
-    //0无，1点、2线、3正圆、4椭圆、5多边形，10填充、20/21裁剪，100平移、101旋转、102缩放
+    //0无，1点、2线、3正圆、4椭圆、5多边形，6贝塞尔曲线，10填充、20/21裁剪，100平移、101旋转、102缩放
     int m_operation; 
     //当前颜色、当前线宽
     COLORREF m_color;
     int m_size;
-
+    BOOL is_drawing_polygon = FALSE;
+    BOOL is_drawing_bezier = FALSE;
 
     //对话框中的变量
     //点的类型、线的类型、正圆的类型、椭圆的类型（类型指不同的算法）
     int point_type, line_type, circle_perfect_type, circle_oval_type;
 
-    //多边形
-    polygon m_polygon;
-    BOOL is_drawing_polygon = FALSE;
+    
 
 
 
@@ -269,7 +286,12 @@ public:
     //绘制多边形
     void draw_polygon_cpen(CDC *pDC, d_polygon p, COLORREF color, int size);
 
-    
+    //绘制贝塞尔曲线
+    void bezier_cpen(CDC *pDC, d_bezier b, COLORREF color, int size);
+
+
+
+
 
 
 
@@ -355,13 +377,12 @@ public:
 
 
 
+
     ///区域填充算法 开始
 
     //CPen
 
     void flood_fill_cbrush(CDC *pDC, COLORREF color, COLORREF color_banned, CPoint pt);
-
-
 
 
 

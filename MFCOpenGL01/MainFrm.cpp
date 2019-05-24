@@ -31,6 +31,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
     ON_COMMAND(TOOLBAR_DRAW_CIRCLE_PERFECT, &CMainFrame::OnToolBarDrawCirclePerfect)
     ON_COMMAND(TOOLBAR_DRAW_CIRCLE_OVAL, &CMainFrame::OnToolBarDrawCircleOval)
     ON_COMMAND(TOOLBAR_DRAW_POLYGON, &CMainFrame::OnToolBarDrawPolygon)
+    ON_COMMAND(TOOLBAR_DRAW_BEZIER, &CMainFrame::OnToolBarDrawBezier)
     ON_COMMAND(TOOLBAR_TOOLS_MOUSE, &CMainFrame::OnToolBarToolsMouse)
     //ON_COMMAND(TOOLBAR_TOOLS_SELECT, &CMainFrame::OnToolBarToolsSelect)
     ON_COMMAND(TOOLBAR_TOOLS_FILL, &CMainFrame::OnToolBarToolsFill)
@@ -180,12 +181,22 @@ void CMainFrame::OnToolBarDrawPolygon() {
     dlg.DoModal();
 }
 
+void CMainFrame::OnToolBarDrawBezier(){
+    if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
+
+    m_pDoc->m_color = RGB(0, 0, 0);
+    DialogBezier dlg;
+    dlg.DoModal();
+}
+
 void CMainFrame::OnToolBarToolsMouse() {
     if (!m_pDoc) m_pDoc = (CMFCOpenGL01Doc*)((CMFCOpenGL01View*)GetActiveView())->GetDocument();
 
     m_pDoc->m_operation = 0;
     m_pDoc->m_color = RGB(0, 0, 0);
     m_pDoc->is_drawing_polygon = FALSE;
+    m_pDoc->is_drawing_bezier = FALSE;
+    Invalidate(TRUE);
 }
 
 void CMainFrame::OnToolBarToolsSelect() {

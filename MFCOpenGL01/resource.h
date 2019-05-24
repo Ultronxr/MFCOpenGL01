@@ -98,6 +98,7 @@
 #define IDR_MENU_LINESIZE               354
 #define IDR_TOOLBAR_TRANSFORM           355
 #define CURSOR_TRANSFORM_SCALE          359
+#define IDD_DIALOG_BEZIER               360
 #define IDC_RICHEDIT21                  1004
 #define IDC_RICHEDIT22                  1005
 #define IDC_RICHEDIT23                  1006
@@ -190,13 +191,14 @@
 #define TOOLBAR_TRANSFORM_SCALE         32847
 #define TOOLBAR_TRANSFORM_SYMMETRY_LR   32848
 #define TOOLBAR_TRANSFORM_SYMMETRY_TB   32849
+#define TOOLBAR_DRAW_BEZIER             32853
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        360
-#define _APS_NEXT_COMMAND_VALUE         32850
+#define _APS_NEXT_RESOURCE_VALUE        363
+#define _APS_NEXT_COMMAND_VALUE         32854
 #define _APS_NEXT_CONTROL_VALUE         1040
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

@@ -1,8 +1,3 @@
-/*
-Ctrl+M+O 折叠所有方法
-Ctrl+M+M 折叠或者展开当前方法
-Ctrl+M+L 展开所有方法
-*/
 
 // MFCOpenGL01View.h : CMFCOpenGL01View 类的接口
 //

@@ -29,14 +29,29 @@ END_MESSAGE_MAP()
 
 CMFCOpenGL01Doc::CMFCOpenGL01Doc()
 {
+    //调试输出信息用的控制台
+    /*::AllocConsole();
+    FILE *fp;
+    freopen_s(&fp, "CONOUT$", "w+t", stdout);*/
+
 	// TODO: 在此添加一次性构造代码
     m_operation = 0;
     m_color = RGB(0, 0, 0);
     m_size = 1;
+    //计算杨辉三角
+    std::memset(yanghui, 0, sizeof(yanghui));
+    for (int i = 0; i <= 50; i++) {
+        for (int j = 0; j <= i; j++) {
+            if (j == 0 || i == j) yanghui[i][j] = 1;
+            else yanghui[i][j] = yanghui[i - 1][j - 1] + yanghui[i - 1][j];
+        }
+    }
 }
 
 CMFCOpenGL01Doc::~CMFCOpenGL01Doc()
 {
+    //释放调试控制台
+    //FreeConsole();
 }
 
 BOOL CMFCOpenGL01Doc::OnNewDocument()
@@ -229,11 +244,6 @@ int CMFCOpenGL01Doc::select_line(CPoint pos){
     //double dis = 0.0, a = 0.0, b = 0.0, c = 0.0;
     double am = 0.0, bm = 0.0, ab = 0.0;
     for (int i = 0; i < v_line.size(); i++) {
-        /*a = v_line[i].p2.y - v_line[i].p1.y;
-        b = v_line[i].p1.x - v_line[i].p2.x;
-        c = v_line[i].p2.x*v_line[i].p1.y - v_line[i].p1.x*v_line[i].p2.y;
-        dis = abs((a*pos.x + b*pos.y + c)) / (sqrt(a*a + b*b));
-        if (dis < (v_line[i].size / 2.0 + 5.0)) return i;*/
         am = sqrt((v_line[i].p1.x - pos.x)*(v_line[i].p1.x - pos.x) + (v_line[i].p1.y - pos.y)*(v_line[i].p1.y - pos.y));
         bm = sqrt((v_line[i].p2.x - pos.x)*(v_line[i].p2.x - pos.x) + (v_line[i].p2.y - pos.y)*(v_line[i].p2.y - pos.y));
         ab = sqrt((v_line[i].p1.x - v_line[i].p2.x)*(v_line[i].p1.x - v_line[i].p2.x) + (v_line[i].p1.y - v_line[i].p2.y)*(v_line[i].p1.y - v_line[i].p2.y));
@@ -308,8 +318,12 @@ void CMFCOpenGL01Doc::flush_all_drawing(CDC * pDC){
     for (int i = 0; i < v_polygon.size(); i++)
         draw_polygon_cpen(pDC, v_polygon[i], v_polygon[i].color, v_polygon[i].size);
 
+    for (int i = 0; i < v_bezier.size(); i++) 
+        bezier_cpen(pDC, v_bezier[i], v_bezier[i].color, v_bezier[i].size);
+            
     for (int i = 0; i < v_fill.size(); i++)
         flood_fill_cbrush(pDC, v_fill[i].color, pDC->GetPixel(v_fill[i].p.x, v_fill[i].p.y), v_fill[i].p);
+
 }
 
 //绘制多边形
@@ -328,9 +342,43 @@ void CMFCOpenGL01Doc::draw_polygon_cpen(CDC * pDC, d_polygon p, COLORREF color, 
     cpen.DeleteObject();
 }
 
+//绘制带控制边的贝塞尔曲线
+void CMFCOpenGL01Doc::bezier_cpen(CDC * pDC, d_bezier b, COLORREF color, int size){
 
+    if (b.ps.size() == 0) return;
 
+    CPen cpen1;
+    cpen1.CreatePen(PS_DASHDOT, 1, color);
+    CPen* pOldPen1 = (CPen*)pDC->SelectObject(&cpen1);
+    for (int i = 0; i < b.ps.size() - 1; i++) {
+        pDC->MoveTo(b.ps[i]);
+        pDC->LineTo(b.ps[i + 1]);
+    }
+    pDC->SelectObject(pOldPen1);
+    cpen1.DeleteObject();
 
+    CPen cpen2;
+    cpen2.CreatePen(PS_SOLID, size, color);
+    CPen* pOldPen2 = (CPen*)pDC->SelectObject(&cpen2);
+    if (b.order == 0) {}
+    else if (b.order == 1) {
+        pDC->MoveTo(b.ps[0].x, b.ps[0].y);
+        pDC->LineTo(b.ps[1].x, b.ps[1].y);
+    }
+    else {
+        for (double t = 0.0; t <= 1.0; t += 0.001) {
+            double tx = 0.0, ty = 0.0;
+            for (int i = 0; i <= b.order; i++) {
+                tx += (1.0 * yanghui[b.order][i] * pow(t, 1.0*i) * pow(1.0 - t, 1.0*(b.order - i)) * b.ps[i].x);
+                ty += (1.0 * yanghui[b.order][i] * pow(t, 1.0*i) * pow(1.0 - t, 1.0*(b.order - i)) * b.ps[i].y);
+            }
+            if (t == 0.0) pDC->MoveTo(tx, ty);
+            pDC->LineTo(tx, ty);
+        }
+    }
+    pDC->SelectObject(pOldPen2);
+    cpen2.DeleteObject();
+}
 
 
 

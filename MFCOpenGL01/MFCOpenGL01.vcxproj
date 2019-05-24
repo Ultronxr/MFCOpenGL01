@@ -179,6 +179,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ClassView.h" />
+    <ClInclude Include="DialogBezier.h" />
     <ClInclude Include="DialogCircleOval.h" />
     <ClInclude Include="DialogCirclePerfect.h" />
     <ClInclude Include="DialogFill.h" />
@@ -197,6 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="DialogBezier.cpp" />
     <ClCompile Include="DialogCircleOval.cpp" />
     <ClCompile Include="DialogCirclePerfect.cpp" />
     <ClCompile Include="DialogFill.cpp" />

@@ -50,20 +50,11 @@ CMFCOpenGL01View::CMFCOpenGL01View()
 {   
     m_RectTracker.m_rect.SetRect(0, 0, 0, 0);
     m_RectTracker.m_nStyle = CRectTracker::dottedLine | CRectTracker::resizeInside;
-
-
-    //调试输出信息用的控制台
-    /*::AllocConsole();
-    FILE *fp;
-    freopen_s(&fp, "CONOUT$", "w+t", stdout);*/
 }
 
 CMFCOpenGL01View::~CMFCOpenGL01View()
 {
     m_pDoc = NULL;
-
-    //释放调试控制台
-    //FreeConsole();
 }
 
 BOOL CMFCOpenGL01View::PreCreateWindow(CREATESTRUCT& cs)
@@ -152,7 +143,6 @@ void CMFCOpenGL01View::OnDraw(CDC* pDC){
     COLORREF red = RGB(255, 0, 0), green = RGB(0, 255, 0), blue = RGB(0 ,0 ,255),  black = RGB(0, 0, 0);
     
     m_pDoc->flush_all_drawing(pDC);
-    
 
 
     if (EntName.Compare(_T("bmp")) == 0){
@@ -374,6 +364,7 @@ CPoint tp1(0, 0), tp2(0, 0);
 int ta = 0, tb = 0;
 
 CMFCOpenGL01Doc::d_polygon tpolygon(temp_ps, 1, RGB(0,0,0));
+CMFCOpenGL01Doc::d_bezier tbezier(0, temp_ps, 1, RGB(0,0,0));
 
 void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
 {
@@ -381,8 +372,8 @@ void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
     
     if (m_pDoc->m_operation == 0) {
         m_pDoc->select_all(dc1, point);
+        
     }
-
     else if (m_pDoc->m_operation == 2) {
         oldPoint = point;
         newPoint = point;
@@ -408,6 +399,18 @@ void CMFCOpenGL01View::OnLButtonDown(UINT nFlags, CPoint point)
             newPoint = point;
             temp_ps.push_back(newPoint);
         }
+    }
+    else if (m_pDoc->m_operation == 6) {
+        if (!m_pDoc->is_drawing_bezier) {
+            m_pDoc->is_drawing_bezier = TRUE;
+            tbezier.ps.clear();
+            tbezier.color = m_pDoc->m_color;
+            tbezier.size = m_pDoc->m_size;
+        }
+        tbezier.ps.push_back(point);
+        tbezier.order = tbezier.ps.size() - 1;
+
+        m_pDoc->point_circle(dc1, tbezier.color, point.x, point.y, 5);        
     }
     else if (m_pDoc->m_operation == 20) {
         
@@ -520,6 +523,9 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
         m_pDoc->line_cpen(dc2, m_pDoc->m_color, oldPoint, newPoint, m_pDoc->m_size);
         oldPoint = newPoint;
     }
+    else if (m_pDoc->m_operation == 6) {
+        if (tbezier.order != 0) m_pDoc->bezier_cpen(dc2, tbezier, tbezier.color, 1);
+    }
     else if (m_pDoc->m_operation == 10) {
         m_pDoc->flood_fill_cbrush(dc2, m_pDoc->m_color, GetDC()->GetPixel(point.x, point.y), point);
         m_pDoc->v_fill.push_back(CMFCOpenGL01Doc::d_fill(point, m_pDoc->m_color));
@@ -610,7 +616,12 @@ void CMFCOpenGL01View::OnLButtonDblClk(UINT nFlags, CPoint point)
 
         m_pDoc->v_polygon.push_back(CMFCOpenGL01Doc::d_polygon(temp_ps, m_pDoc->m_size, m_pDoc->m_color));
     }
+    else if (m_pDoc->m_operation == 6) {
+        m_pDoc->is_drawing_bezier = FALSE;
+        m_pDoc->v_bezier.push_back(tbezier);
 
+        Invalidate(TRUE);
+    }
     ReleaseDC(dc1);
     CView::OnLButtonDblClk(nFlags, point);
 }

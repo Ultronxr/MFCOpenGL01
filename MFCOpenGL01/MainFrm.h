@@ -12,6 +12,7 @@
 #include "DialogCirclePerfect.h"
 #include "DialogCircleOval.h"
 #include "DialogPolygon.h"
+#include "DialogBezier.h"
 #include "DialogFill.h"
 
 
@@ -70,6 +71,7 @@ protected:
     afx_msg void OnToolBarDrawCirclePerfect();
     afx_msg void OnToolBarDrawCircleOval();
     afx_msg void OnToolBarDrawPolygon();
+    afx_msg void OnToolBarDrawBezier();
     afx_msg void OnToolBarToolsMouse();
     afx_msg void OnToolBarToolsSelect();
     afx_msg void OnToolBarToolsFill();
