@@ -1,47 +1,51 @@
-# MFC�򵥻�ͼ����
+# MFC简单绘图程序
 
-����C++��MFC���ĵ���̣�
+基于C++、MFC单文档编程；
 
-�ֿ��в�������������
-
-
-## �����б�
-
-1. ���Ƶ㣬�����Ƶ�����ࡢ�ߴ硢��ɫ��
-2. ����ֱ�ߣ��������߿�������ɫ��
-3. ������Բ���������߿�������ɫ��
-4. ������Բ������Բ�����������߿�������ɫ��
-5. ���ƶ���Σ��������߿�������ɫ��
-6. �����ͼ�Σ������������ɫ��
-7. ����ѡ��ͼ�Σ�����ƽ�ơ���ת�����š��ԳƱ任��
-8. ����ͼ�κ�ͼ�α任ʱ����ʾ�м���̵ġ���Ƥ�Ч����
-9. �ļ����ݼ��غͳ־û��洢��bmpλͼ����
-10. ��������������ť����ջ�����
+仓库中不包含编译结果；
 
 
-## ��֪BUG
+## 功能列表
 
-1. ֻ��¼���λ�ã����ڴ�С�ı�ʱ�ᵼ������λ��
+1. 绘制点，并控制点的种类、尺寸、颜色；
+2. 绘制直线，并控制线宽、线颜色；
+3. 绘制正圆，并控制线宽、线颜色；
+4. 绘制椭圆（任意圆），并控制线宽、线颜色；
+5. 绘制多边形，并控制线宽、线颜色；
+6. 绘制贝塞尔曲线，并控制线宽、线颜色；
+7. 填充封闭图形，并控制填充颜色；
+8. 单独选中图形，进行平移、旋转、缩放、对称变换；
+9. 绘制图形和图形变换时，显示中间过程的“橡皮筋”效果；
+10. 文件内容加载和持久化存储（bmp位图）；
+11. 其他：工具栏按钮、清空画布；
 
 
-## ��ʾͼƬ��ѡȡ���ţ�����ͼƬ��`show`Ŀ¼�£���ЩͼƬ��һ�������°汾��Ч������
+## 已知BUG
 
-![���Ƶ�](./show/draw_point.gif)
+1. 只记录填充位置，窗口大小改变时会导致填充错位，移动图形位置，也会导致填充错位；
+2. 贝塞尔曲线绘制的中间过程不会被擦除；
+3. 贝塞尔曲线只能使用控制边进行选择；
+4. 文件持久化存储不能对象化，只能保存画布上的图像，也就是说加载操作无法还原完整的信息；
 
-![����ֱ��](./show/draw_line.gif)
 
-![������Բ](./show/draw_circle_oval.gif)
+## 演示图片（选取几张，所有图片在`show`目录下，这些图片不一定是最新版本的效果！）
 
-![���ƶ����](./show/draw_polygon.gif)
+![绘制点](./show/draw_point.gif)
 
-![���](./show/fill.gif)
+![绘制直线](./show/draw_line.gif)
 
-![ѡ��ͼ��](./show/select.gif)
+![绘制椭圆](./show/draw_circle_oval.gif)
 
-![ƽ��](./show/transform_translate.gif)
+![绘制多边形](./show/draw_polygon.gif)
 
-![��ת](./show/transform_rotate.gif)
+![填充](./show/fill.gif)
 
-![����](./show/transform_scale.gif)
+![选择图形](./show/select.gif)
 
-![�Գ�](./show/transform_symmetry.gif)
+![平移](./show/transform_translate.gif)
+
+![旋转](./show/transform_rotate.gif)
+
+![缩放](./show/transform_scale.gif)
+
+![对称](./show/transform_symmetry.gif)

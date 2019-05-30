@@ -551,6 +551,10 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
             m_pDoc->transform_translate_polygon(m_pDoc->v_polygon, index, point);
             m_pDoc->selected_polygon = -1;
         }
+        else if ((index = m_pDoc->selected_bezier) != -1) {
+            m_pDoc->transform_translate_bezier(m_pDoc->v_bezier, index, point);
+            m_pDoc->selected_bezier = -1;
+        }
         m_pDoc->m_operation = 0;
         Invalidate(TRUE);
     }
@@ -570,6 +574,13 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
             tpolygon.ps.clear();
             tpolygon.size = 1;
             tpolygon.color = RGB(0, 0, 0);
+        }
+        else if ((index = m_pDoc->selected_bezier) != -1) {
+            m_pDoc->transform_rotate_bezier(m_pDoc->v_bezier, index, oldPoint, point);
+            m_pDoc->selected_polygon = -1;
+            tbezier.ps.clear();
+            tbezier.size = 1;
+            tbezier.color = RGB(0, 0, 0);
         }
         m_pDoc->m_operation = 0;
         Invalidate(TRUE);
@@ -598,6 +609,13 @@ void CMFCOpenGL01View::OnLButtonUp(UINT nFlags, CPoint point)
             tpolygon.size = 1;
             tpolygon.color = RGB(0, 0, 0);
         }
+        else if ((index = m_pDoc->selected_bezier) != -1) {
+            m_pDoc->transform_scale_bezier(m_pDoc->v_bezier, index, oldPoint, point);
+            m_pDoc->selected_bezier = -1;
+            tbezier.ps.clear();
+            tbezier.size = 1;
+            tbezier.color = RGB(0, 0, 0);
+        }
         m_pDoc->m_operation = 0;
         Invalidate(TRUE);
     }
@@ -618,6 +636,8 @@ void CMFCOpenGL01View::OnLButtonDblClk(UINT nFlags, CPoint point)
     }
     else if (m_pDoc->m_operation == 6) {
         m_pDoc->is_drawing_bezier = FALSE;
+        tbezier.color = m_pDoc->m_color;
+        tbezier.size = m_pDoc->m_size;
         m_pDoc->v_bezier.push_back(tbezier);
 
         Invalidate(TRUE);
@@ -685,6 +705,12 @@ void CMFCOpenGL01View::OnMouseMove(UINT nFlags, CPoint point)
             m_pDoc->transform_translate_polygon(m_pDoc->v_polygon, index, point);
             m_pDoc->draw_polygon_cpen(dc1, m_pDoc->v_polygon[index], m_pDoc->v_polygon[index].color, m_pDoc->v_polygon[index].size);
         }
+        else if (m_pDoc->selected_bezier != -1) {
+            index = m_pDoc->selected_bezier;
+            m_pDoc->bezier_cpen(dc1, m_pDoc->v_bezier[index], m_pDoc->v_bezier[index].color, m_pDoc->v_bezier[index].size);
+            m_pDoc->transform_translate_bezier(m_pDoc->v_bezier, index, point);
+            m_pDoc->bezier_cpen(dc1, m_pDoc->v_bezier[index], m_pDoc->v_bezier[index].color, m_pDoc->v_bezier[index].size);
+        }
     }
     if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 101) { //旋转
         if (m_pDoc->selected_line != -1) {
@@ -736,6 +762,31 @@ void CMFCOpenGL01View::OnMouseMove(UINT nFlags, CPoint point)
                 tpolygon.ps[i] = m_pDoc->get_rotated_point(tpolygon.ps[i], CPoint(mid_x, mid_y), angle);
 
             m_pDoc->draw_polygon_cpen(dc1, tpolygon, m_pDoc->v_polygon[index].color, m_pDoc->v_polygon[index].size);
+        }
+        else if (m_pDoc->selected_bezier != -1) {
+            index = m_pDoc->selected_bezier;
+            m_pDoc->bezier_cpen(dc1, tbezier, m_pDoc->v_bezier[index].color, m_pDoc->v_bezier[index].size);
+
+            //此处单独计算是为了不把数据写入存储对象，保持旋转过程不产生误差
+            int mid_x = 0, mid_y = 0;
+            for (int i = 0; i < m_pDoc->v_bezier[index].ps.size(); i++) {
+                mid_x += m_pDoc->v_bezier[index].ps[i].x;
+                mid_y += m_pDoc->v_bezier[index].ps[i].y;
+            }
+            mid_x /= m_pDoc->v_bezier[index].ps.size();
+            mid_y /= m_pDoc->v_bezier[index].ps.size();
+
+            double a = sqrt((mid_x - point.x)*(mid_x - point.x) + (mid_y - point.y)*(mid_y - point.y)),
+                b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
+                c = sqrt((mid_x - oldPoint.x)*(mid_x - oldPoint.x) + (mid_y - oldPoint.y)*(mid_y - oldPoint.y));
+            double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / m_pDoc->pi * 180.0);
+            double angle_judge = (oldPoint.x - mid_x)*(point.y - mid_y) - (point.x - mid_x)*(oldPoint.y - mid_y); //>0顺时针，<0逆时针
+            angle = (angle_judge >= 0.0 ? angle : -angle);
+            tbezier = m_pDoc->v_bezier[index];
+            for (int i = 0; i < tbezier.ps.size(); i++)
+                tbezier.ps[i] = m_pDoc->get_rotated_point(tbezier.ps[i], CPoint(mid_x, mid_y), angle);
+
+            m_pDoc->bezier_cpen(dc1, tbezier, m_pDoc->v_bezier[index].color, m_pDoc->v_bezier[index].size);
         }
     }
     if (nFlags == MK_LBUTTON && m_pDoc->m_operation == 102) { //缩放
@@ -804,6 +855,29 @@ void CMFCOpenGL01View::OnMouseMove(UINT nFlags, CPoint point)
             }
             
             m_pDoc->draw_polygon_cpen(dc1, tpolygon, m_pDoc->v_polygon[index].color, m_pDoc->v_polygon[index].size);
+        }
+        else if (m_pDoc->selected_bezier != -1) {
+            index = m_pDoc->selected_bezier;
+            m_pDoc->bezier_cpen(dc1, tbezier, m_pDoc->v_bezier[index].color, m_pDoc->v_bezier[index].size);
+
+            //此处单独计算是为了不把数据写入存储对象，保持缩放速率不变
+            int mid_x = 0, mid_y = 0;
+            for (int i = 0; i < m_pDoc->v_bezier[index].ps.size(); i++) {
+                mid_x += m_pDoc->v_bezier[index].ps[i].x;
+                mid_y += m_pDoc->v_bezier[index].ps[i].y;
+            }
+            mid_x /= m_pDoc->v_bezier[index].ps.size();
+            mid_y /= m_pDoc->v_bezier[index].ps.size();
+            double dis1 = sqrt((oldPoint.x - mid_x)*(oldPoint.x - mid_x) + (oldPoint.y - mid_y)*(oldPoint.y - mid_y)),
+                dis2 = sqrt((point.x - mid_x)*(point.x - mid_x) + (point.y - mid_y)*(point.y - mid_y));
+            double rate = dis2 / dis1;
+            tbezier = m_pDoc->v_bezier[index];
+            for (int i = 0; i < tbezier.ps.size(); i++) {
+                tbezier.ps[i].x = (tbezier.ps[i].x - mid_x)*rate + mid_x;
+                tbezier.ps[i].y = (tbezier.ps[i].y - mid_y)*rate + mid_y;
+            }
+
+            m_pDoc->bezier_cpen(dc1, tbezier, m_pDoc->v_bezier[index].color, m_pDoc->v_bezier[index].size);
         }
     }
 

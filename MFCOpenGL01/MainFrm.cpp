@@ -263,6 +263,10 @@ void CMainFrame::OnToolBarTransformSymmetryLR(){
         m_pDoc->transform_symmetry_polygon(m_pDoc->v_polygon, index, 1);
         m_pDoc->selected_polygon = -1;
     }
+    else if ((index = m_pDoc->selected_bezier) != -1) {
+        m_pDoc->transform_symmetry_bezier(m_pDoc->v_bezier, index, 1);
+        m_pDoc->selected_bezier = -1;
+    }
     Invalidate(TRUE);
 }
 
@@ -281,6 +285,10 @@ void CMainFrame::OnToolBarTransformSymmetryTB(){
     else if ((index = m_pDoc->selected_polygon) != -1) {
         m_pDoc->transform_symmetry_polygon(m_pDoc->v_polygon, index, 0);
         m_pDoc->selected_polygon = -1;
+    }
+    else if ((index = m_pDoc->selected_bezier) != -1) {
+        m_pDoc->transform_symmetry_bezier(m_pDoc->v_bezier, index, 0);
+        m_pDoc->selected_bezier = -1;
     }
     Invalidate(TRUE);
 }

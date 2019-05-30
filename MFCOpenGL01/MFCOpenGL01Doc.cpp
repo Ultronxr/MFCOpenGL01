@@ -169,6 +169,7 @@ void CMFCOpenGL01Doc::select_all(CDC * pDC, CPoint point){
     int spc = select_perfect_circle(point);
     int soc = select_oval_circle(point);
     int spo = select_polygon(point);
+    int sb = select_bezier(point);
 
     COLORREF co = RGB(255, 0, 128);
 
@@ -224,11 +225,20 @@ void CMFCOpenGL01Doc::select_all(CDC * pDC, CPoint point){
         draw_polygon_cpen(pDC, v_polygon[selected_polygon], v_polygon[selected_polygon].color, v_polygon[selected_polygon].size);
     }
 
+    //处理贝塞尔曲线
+    if (sb != -1) {
+        bezier_cpen(pDC, v_bezier[sb], co, v_bezier[sb].size);
+    }
+    if (selected_bezier != -1 && selected_bezier != sb) {
+        bezier_cpen(pDC, v_bezier[selected_bezier], v_bezier[selected_bezier].color, v_bezier[selected_bezier].size);
+    }
+
     selected_point = sp;
     selected_line = sl;
     selected_perfect_circle = spc;
     selected_oval_circle = soc;
     selected_polygon = spo;
+    selected_bezier = sb;
 }
 
 int CMFCOpenGL01Doc::select_point(CPoint pos){
@@ -241,7 +251,6 @@ int CMFCOpenGL01Doc::select_point(CPoint pos){
 }
 
 int CMFCOpenGL01Doc::select_line(CPoint pos){
-    //double dis = 0.0, a = 0.0, b = 0.0, c = 0.0;
     double am = 0.0, bm = 0.0, ab = 0.0;
     for (int i = 0; i < v_line.size(); i++) {
         am = sqrt((v_line[i].p1.x - pos.x)*(v_line[i].p1.x - pos.x) + (v_line[i].p1.y - pos.y)*(v_line[i].p1.y - pos.y));
@@ -293,7 +302,18 @@ int CMFCOpenGL01Doc::select_polygon(CPoint pos){
     return -1;
 }
 
-
+int CMFCOpenGL01Doc::select_bezier(CPoint pos) {
+    double am = 0.0, bm = 0.0, ab = 0.0;
+    for (int i = 0; i < v_bezier.size(); i++) {
+        for (int j = 0; j < v_bezier[i].ps.size()-1; j++) {
+            am = sqrt((v_bezier[i].ps[j].x - pos.x)*(v_bezier[i].ps[j].x - pos.x) + (v_bezier[i].ps[j].y - pos.y)*(v_bezier[i].ps[j].y - pos.y));
+            bm = sqrt((v_bezier[i].ps[j + 1].x - pos.x)*(v_bezier[i].ps[j + 1].x - pos.x) + (v_bezier[i].ps[j + 1].y - pos.y)*(v_bezier[i].ps[j + 1].y - pos.y));
+            ab = sqrt((v_bezier[i].ps[j].x - v_bezier[i].ps[j + 1].x)*(v_bezier[i].ps[j].x - v_bezier[i].ps[j + 1].x) + (v_bezier[i].ps[j].y - v_bezier[i].ps[j + 1].y)*(v_bezier[i].ps[j].y - v_bezier[i].ps[j + 1].y));
+            if (abs(am + bm - ab) < 5.0) return i;
+        }
+    }
+    return -1;
+}
 
 
 
@@ -366,7 +386,7 @@ void CMFCOpenGL01Doc::bezier_cpen(CDC * pDC, d_bezier b, COLORREF color, int siz
         pDC->LineTo(b.ps[1].x, b.ps[1].y);
     }
     else {
-        for (double t = 0.0; t <= 1.0; t += 0.001) {
+        for (double t = 0.0; t <= 1.0; t += (0.08/b.ps.size())) {
             double tx = 0.0, ty = 0.0;
             for (int i = 0; i <= b.order; i++) {
                 tx += (1.0 * yanghui[b.order][i] * pow(t, 1.0*i) * pow(1.0 - t, 1.0*(b.order - i)) * b.ps[i].x);
@@ -446,10 +466,6 @@ void CMFCOpenGL01Doc::point_rhombus(CDC *pDC, COLORREF color, int x, int y, int 
 
     return;
 }
-
-
-
-
 
 
 
@@ -714,10 +730,6 @@ void CMFCOpenGL01Doc::line_cpen(CDC* pDC, COLORREF color, CPoint p1, CPoint p2, 
     pDC->SelectObject(pOldPen);
     cpen.DeleteObject();
 }
-
-
-
-
 
 
 
@@ -1338,9 +1350,6 @@ void CMFCOpenGL01Doc::draw_polygon(CDC *pDC, COLORREF color, polygon p) {
 
 
 
-
-
-
 ///二维图形变换算法 开始
 
 //平移（以图形的重心点作为基准平移）    参数：图形集，待平移图形的下标，平移到哪个位置
@@ -1387,6 +1396,23 @@ void CMFCOpenGL01Doc::transform_translate_polygon(std::vector<d_polygon>& v_poly
     for (int i = 0; i < v_polygon[index].ps.size(); i++) {
         v_polygon[index].ps[i].x += delta_x;
         v_polygon[index].ps[i].y += delta_y;
+    }
+    return;
+}
+
+void CMFCOpenGL01Doc::transform_translate_bezier(std::vector<d_bezier>& v_bezier, int index, CPoint point){
+    int mid_x = 0, mid_y = 0;
+    for (int i = 0; i < v_bezier[index].ps.size(); i++) {
+        mid_x += v_bezier[index].ps[i].x;
+        mid_y += v_bezier[index].ps[i].y;
+    }
+    mid_x /= v_bezier[index].ps.size();
+    mid_y /= v_bezier[index].ps.size();
+    int delta_x = point.x - mid_x;
+    int delta_y = point.y - mid_y;
+    for (int i = 0; i < v_bezier[index].ps.size(); i++) {
+        v_bezier[index].ps[i].x += delta_x;
+        v_bezier[index].ps[i].y += delta_y;
     }
     return;
 }
@@ -1449,6 +1475,25 @@ void CMFCOpenGL01Doc::transform_rotate_polygon(std::vector<d_polygon>& v_polygon
     return;
 }
 
+void CMFCOpenGL01Doc::transform_rotate_bezier(std::vector<d_bezier>& v_bezier, int index, CPoint oldPoint, CPoint point){
+    int mid_x = 0, mid_y = 0;
+    for (int i = 0; i < v_bezier[index].ps.size(); i++) {
+        mid_x += v_bezier[index].ps[i].x;
+        mid_y += v_bezier[index].ps[i].y;
+    }
+    mid_x /= v_bezier[index].ps.size();
+    mid_y /= v_bezier[index].ps.size();
+
+    double a = sqrt((mid_x - point.x)*(mid_x - point.x) + (mid_y - point.y)*(mid_y - point.y)),
+        b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
+        c = sqrt((mid_x - oldPoint.x)*(mid_x - oldPoint.x) + (mid_y - oldPoint.y)*(mid_y - oldPoint.y));
+    double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / pi * 180.0);
+    double angle_judge = (oldPoint.x - mid_x)*(point.y - mid_y) - (point.x - mid_x)*(oldPoint.y - mid_y); //>0顺时针，<0逆时针
+    angle = (angle_judge >= 0.0 ? angle : -angle);
+    for (int i = 0; i < v_bezier[index].ps.size(); i++)
+        v_bezier[index].ps[i] = get_rotated_point(v_bezier[index].ps[i], CPoint(mid_x, mid_y), angle);
+}
+
 
 //缩放    参数：图形集，待缩放图形的下标，缩放前鼠标位置，缩放后鼠标位置（以图形重心为基准）
 void CMFCOpenGL01Doc::transform_scale_line(std::vector<d_line>& v_line, int index, CPoint oldPoint, CPoint point){
@@ -1503,6 +1548,23 @@ void CMFCOpenGL01Doc::transform_scale_polygon(std::vector<d_polygon>& v_polygon,
     return;
 }
 
+void CMFCOpenGL01Doc::transform_scale_bezier(std::vector<d_bezier>& v_bezier, int index, CPoint oldPoint, CPoint point){
+    int mid_x = 0, mid_y = 0;
+    for (int i = 0; i < v_bezier[index].ps.size(); i++) {
+        mid_x += v_bezier[index].ps[i].x;
+        mid_y += v_bezier[index].ps[i].y;
+    }
+    mid_x /= v_bezier[index].ps.size();
+    mid_y /= v_bezier[index].ps.size();
+    double dis1 = sqrt((oldPoint.x - mid_x)*(oldPoint.x - mid_x) + (oldPoint.y - mid_y)*(oldPoint.y - mid_y)),
+        dis2 = sqrt((point.x - mid_x)*(point.x - mid_x) + (point.y - mid_y)*(point.y - mid_y));
+    double rate = dis2 / dis1;
+    for (int i = 0; i < v_bezier[index].ps.size(); i++) {
+        v_bezier[index].ps[i].x = (v_bezier[index].ps[i].x - mid_x)*rate + mid_x;
+        v_bezier[index].ps[i].y = (v_bezier[index].ps[i].y - mid_y)*rate + mid_y;
+    }
+}
+
 
 //对称    参数：图形集，待对称的图形的下标，对称标志（0为上下，1为左右）
 void CMFCOpenGL01Doc::transform_symmetry_line(std::vector<d_line>& v_line, int index, int flag){
@@ -1539,6 +1601,24 @@ void CMFCOpenGL01Doc::transform_symmetry_polygon(std::vector<d_polygon>& v_line,
     else {
         for (int i = 0; i < v_polygon[index].ps.size(); i++)
             v_polygon[index].ps[i].x = mid_x * 2 - v_polygon[index].ps[i].x;
+    }
+}
+
+void CMFCOpenGL01Doc::transform_symmetry_bezier(std::vector<d_bezier>& v_bezier, int index, int flag){
+    int mid_x = 0, mid_y = 0;
+    for (int i = 0; i < v_bezier[index].ps.size(); i++) {
+        mid_x += v_bezier[index].ps[i].x;
+        mid_y += v_bezier[index].ps[i].y;
+    }
+    mid_x /= v_bezier[index].ps.size();
+    mid_y /= v_bezier[index].ps.size();
+    if (!flag) {
+        for (int i = 0; i < v_bezier[index].ps.size(); i++)
+            v_bezier[index].ps[i].y = mid_y * 2 - v_bezier[index].ps[i].y;
+    }
+    else {
+        for (int i = 0; i < v_bezier[index].ps.size(); i++)
+            v_bezier[index].ps[i].x = mid_x * 2 - v_bezier[index].ps[i].x;
     }
 }
 

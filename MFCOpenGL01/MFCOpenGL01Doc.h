@@ -255,7 +255,7 @@ public:
 
 
     //上次被选中的图形
-    int selected_point = -1, selected_line = -1, selected_perfect_circle = -1, selected_oval_circle = -1, selected_polygon = -1;
+    int selected_point = -1, selected_line = -1, selected_perfect_circle = -1, selected_oval_circle = -1, selected_polygon = -1, selected_bezier = -1;
 
 
     ///寻找鼠标是否选中图形
@@ -276,6 +276,9 @@ public:
 
     //选中多边形
     int select_polygon(CPoint pos);
+
+    //选中贝塞尔曲线
+    int select_bezier(CPoint pos);
     
 
 
@@ -430,6 +433,7 @@ public:
     void transform_translate_perfect_circle(std::vector<d_perf_circle> &v_perf_circle, int index, CPoint point);
     void transform_translate_oval_circle(std::vector<d_oval_circle> &v_oval_circle, int index, CPoint point);
     void transform_translate_polygon(std::vector<d_polygon> &v_polygon, int index, CPoint point);
+    void transform_translate_bezier(std::vector<d_bezier> &v_bezier, int index, CPoint point);
 
     //获取点p绕点p0旋转后的点    参数：待旋转点，旋转中心，旋转角度（角度制，顺时针>=0，逆时针<0）
     CPoint get_rotated_point(CPoint p, CPoint p0, int angle);
@@ -439,17 +443,20 @@ public:
     void transform_rotate_line(std::vector<d_line> &v_line, int index, CPoint oldPoint, CPoint point);
     void transform_rotate_oval_circle(std::vector<d_oval_circle> &v_oval_circle, int index, CPoint oldPoint, CPoint point);
     void transform_rotate_polygon(std::vector<d_polygon> &v_polygon, int index, CPoint oldPoint, CPoint point);
+    void transform_rotate_bezier(std::vector<d_bezier> &v_bezier, int index, CPoint oldPoint, CPoint point);
     
     //缩放    参数：图形集，待缩放图形的下标，缩放前鼠标位置，缩放后鼠标位置（以图形重心为基准）
     void transform_scale_line(std::vector<d_line> &v_line, int index, CPoint oldPoint, CPoint point);
     void transform_scale_perfect_circle(std::vector<d_perf_circle> &v_perf_circle, int index, CPoint oldPoint, CPoint point);
     void transform_scale_oval_circle(std::vector<d_oval_circle> &v_oval_circle, int index, CPoint oldPoint, CPoint point);
     void transform_scale_polygon(std::vector<d_polygon> &v_polygon, int index, CPoint oldPoint, CPoint point);
+    void transform_scale_bezier(std::vector<d_bezier> &v_bezier, int index, CPoint oldPoint, CPoint point);
 
     //对称    参数：图形集，待对称的图形的下标，对称标志（0为上下，1为左右）
     void transform_symmetry_line(std::vector<d_line> &v_line, int index, int flag);
     void transform_symmetry_oval_circle(std::vector<d_oval_circle> &v_oval_circle, int index, int flag);
     void transform_symmetry_polygon(std::vector<d_polygon> &v_polygon, int index, int flag);
+    void transform_symmetry_bezier(std::vector<d_bezier> &v_bezier, int index, int flag);
 
 
 
