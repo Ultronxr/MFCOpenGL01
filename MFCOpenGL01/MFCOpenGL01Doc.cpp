@@ -30,9 +30,9 @@ END_MESSAGE_MAP()
 CMFCOpenGL01Doc::CMFCOpenGL01Doc()
 {
     //调试输出信息用的控制台
-    ::AllocConsole();
+    /*::AllocConsole();
     FILE *fp;
-    freopen_s(&fp, "CONOUT$", "w+t", stdout);
+    freopen_s(&fp, "CONOUT$", "w+t", stdout);*/
 
 	// TODO: 在此添加一次性构造代码
     m_operation = 0;
@@ -51,7 +51,7 @@ CMFCOpenGL01Doc::CMFCOpenGL01Doc()
 CMFCOpenGL01Doc::~CMFCOpenGL01Doc()
 {
     //释放调试控制台
-    FreeConsole();
+    //FreeConsole();
 }
 
 BOOL CMFCOpenGL01Doc::OnNewDocument()
