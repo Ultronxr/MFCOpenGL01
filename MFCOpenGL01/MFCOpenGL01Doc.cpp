@@ -30,9 +30,9 @@ END_MESSAGE_MAP()
 CMFCOpenGL01Doc::CMFCOpenGL01Doc()
 {
     //调试输出信息用的控制台
-    /*::AllocConsole();
+    ::AllocConsole();
     FILE *fp;
-    freopen_s(&fp, "CONOUT$", "w+t", stdout);*/
+    freopen_s(&fp, "CONOUT$", "w+t", stdout);
 
 	// TODO: 在此添加一次性构造代码
     m_operation = 0;
@@ -51,7 +51,7 @@ CMFCOpenGL01Doc::CMFCOpenGL01Doc()
 CMFCOpenGL01Doc::~CMFCOpenGL01Doc()
 {
     //释放调试控制台
-    //FreeConsole();
+    FreeConsole();
 }
 
 BOOL CMFCOpenGL01Doc::OnNewDocument()
@@ -1418,7 +1418,7 @@ void CMFCOpenGL01Doc::transform_translate_bezier(std::vector<d_bezier>& v_bezier
 }
 
 
-//获取点p围绕p0旋转后的点，angle为角度制，顺时针为正
+//获取点p围绕p0旋转后的点，angle为角度制，逆时针为正
 CPoint CMFCOpenGL01Doc::get_rotated_point(CPoint p, CPoint p0, int angle) {
     double arc = pi / 180.0*angle;
     double pxx = p0.x + (p.x - p0.x)*std::cos(arc) - (p.y - p0.y)*std::sin(arc);
@@ -1427,7 +1427,7 @@ CPoint CMFCOpenGL01Doc::get_rotated_point(CPoint p, CPoint p0, int angle) {
 }
 
 //旋转    参数：图形集，待旋转图形的下标，旋转前鼠标位置，旋转后鼠标位置（以图形重心为基准）
-//旋转角度（角度制，顺时针 >= 0，逆时针<0）
+//旋转角度（角度制，顺时针 < 0，逆时针 >= 0）
 void CMFCOpenGL01Doc::transform_rotate_line(std::vector<d_line>& v_line, int index, CPoint oldPoint, CPoint point){
     int xm = (v_line[index].p1.x + v_line[index].p2.x) / 2,
         ym = (v_line[index].p1.y + v_line[index].p2.y) / 2;
@@ -1435,7 +1435,7 @@ void CMFCOpenGL01Doc::transform_rotate_line(std::vector<d_line>& v_line, int ind
         b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
         c = sqrt((xm - oldPoint.x)*(xm - oldPoint.x) + (ym - oldPoint.y)*(ym - oldPoint.y));
     double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / pi * 180.0);
-    double angle_judge = (oldPoint.x - xm)*(point.y - ym) - (point.x - xm)*(oldPoint.y - ym); //>0顺时针，<0逆时针
+    double angle_judge = (oldPoint.x - xm)*(point.y - ym) - (point.x - xm)*(oldPoint.y - ym); //<0顺时针，>=0逆时针
     angle = (angle_judge >= 0.0 ? angle : -angle);
     v_line[index].p1 = get_rotated_point(v_line[index].p1, CPoint(xm, ym), angle);
     v_line[index].p2 = get_rotated_point(v_line[index].p2, CPoint(xm, ym), angle);
@@ -1449,7 +1449,7 @@ void CMFCOpenGL01Doc::transform_rotate_oval_circle(std::vector<d_oval_circle>& v
         b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
         c = sqrt((xm - oldPoint.x)*(xm - oldPoint.x) + (ym - oldPoint.y)*(ym - oldPoint.y));
     double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / pi * 180.0);
-    double angle_judge = (oldPoint.x - xm)*(point.y - ym) - (point.x - xm)*(oldPoint.y - ym); //>0顺时针，<0逆时针
+    double angle_judge = (oldPoint.x - xm)*(point.y - ym) - (point.x - xm)*(oldPoint.y - ym); //<0顺时针，>=0逆时针
     angle = (angle_judge >= 0.0 ? angle : -angle);
     v_oval_circle[index].angle += angle;
     return;
@@ -1468,7 +1468,7 @@ void CMFCOpenGL01Doc::transform_rotate_polygon(std::vector<d_polygon>& v_polygon
         b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
         c = sqrt((mid_x - oldPoint.x)*(mid_x - oldPoint.x) + (mid_y - oldPoint.y)*(mid_y - oldPoint.y));
     double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / pi * 180.0);
-    double angle_judge = (oldPoint.x - mid_x)*(point.y - mid_y) - (point.x - mid_x)*(oldPoint.y - mid_y); //>0顺时针，<0逆时针
+    double angle_judge = (oldPoint.x - mid_x)*(point.y - mid_y) - (point.x - mid_x)*(oldPoint.y - mid_y); //<0顺时针，>=0逆时针
     angle = (angle_judge >= 0.0 ? angle : -angle);
     for (int i = 0; i < v_polygon[index].ps.size(); i++)
         v_polygon[index].ps[i] = get_rotated_point(v_polygon[index].ps[i], CPoint(mid_x, mid_y), angle);
@@ -1488,7 +1488,7 @@ void CMFCOpenGL01Doc::transform_rotate_bezier(std::vector<d_bezier>& v_bezier, i
         b = sqrt((oldPoint.x - point.x)*(oldPoint.x - point.x) + (oldPoint.y - point.y)*(oldPoint.y - point.y)),
         c = sqrt((mid_x - oldPoint.x)*(mid_x - oldPoint.x) + (mid_y - oldPoint.y)*(mid_y - oldPoint.y));
     double angle = (acos((a*a + c*c - b*b) / (2 * a*c)) / pi * 180.0);
-    double angle_judge = (oldPoint.x - mid_x)*(point.y - mid_y) - (point.x - mid_x)*(oldPoint.y - mid_y); //>0顺时针，<0逆时针
+    double angle_judge = (oldPoint.x - mid_x)*(point.y - mid_y) - (point.x - mid_x)*(oldPoint.y - mid_y); //<0顺时针，>=0逆时针
     angle = (angle_judge >= 0.0 ? angle : -angle);
     for (int i = 0; i < v_bezier[index].ps.size(); i++)
         v_bezier[index].ps[i] = get_rotated_point(v_bezier[index].ps[i], CPoint(mid_x, mid_y), angle);
@@ -1621,4 +1621,79 @@ void CMFCOpenGL01Doc::transform_symmetry_bezier(std::vector<d_bezier>& v_bezier,
             v_bezier[index].ps[i].x = mid_x * 2 - v_bezier[index].ps[i].x;
     }
 }
+
+
+
+
+
+
+
+
+
+///二维图形矩阵变换函数
+
+//计算1*3矩阵 乘 3*3矩阵的结果，返回一个1*3的矩阵
+double* CMFCOpenGL01Doc::matrix_1_3_times_3_3(double matrix_1_3[3], double matrix_3_3[3][3]) {
+    double res[3];
+    res[0] = (matrix_1_3[0] * matrix_3_3[0][0] + matrix_1_3[1] * matrix_3_3[1][0] + matrix_1_3[2] * matrix_3_3[2][0]);
+    res[1] = (matrix_1_3[0] * matrix_3_3[0][1] + matrix_1_3[1] * matrix_3_3[1][1] + matrix_1_3[2] * matrix_3_3[2][1]);
+    res[2] = (matrix_1_3[0] * matrix_3_3[0][2] + matrix_1_3[1] * matrix_3_3[1][2] + matrix_1_3[2] * matrix_3_3[2][2]);
+    return res;
+}
+
+//矩阵计算一个点经过平移后的点，返回变换后的点
+CPoint CMFCOpenGL01Doc::transform_translate_matrix(CPoint p, double delta_x, double delta_y){
+    double matrix_1_3[3] = { 1.0*p.x, 1.0*p.y, 1.0 };
+    double matrix_3_3[3][3] = {
+         1.0,     0,       0,
+          0,     1.0,      0,
+        delta_x, delta_y, 1.0
+    };
+    double* matrix_res = matrix_1_3_times_3_3(matrix_1_3, matrix_3_3);
+    return CPoint(matrix_res[0], matrix_res[1]);
+}
+
+//矩阵计算一个点p绕p0旋转angle度后的点（angle为角度制，逆时针为正），返回变换后的点
+CPoint CMFCOpenGL01Doc::transform_rotate_matrix(CPoint p, CPoint p0, double angle){
+    double arc = pi / 180.0*angle;
+    double matrix_1_3[3] = { 1.0*(p.x - p0.x), 1.0*(p.y - p0.y), 1.0 };
+    double matrix_3_3[3][3] = {
+         cos(arc), sin(arc),  0,
+        -sin(arc), cos(arc),  0,
+            0,       0,      1.0
+    };
+    double* matrix_res = matrix_1_3_times_3_3(matrix_1_3, matrix_3_3);
+    return CPoint(matrix_res[0] + p0.x, matrix_res[1] + p0.y);
+}
+
+//矩阵计算一个点p以p0为中心缩放s倍后的点（x,y缩放倍率相同），返回变换后的点
+CPoint CMFCOpenGL01Doc::transform_scale_matrix(CPoint p, CPoint p0, double s){
+    double matrix_1_3[3] = { 1.0*(p.x - p0.x), 1.0*(p.y - p0.y), 1.0 };
+    double matrix_3_3[3][3] = {
+        s, 0,  0,
+        0, s,  0,
+        0, 0, 1.0
+    };
+    double* matrix_res = matrix_1_3_times_3_3(matrix_1_3, matrix_3_3);
+    return CPoint(matrix_res[0] + p0.x, matrix_res[1] + p0.y);
+}
+
+//矩阵计算一个点p经过p0所在对称轴对称后的点（flag为0上下对称，1为左右对称），返回变换后的点
+CPoint CMFCOpenGL01Doc::transform_symmetry_matrix(CPoint p, CPoint p0, int flag){
+    double matrix_1_3[3] = { 1.0*(p.x - p0.x), 1.0*(p.y - p0.y), 1.0 };
+    double matrix_3_3_x[3][3] = {
+        1.0,  0,   0,
+        0,  -1.0,  0,
+        0,    0,  1.0
+    },
+    matrix_3_3_y[3][3] = {
+      -1.0,   0,   0,
+        0,   1.0,  0,
+        0,    0,  1.0
+    };
+    double* matrix_res = !flag ? matrix_1_3_times_3_3(matrix_1_3, matrix_3_3_x) : matrix_1_3_times_3_3(matrix_1_3, matrix_3_3_y);
+    return CPoint(matrix_res[0] + p0.x, matrix_res[1] + p0.y);
+}
+
+
 

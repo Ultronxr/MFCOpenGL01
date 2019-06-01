@@ -435,11 +435,11 @@ public:
     void transform_translate_polygon(std::vector<d_polygon> &v_polygon, int index, CPoint point);
     void transform_translate_bezier(std::vector<d_bezier> &v_bezier, int index, CPoint point);
 
-    //获取点p绕点p0旋转后的点    参数：待旋转点，旋转中心，旋转角度（角度制，顺时针>=0，逆时针<0）
+    //获取点p绕点p0旋转后的点    参数：待旋转点，旋转中心，旋转角度（角度制，顺时针<0，逆时针>=0）
     CPoint get_rotated_point(CPoint p, CPoint p0, int angle);
     
     //旋转    参数：图形集，待旋转图形的下标，旋转前鼠标位置，旋转后鼠标位置（以图形重心为基准）
-    //旋转角度（角度制，顺时针 >= 0，逆时针<0）
+    //旋转角度（角度制，顺时针 < 0，逆时针 >= 0）
     void transform_rotate_line(std::vector<d_line> &v_line, int index, CPoint oldPoint, CPoint point);
     void transform_rotate_oval_circle(std::vector<d_oval_circle> &v_oval_circle, int index, CPoint oldPoint, CPoint point);
     void transform_rotate_polygon(std::vector<d_polygon> &v_polygon, int index, CPoint oldPoint, CPoint point);
@@ -458,6 +458,19 @@ public:
     void transform_symmetry_polygon(std::vector<d_polygon> &v_polygon, int index, int flag);
     void transform_symmetry_bezier(std::vector<d_bezier> &v_bezier, int index, int flag);
 
+
+
+    ///矩阵变换函数
+    //计算1*3矩阵 乘 3*3矩阵的结果，返回一个1*3的矩阵
+    double* matrix_1_3_times_3_3(double matrix_1_3[3], double matrix_3_3[3][3]);
+    //矩阵计算一个点经过平移后的点，返回变换后的点
+    CPoint transform_translate_matrix(CPoint p, double delta_x, double delta_y);
+    //矩阵计算一个点p绕p0旋转angle度后的点（angle为角度制，逆时针为正），返回变换后的点
+    CPoint transform_rotate_matrix(CPoint p, CPoint p0, double angle);
+    //矩阵计算一个点p以p0为中心缩放s倍后的点（x,y缩放倍率相同），返回变换后的点
+    CPoint transform_scale_matrix(CPoint p, CPoint p0, double s);
+    //矩阵计算一个点p经过p0所在对称轴对称后的点（flag为0上下对称，1为左右对称），返回变换后的点
+    CPoint transform_symmetry_matrix(CPoint p, CPoint p0, int flag);
 
 
 #ifdef SHARED_HANDLERS
