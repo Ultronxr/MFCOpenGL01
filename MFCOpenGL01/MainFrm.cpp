@@ -221,12 +221,14 @@ void CMainFrame::OnToolBarToolsClear() {
     m_pDoc->v_perf_circle.clear();
     m_pDoc->v_oval_circle.clear();
     m_pDoc->v_polygon.clear();
+    m_pDoc->v_bezier.clear();
     ((CMFCOpenGL01View*)GetActiveView())->Invalidate(TRUE);
     m_pDoc->selected_point = -1;
     m_pDoc->selected_line = -1;
     m_pDoc->selected_perfect_circle = -1;
     m_pDoc->selected_oval_circle = -1;
     m_pDoc->selected_polygon = -1;
+    m_pDoc->selected_bezier = -1;
 }
 
 void CMainFrame::OnToolBarTransformTranslate(){
